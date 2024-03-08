@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import {
-    FreeMemoryPointerSlot,
-    OneWord,
-    OneWordShift,
-    ThirtyOneBytes
-} from "../lib/ConsiderationConstants.sol";
+import {FreeMemoryPointerSlot, OneWord, OneWordShift, ThirtyOneBytes} from "../lib/ConsiderationConstants.sol";
 
 /**
  * @title TypehashDirectory
@@ -48,7 +43,7 @@ contract TypehashDirectory {
         }
 
         // Iterate over each tree height.
-        for (uint256 i = 0; i < MaxTreeHeight; ) {
+        for (uint256 i = 0; i < MaxTreeHeight;) {
             // The actual height is one greater than its respective index.
             uint256 height = i + 1;
 
@@ -58,12 +53,7 @@ contract TypehashDirectory {
             }
 
             // Encode the type string for the BulkOrder struct.
-            bytes memory bulkOrderTypeString = bytes.concat(
-                "BulkOrder(OrderComponents",
-                brackets,
-                " tree)",
-                subTypes
-            );
+            bytes memory bulkOrderTypeString = bytes.concat("BulkOrder(OrderComponents", brackets, " tree)", subTypes);
 
             // Derive EIP712 type hash.
             bytes32 typeHash = keccak256(bulkOrderTypeString);
@@ -84,10 +74,7 @@ contract TypehashDirectory {
             // and deploy the type hashes array as a contract.
             mstore(typeHashes, InvalidOpcode)
 
-            return(
-                add(typeHashes, ThirtyOneBytes),
-                add(shl(OneWordShift, MaxTreeHeight), 1)
-            )
+            return(add(typeHashes, ThirtyOneBytes), add(shl(OneWordShift, MaxTreeHeight), 1))
         }
     }
 
@@ -99,9 +86,7 @@ contract TypehashDirectory {
      *
      * @return A bytes array representing the string.
      */
-    function getMaxTreeBrackets(
-        uint256 maxHeight
-    ) internal pure returns (bytes memory) {
+    function getMaxTreeBrackets(uint256 maxHeight) internal pure returns (bytes memory) {
         bytes memory suffixes = new bytes(twoSubstringLength * maxHeight);
         assembly {
             // Retrieve the pointer to the array head.
@@ -111,11 +96,7 @@ contract TypehashDirectory {
             let endPtr := add(ptr, mul(maxHeight, twoSubstringLength))
 
             // Iterate over each pointer until terminal pointer is reached.
-            for {
-
-            } lt(ptr, endPtr) {
-                ptr := add(ptr, twoSubstringLength)
-            } {
+            for {} lt(ptr, endPtr) { ptr := add(ptr, twoSubstringLength) } {
                 // Insert "[2]" substring directly at current pointer location.
                 mstore(ptr, twoSubstring)
             }
@@ -134,50 +115,24 @@ contract TypehashDirectory {
     function getTreeSubTypes() internal pure returns (bytes memory) {
         // Construct the OfferItem type string.
         bytes memory offerItemTypeString = bytes(
-            "OfferItem("
-            "uint8 itemType,"
-            "address token,"
-            "uint256 identifierOrCriteria,"
-            "uint256 startAmount,"
-            "uint256 endAmount"
-            ")"
+            "OfferItem(" "uint8 itemType," "address token," "uint256 identifierOrCriteria," "uint256 startAmount,"
+            "uint256 endAmount" ")"
         );
 
         // Construct the ConsiderationItem type string.
         bytes memory considerationItemTypeString = bytes(
-            "ConsiderationItem("
-            "uint8 itemType,"
-            "address token,"
-            "uint256 identifierOrCriteria,"
-            "uint256 startAmount,"
-            "uint256 endAmount,"
-            "address recipient"
-            ")"
+            "ConsiderationItem(" "uint8 itemType," "address token," "uint256 identifierOrCriteria,"
+            "uint256 startAmount," "uint256 endAmount," "address recipient" ")"
         );
 
         // Construct the OrderComponents type string, not including the above.
         bytes memory orderComponentsPartialTypeString = bytes(
-            "OrderComponents("
-            "address offerer,"
-            "address zone,"
-            "OfferItem[] offer,"
-            "ConsiderationItem[] consideration,"
-            "uint8 orderType,"
-            "uint256 startTime,"
-            "uint256 endTime,"
-            "bytes32 zoneHash,"
-            "uint256 salt,"
-            "bytes32 conduitKey,"
-            "uint256 counter"
-            ")"
+            "OrderComponents(" "address offerer," "address zone," "OfferItem[] offer,"
+            "ConsiderationItem[] consideration," "uint8 orderType," "uint256 startTime," "uint256 endTime,"
+            "bytes32 zoneHash," "uint256 salt," "bytes32 conduitKey," "uint256 counter" ")"
         );
 
         // Return the combined string.
-        return
-            bytes.concat(
-                considerationItemTypeString,
-                offerItemTypeString,
-                orderComponentsPartialTypeString
-            );
+        return bytes.concat(considerationItemTypeString, offerItemTypeString, orderComponentsPartialTypeString);
     }
 }

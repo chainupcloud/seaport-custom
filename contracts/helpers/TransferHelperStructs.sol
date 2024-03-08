@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { ConduitItemType } from "../conduit/lib/ConduitEnums.sol";
+import {ConduitItemType} from "../conduit/lib/ConduitEnums.sol";
 
 /**
  * @dev A TransferHelperItem specifies the itemType (ERC20/ERC721/ERC1155),

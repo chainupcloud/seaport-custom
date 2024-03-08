@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { ItemType } from "./SeaportEnums.sol";
+import {ItemType} from "./SeaportEnums.sol";
 
 import {
     Amount,
@@ -24,9 +24,7 @@ import {
     ZoneHash
 } from "./SpaceEnums.sol";
 
-import {
-    FulfillmentStrategy
-} from "./fulfillments/lib/FulfillmentLib.sol";
+import {FulfillmentStrategy} from "./fulfillments/lib/FulfillmentLib.sol";
 
 struct OfferItemSpace {
     ItemType itemType;

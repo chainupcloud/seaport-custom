@@ -12,11 +12,11 @@ import {
     OrderType
 } from "../../../lib/ConsiderationStructs.sol";
 
-import { BasicOrderType } from "../../../lib/ConsiderationEnums.sol";
+import {BasicOrderType} from "../../../lib/ConsiderationEnums.sol";
 
-import { OrderParametersLib } from "./OrderParametersLib.sol";
+import {OrderParametersLib} from "./OrderParametersLib.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
 /**
  * @title AdvancedOrderLib
@@ -26,31 +26,28 @@ import { StructCopier } from "./StructCopier.sol";
  *         creation more readable.
  */
 library OrderLib {
-    bytes32 private constant ORDER_MAP_POSITION =
-        keccak256("seaport.OrderDefaults");
-    bytes32 private constant ORDERS_MAP_POSITION =
-        keccak256("seaport.OrdersDefaults");
-    bytes32 private constant EMPTY_ORDER =
-        keccak256(
-            abi.encode(
-                Order({
-                    parameters: OrderParameters({
-                        offerer: address(0),
-                        zone: address(0),
-                        offer: new OfferItem[](0),
-                        consideration: new ConsiderationItem[](0),
-                        orderType: OrderType(0),
-                        startTime: 0,
-                        endTime: 0,
-                        zoneHash: bytes32(0),
-                        salt: 0,
-                        conduitKey: bytes32(0),
-                        totalOriginalConsiderationItems: 0
-                    }),
-                    signature: ""
-                })
-            )
-        );
+    bytes32 private constant ORDER_MAP_POSITION = keccak256("seaport.OrderDefaults");
+    bytes32 private constant ORDERS_MAP_POSITION = keccak256("seaport.OrdersDefaults");
+    bytes32 private constant EMPTY_ORDER = keccak256(
+        abi.encode(
+            Order({
+                parameters: OrderParameters({
+                    offerer: address(0),
+                    zone: address(0),
+                    offer: new OfferItem[](0),
+                    consideration: new ConsiderationItem[](0),
+                    orderType: OrderType(0),
+                    startTime: 0,
+                    endTime: 0,
+                    zoneHash: bytes32(0),
+                    salt: 0,
+                    conduitKey: bytes32(0),
+                    totalOriginalConsiderationItems: 0
+                }),
+                signature: ""
+            })
+        )
+    );
 
     using OrderParametersLib for OrderParameters;
 
@@ -95,9 +92,7 @@ library OrderLib {
      *
      * @return item the default Order
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (Order memory item) {
+    function fromDefault(string memory defaultName) internal view returns (Order memory item) {
         mapping(string => Order) storage orderMap = _orderMap();
         item = orderMap[defaultName];
 
@@ -113,9 +108,7 @@ library OrderLib {
      *
      * @return items the default Order array
      */
-    function fromDefaultMany(
-        string memory defaultName
-    ) internal view returns (Order[] memory) {
+    function fromDefaultMany(string memory defaultName) internal view returns (Order[] memory) {
         mapping(string => Order[]) storage ordersMap = _ordersMap();
         Order[] memory items = ordersMap[defaultName];
 
@@ -134,10 +127,7 @@ library OrderLib {
      *
      * @return _order the Order saved as a default
      */
-    function saveDefault(
-        Order memory order,
-        string memory defaultName
-    ) internal returns (Order memory _order) {
+    function saveDefault(Order memory order, string memory defaultName) internal returns (Order memory _order) {
         mapping(string => Order) storage orderMap = _orderMap();
         StructCopier.setOrder(orderMap[defaultName], order);
         return order;
@@ -151,10 +141,10 @@ library OrderLib {
      *
      * @return _orders the Order array saved as a default
      */
-    function saveDefaultMany(
-        Order[] memory orders,
-        string memory defaultName
-    ) internal returns (Order[] memory _orders) {
+    function saveDefaultMany(Order[] memory orders, string memory defaultName)
+        internal
+        returns (Order[] memory _orders)
+    {
         mapping(string => Order[]) storage ordersMap = _ordersMap();
         StructCopier.setOrders(ordersMap[defaultName], orders);
         return orders;
@@ -168,11 +158,7 @@ library OrderLib {
      * @custom:return copiedOrder the copied Order
      */
     function copy(Order memory item) internal pure returns (Order memory) {
-        return
-            Order({
-                parameters: item.parameters.copy(),
-                signature: item.signature
-            });
+        return Order({parameters: item.parameters.copy(), signature: item.signature});
     }
 
     /**
@@ -196,7 +182,7 @@ library OrderLib {
      * @custom:return emptyOrder the empty Order
      */
     function empty() internal pure returns (Order memory) {
-        return Order({ parameters: OrderParametersLib.empty(), signature: "" });
+        return Order({parameters: OrderParametersLib.empty(), signature: ""});
     }
 
     /**
@@ -204,11 +190,7 @@ library OrderLib {
      *
      * @return orderMap the storage position of the default Order map
      */
-    function _orderMap()
-        private
-        pure
-        returns (mapping(string => Order) storage orderMap)
-    {
+    function _orderMap() private pure returns (mapping(string => Order) storage orderMap) {
         bytes32 position = ORDER_MAP_POSITION;
         assembly {
             orderMap.slot := position
@@ -220,11 +202,7 @@ library OrderLib {
      *
      * @return ordersMap the storage position of the default Order array map
      */
-    function _ordersMap()
-        private
-        pure
-        returns (mapping(string => Order[]) storage ordersMap)
-    {
+    function _ordersMap() private pure returns (mapping(string => Order[]) storage ordersMap) {
         bytes32 position = ORDERS_MAP_POSITION;
         assembly {
             ordersMap.slot := position
@@ -242,10 +220,11 @@ library OrderLib {
      *
      * @return _order the Order with the parameters set
      */
-    function withParameters(
-        Order memory order,
-        OrderParameters memory parameters
-    ) internal pure returns (Order memory) {
+    function withParameters(Order memory order, OrderParameters memory parameters)
+        internal
+        pure
+        returns (Order memory)
+    {
         order.parameters = parameters.copy();
         return order;
     }
@@ -258,10 +237,7 @@ library OrderLib {
      *
      * @return _order the Order with the signature set
      */
-    function withSignature(
-        Order memory order,
-        bytes memory signature
-    ) internal pure returns (Order memory) {
+    function withSignature(Order memory order, bytes memory signature) internal pure returns (Order memory) {
         order.signature = signature;
         return order;
     }
@@ -276,12 +252,11 @@ library OrderLib {
      *
      * @return advancedOrder the AdvancedOrder
      */
-    function toAdvancedOrder(
-        Order memory order,
-        uint120 numerator,
-        uint120 denominator,
-        bytes memory extraData
-    ) internal pure returns (AdvancedOrder memory advancedOrder) {
+    function toAdvancedOrder(Order memory order, uint120 numerator, uint120 denominator, bytes memory extraData)
+        internal
+        pure
+        returns (AdvancedOrder memory advancedOrder)
+    {
         advancedOrder.parameters = order.parameters.copy();
         advancedOrder.numerator = numerator;
         advancedOrder.denominator = denominator;
@@ -299,22 +274,14 @@ library OrderLib {
      *
      * @return _advancedOrders the AdvancedOrders
      */
-    function toAdvancedOrders(
-        Order[] memory orders,
-        uint120 numerator,
-        uint120 denominator,
-        bytes memory extraData
-    ) internal pure returns (AdvancedOrder[] memory _advancedOrders) {
-        AdvancedOrder[] memory advancedOrders = new AdvancedOrder[](
-            orders.length
-        );
+    function toAdvancedOrders(Order[] memory orders, uint120 numerator, uint120 denominator, bytes memory extraData)
+        internal
+        pure
+        returns (AdvancedOrder[] memory _advancedOrders)
+    {
+        AdvancedOrder[] memory advancedOrders = new AdvancedOrder[](orders.length);
         for (uint256 i = 0; i < orders.length; i++) {
-            advancedOrders[i] = toAdvancedOrder(
-                orders[i],
-                numerator,
-                denominator,
-                extraData
-            );
+            advancedOrders[i] = toAdvancedOrder(orders[i], numerator, denominator, extraData);
         }
         return advancedOrders;
     }
@@ -327,29 +294,18 @@ library OrderLib {
      *
      * @return basicOrderParameters the BasicOrderParameters
      */
-    function toBasicOrderParameters(
-        Order memory order,
-        BasicOrderType basicOrderType
-    ) internal pure returns (BasicOrderParameters memory basicOrderParameters) {
-        basicOrderParameters.considerationToken = order
-            .parameters
-            .consideration[0]
-            .token;
-        basicOrderParameters.considerationIdentifier = order
-            .parameters
-            .consideration[0]
-            .identifierOrCriteria;
-        basicOrderParameters.considerationAmount = order
-            .parameters
-            .consideration[0]
-            .endAmount;
+    function toBasicOrderParameters(Order memory order, BasicOrderType basicOrderType)
+        internal
+        pure
+        returns (BasicOrderParameters memory basicOrderParameters)
+    {
+        basicOrderParameters.considerationToken = order.parameters.consideration[0].token;
+        basicOrderParameters.considerationIdentifier = order.parameters.consideration[0].identifierOrCriteria;
+        basicOrderParameters.considerationAmount = order.parameters.consideration[0].endAmount;
         basicOrderParameters.offerer = payable(order.parameters.offerer);
         basicOrderParameters.zone = order.parameters.zone;
         basicOrderParameters.offerToken = order.parameters.offer[0].token;
-        basicOrderParameters.offerIdentifier = order
-            .parameters
-            .offer[0]
-            .identifierOrCriteria;
+        basicOrderParameters.offerIdentifier = order.parameters.offer[0].identifierOrCriteria;
         basicOrderParameters.offerAmount = order.parameters.offer[0].endAmount;
         basicOrderParameters.basicOrderType = basicOrderType;
         basicOrderParameters.startTime = order.parameters.startTime;
@@ -358,14 +314,10 @@ library OrderLib {
         basicOrderParameters.salt = order.parameters.salt;
         basicOrderParameters.offererConduitKey = order.parameters.conduitKey;
         basicOrderParameters.fulfillerConduitKey = order.parameters.conduitKey;
-        basicOrderParameters.totalOriginalAdditionalRecipients =
-            order.parameters.totalOriginalConsiderationItems -
-            1;
+        basicOrderParameters.totalOriginalAdditionalRecipients = order.parameters.totalOriginalConsiderationItems - 1;
 
-        AdditionalRecipient[]
-            memory additionalRecipients = new AdditionalRecipient[](
-                order.parameters.consideration.length - 1
-            );
+        AdditionalRecipient[] memory additionalRecipients =
+            new AdditionalRecipient[](order.parameters.consideration.length - 1);
         for (uint256 i = 1; i < order.parameters.consideration.length; i++) {
             additionalRecipients[i - 1] = AdditionalRecipient({
                 recipient: order.parameters.consideration[i].recipient,

@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { PausableZone } from "./PausableZone.sol";
+import {PausableZone} from "./PausableZone.sol";
 
-import {
-    PausableZoneControllerInterface
-} from "./interfaces/PausableZoneControllerInterface.sol";
+import {PausableZoneControllerInterface} from "./interfaces/PausableZoneControllerInterface.sol";
 
-import {
-    PausableZoneEventsAndErrors
-} from "./interfaces/PausableZoneEventsAndErrors.sol";
+import {PausableZoneEventsAndErrors} from "./interfaces/PausableZoneEventsAndErrors.sol";
 
 import {
     AdvancedOrder,
@@ -20,7 +16,7 @@ import {
     OrderComponents
 } from "../lib/ConsiderationStructs.sol";
 
-import { SeaportInterface } from "../interfaces/SeaportInterface.sol";
+import {SeaportInterface} from "../interfaces/SeaportInterface.sol";
 
 /**
  * @title  PausableZoneController
@@ -29,10 +25,7 @@ import { SeaportInterface } from "../interfaces/SeaportInterface.sol";
  *         orders on PausableZones. This deployer is designed to be owned
  *         by a gnosis safe, DAO, or trusted party.
  */
-contract PausableZoneController is
-    PausableZoneControllerInterface,
-    PausableZoneEventsAndErrors
-{
+contract PausableZoneController is PausableZoneControllerInterface, PausableZoneEventsAndErrors {
     // Set the owner that can deploy, pause and execute orders on PausableZones.
     address internal _owner;
 
@@ -76,9 +69,7 @@ contract PausableZoneController is
      *
      * @return derivedAddress The derived address for the zone.
      */
-    function createZone(
-        bytes32 salt
-    ) external override returns (address derivedAddress) {
+    function createZone(bytes32 salt) external override returns (address derivedAddress) {
         // Ensure the caller is the owner.
         if (msg.sender != _owner) {
             revert CallerIsNotOwner();
@@ -86,20 +77,8 @@ contract PausableZoneController is
 
         // Derive the PausableZone address.
         // This expression demonstrates address computation but is not required.
-        derivedAddress = address(
-            uint160(
-                uint256(
-                    keccak256(
-                        abi.encodePacked(
-                            bytes1(0xff),
-                            address(this),
-                            salt,
-                            zoneCreationCode
-                        )
-                    )
-                )
-            )
-        );
+        derivedAddress =
+            address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff), address(this), salt, zoneCreationCode)))));
 
         // Revert if a zone is currently deployed to the derived address.
         if (derivedAddress.code.length != 0) {
@@ -107,7 +86,7 @@ contract PausableZoneController is
         }
 
         // Deploy the zone using the supplied salt.
-        new PausableZone{ salt: salt }();
+        new PausableZone{salt: salt}();
 
         // Emit an event signifying that the zone was created.
         emit ZoneCreated(derivedAddress, salt);
@@ -120,9 +99,7 @@ contract PausableZoneController is
      *
      * @return success A boolean indicating the zone has been paused.
      */
-    function pause(
-        address zone
-    ) external override isPauser returns (bool success) {
+    function pause(address zone) external override isPauser returns (bool success) {
         // Call pause on the given zone.
         PausableZone(zone).pause(msg.sender);
 
@@ -185,11 +162,7 @@ contract PausableZoneController is
 
         // Call executeMatchOrders on the given zone and return the sequence
         // of transfers performed as part of matching the given orders.
-        executions = zone.executeMatchOrders{ value: msg.value }(
-            seaportAddress,
-            orders,
-            fulfillments
-        );
+        executions = zone.executeMatchOrders{value: msg.value}(seaportAddress, orders, fulfillments);
     }
 
     /**
@@ -230,12 +203,8 @@ contract PausableZoneController is
 
         // Call executeMatchOrders on the given zone and return the sequence
         // of transfers performed as part of matching the given orders.
-        executions = zone.executeMatchAdvancedOrders{ value: msg.value }(
-            seaportAddress,
-            orders,
-            criteriaResolvers,
-            fulfillments
-        );
+        executions =
+            zone.executeMatchAdvancedOrders{value: msg.value}(seaportAddress, orders, criteriaResolvers, fulfillments);
     }
 
     /**
@@ -334,10 +303,7 @@ contract PausableZoneController is
      * @param pausableZoneAddress The zone address to assign operator role.
      * @param operatorToAssign    The address to assign as operator.
      */
-    function assignOperator(
-        address pausableZoneAddress,
-        address operatorToAssign
-    ) external override {
+    function assignOperator(address pausableZoneAddress, address operatorToAssign) external override {
         // Ensure the caller is the owner.
         if (msg.sender != _owner) {
             revert CallerIsNotOwner();

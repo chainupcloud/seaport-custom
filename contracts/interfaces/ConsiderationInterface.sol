@@ -40,9 +40,7 @@ interface ConsiderationInterface {
      * @return fulfilled A boolean indicating whether the order has been
      *                   successfully fulfilled.
      */
-    function fulfillBasicOrder(
-        BasicOrderParameters calldata parameters
-    ) external payable returns (bool fulfilled);
+    function fulfillBasicOrder(BasicOrderParameters calldata parameters) external payable returns (bool fulfilled);
 
     /**
      * @notice Fulfill an order with an arbitrary number of items for offer and
@@ -66,10 +64,10 @@ interface ConsiderationInterface {
      * @return fulfilled A boolean indicating whether the order has been
      *                   successfully fulfilled.
      */
-    function fulfillOrder(
-        Order calldata order,
-        bytes32 fulfillerConduitKey
-    ) external payable returns (bool fulfilled);
+    function fulfillOrder(Order calldata order, bytes32 fulfillerConduitKey)
+        external
+        payable
+        returns (bool fulfilled);
 
     /**
      * @notice Fill an order, fully or partially, with an arbitrary number of
@@ -169,10 +167,7 @@ interface ConsiderationInterface {
         FulfillmentComponent[][] calldata considerationFulfillments,
         bytes32 fulfillerConduitKey,
         uint256 maximumFulfilled
-    )
-        external
-        payable
-        returns (bool[] memory availableOrders, Execution[] memory executions);
+    ) external payable returns (bool[] memory availableOrders, Execution[] memory executions);
 
     /**
      * @notice Attempt to fill a group of orders, fully or partially, with an
@@ -248,10 +243,7 @@ interface ConsiderationInterface {
         bytes32 fulfillerConduitKey,
         address recipient,
         uint256 maximumFulfilled
-    )
-        external
-        payable
-        returns (bool[] memory availableOrders, Execution[] memory executions);
+    ) external payable returns (bool[] memory availableOrders, Execution[] memory executions);
 
     /**
      * @notice Match an arbitrary number of orders, each with an arbitrary
@@ -280,10 +272,10 @@ interface ConsiderationInterface {
      *                    native tokens will not be reflected as part of this
      *                    array.
      */
-    function matchOrders(
-        Order[] calldata orders,
-        Fulfillment[] calldata fulfillments
-    ) external payable returns (Execution[] memory executions);
+    function matchOrders(Order[] calldata orders, Fulfillment[] calldata fulfillments)
+        external
+        payable
+        returns (Execution[] memory executions);
 
     /**
      * @notice Match an arbitrary number of full or partial orders, each with an
@@ -346,9 +338,7 @@ interface ConsiderationInterface {
      * @return cancelled A boolean indicating whether the supplied orders have
      *                   been successfully cancelled.
      */
-    function cancel(
-        OrderComponents[] calldata orders
-    ) external returns (bool cancelled);
+    function cancel(OrderComponents[] calldata orders) external returns (bool cancelled);
 
     /**
      * @notice Validate an arbitrary number of orders, thereby registering their
@@ -365,9 +355,7 @@ interface ConsiderationInterface {
      * @return validated A boolean indicating whether the supplied orders have
      *                   been successfully validated.
      */
-    function validate(
-        Order[] calldata orders
-    ) external returns (bool validated);
+    function validate(Order[] calldata orders) external returns (bool validated);
 
     /**
      * @notice Cancel all orders from a given offerer with a given zone in bulk
@@ -396,9 +384,10 @@ interface ConsiderationInterface {
      * @return fulfilled A boolean indicating whether the order has been
      *                   successfully fulfilled.
      */
-    function fulfillBasicOrder_efficient_6GL6yc(
-        BasicOrderParameters calldata parameters
-    ) external payable returns (bool fulfilled);
+    function fulfillBasicOrder_efficient_6GL6yc(BasicOrderParameters calldata parameters)
+        external
+        payable
+        returns (bool fulfilled);
 
     /**
      * @notice Retrieve the order hash for a given order.
@@ -407,9 +396,7 @@ interface ConsiderationInterface {
      *
      * @return orderHash The order hash.
      */
-    function getOrderHash(
-        OrderComponents calldata order
-    ) external view returns (bytes32 orderHash);
+    function getOrderHash(OrderComponents calldata order) external view returns (bytes32 orderHash);
 
     /**
      * @notice Retrieve the status of a given order by hash, including whether
@@ -428,17 +415,10 @@ interface ConsiderationInterface {
      * @return totalSize   The total size of the order that is either filled or
      *                     unfilled (i.e. the "denominator").
      */
-    function getOrderStatus(
-        bytes32 orderHash
-    )
+    function getOrderStatus(bytes32 orderHash)
         external
         view
-        returns (
-            bool isValidated,
-            bool isCancelled,
-            uint256 totalFilled,
-            uint256 totalSize
-        );
+        returns (bool isValidated, bool isCancelled, uint256 totalFilled, uint256 totalSize);
 
     /**
      * @notice Retrieve the current counter for a given offerer.
@@ -447,9 +427,7 @@ interface ConsiderationInterface {
      *
      * @return counter The current counter.
      */
-    function getCounter(
-        address offerer
-    ) external view returns (uint256 counter);
+    function getCounter(address offerer) external view returns (uint256 counter);
 
     /**
      * @notice Retrieve configuration information for this contract.
@@ -461,15 +439,9 @@ interface ConsiderationInterface {
     function information()
         external
         view
-        returns (
-            string memory version,
-            bytes32 domainSeparator,
-            address conduitController
-        );
+        returns (string memory version, bytes32 domainSeparator, address conduitController);
 
-    function getContractOffererNonce(
-        address contractOfferer
-    ) external view returns (uint256 nonce);
+    function getContractOffererNonce(address contractOfferer) external view returns (uint256 nonce);
 
     /**
      * @notice Retrieve the name of this contract.

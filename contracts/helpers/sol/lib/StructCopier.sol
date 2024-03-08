@@ -16,14 +16,10 @@ import {
     OrderParameters
 } from "../../../lib/ConsiderationStructs.sol";
 
-import { ArrayLib } from "./ArrayLib.sol";
+import {ArrayLib} from "./ArrayLib.sol";
 
 library StructCopier {
-    function _basicOrderParameters()
-        private
-        pure
-        returns (BasicOrderParameters storage empty)
-    {
+    function _basicOrderParameters() private pure returns (BasicOrderParameters storage empty) {
         bytes32 position = keccak256("StructCopier.EmptyBasicOrderParameters");
         assembly {
             empty.slot := position
@@ -31,11 +27,7 @@ library StructCopier {
         return empty;
     }
 
-    function _criteriaResolver()
-        private
-        pure
-        returns (CriteriaResolver storage empty)
-    {
+    function _criteriaResolver() private pure returns (CriteriaResolver storage empty) {
         bytes32 position = keccak256("StructCopier.EmptyCriteriaResolver");
         assembly {
             empty.slot := position
@@ -51,11 +43,7 @@ library StructCopier {
         return empty;
     }
 
-    function _orderComponents()
-        private
-        pure
-        returns (OrderComponents storage empty)
-    {
+    function _orderComponents() private pure returns (OrderComponents storage empty) {
         bytes32 position = keccak256("StructCopier.EmptyOrderComponents");
         assembly {
             empty.slot := position
@@ -63,11 +51,7 @@ library StructCopier {
         return empty;
     }
 
-    function _orderParameters()
-        private
-        pure
-        returns (OrderParameters storage empty)
-    {
+    function _orderParameters() private pure returns (OrderParameters storage empty) {
         bytes32 position = keccak256("StructCopier.EmptyOrderParameters");
         assembly {
             empty.slot := position
@@ -83,10 +67,7 @@ library StructCopier {
         return empty;
     }
 
-    function setBasicOrderParameters(
-        BasicOrderParameters storage dest,
-        BasicOrderParameters memory src
-    ) internal {
+    function setBasicOrderParameters(BasicOrderParameters storage dest, BasicOrderParameters memory src) internal {
         dest.considerationToken = src.considerationToken;
         dest.considerationIdentifier = src.considerationIdentifier;
         dest.considerationAmount = src.considerationAmount;
@@ -102,19 +83,12 @@ library StructCopier {
         dest.salt = src.salt;
         dest.offererConduitKey = src.offererConduitKey;
         dest.fulfillerConduitKey = src.fulfillerConduitKey;
-        dest.totalOriginalAdditionalRecipients = src
-            .totalOriginalAdditionalRecipients;
-        setAdditionalRecipients(
-            dest.additionalRecipients,
-            src.additionalRecipients
-        );
+        dest.totalOriginalAdditionalRecipients = src.totalOriginalAdditionalRecipients;
+        setAdditionalRecipients(dest.additionalRecipients, src.additionalRecipients);
         dest.signature = src.signature;
     }
 
-    function setOrderComponents(
-        OrderComponents storage dest,
-        OrderComponents memory src
-    ) internal {
+    function setOrderComponents(OrderComponents storage dest, OrderComponents memory src) internal {
         dest.offerer = src.offerer;
         dest.zone = src.zone;
         setOfferItems(dest.offer, src.offer);
@@ -128,10 +102,7 @@ library StructCopier {
         dest.counter = src.counter;
     }
 
-    function setOrderComponents(
-        OrderComponents[] storage dest,
-        OrderComponents[] memory src
-    ) internal {
+    function setOrderComponents(OrderComponents[] storage dest, OrderComponents[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -142,10 +113,7 @@ library StructCopier {
         }
     }
 
-    function setBasicOrderParameters(
-        BasicOrderParameters[] storage dest,
-        BasicOrderParameters[] memory src
-    ) internal {
+    function setBasicOrderParameters(BasicOrderParameters[] storage dest, BasicOrderParameters[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -156,10 +124,7 @@ library StructCopier {
         }
     }
 
-    function setAdditionalRecipients(
-        AdditionalRecipient[] storage dest,
-        AdditionalRecipient[] memory src
-    ) internal {
+    function setAdditionalRecipients(AdditionalRecipient[] storage dest, AdditionalRecipient[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -168,10 +133,7 @@ library StructCopier {
         }
     }
 
-    function setCriteriaResolver(
-        CriteriaResolver storage dest,
-        CriteriaResolver memory src
-    ) internal {
+    function setCriteriaResolver(CriteriaResolver storage dest, CriteriaResolver memory src) internal {
         dest.orderIndex = src.orderIndex;
         dest.side = src.side;
         dest.index = src.index;
@@ -179,10 +141,7 @@ library StructCopier {
         ArrayLib.setBytes32s(dest.criteriaProof, src.criteriaProof);
     }
 
-    function setCriteriaResolvers(
-        CriteriaResolver[] storage dest,
-        CriteriaResolver[] memory src
-    ) internal {
+    function setCriteriaResolvers(CriteriaResolver[] storage dest, CriteriaResolver[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -225,9 +184,7 @@ library StructCopier {
         return counter;
     }
 
-    function _deriveTempSlotWithCounter(
-        bytes32 libSlot
-    ) internal returns (uint256 derivedSlot) {
+    function _deriveTempSlotWithCounter(bytes32 libSlot) internal returns (uint256 derivedSlot) {
         uint256 counter = _getAndIncrementTempCounter();
         assembly {
             // store lib slot in first mem position
@@ -258,10 +215,7 @@ library StructCopier {
         }
     }
 
-    function setAdvancedOrder(
-        AdvancedOrder storage dest,
-        AdvancedOrder memory src
-    ) internal {
+    function setAdvancedOrder(AdvancedOrder storage dest, AdvancedOrder memory src) internal {
         setOrderParameters(dest.parameters, src.parameters);
         dest.numerator = src.numerator;
         dest.denominator = src.denominator;
@@ -269,23 +223,16 @@ library StructCopier {
         dest.extraData = src.extraData;
     }
 
-    bytes32 constant TEMP_ADVANCED_ORDER =
-        keccak256("seaport-sol.temp.AdvancedOrder");
+    bytes32 constant TEMP_ADVANCED_ORDER = keccak256("seaport-sol.temp.AdvancedOrder");
 
-    function _getTempAdvancedOrder()
-        internal
-        returns (AdvancedOrder storage _tempAdvancedOrder)
-    {
+    function _getTempAdvancedOrder() internal returns (AdvancedOrder storage _tempAdvancedOrder) {
         uint256 position = _deriveTempSlotWithCounter(TEMP_ADVANCED_ORDER);
         assembly {
             _tempAdvancedOrder.slot := position
         }
     }
 
-    function setAdvancedOrders(
-        AdvancedOrder[] storage dest,
-        AdvancedOrder[] memory src
-    ) internal {
+    function setAdvancedOrders(AdvancedOrder[] storage dest, AdvancedOrder[] memory src) internal {
         AdvancedOrder storage _tempAdvancedOrder = _getTempAdvancedOrder();
 
         while (dest.length != 0) {
@@ -297,10 +244,7 @@ library StructCopier {
         }
     }
 
-    function setOrderParameters(
-        OrderParameters storage dest,
-        OrderParameters memory src
-    ) internal {
+    function setOrderParameters(OrderParameters storage dest, OrderParameters memory src) internal {
         dest.offerer = src.offerer;
         dest.zone = src.zone;
         setOfferItems(dest.offer, src.offer);
@@ -311,14 +255,10 @@ library StructCopier {
         dest.zoneHash = src.zoneHash;
         dest.salt = src.salt;
         dest.conduitKey = src.conduitKey;
-        dest.totalOriginalConsiderationItems = src
-            .totalOriginalConsiderationItems;
+        dest.totalOriginalConsiderationItems = src.totalOriginalConsiderationItems;
     }
 
-    function setOfferItems(
-        OfferItem[] storage dest,
-        OfferItem[] memory src
-    ) internal {
+    function setOfferItems(OfferItem[] storage dest, OfferItem[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -327,10 +267,7 @@ library StructCopier {
         }
     }
 
-    function setConsiderationItems(
-        ConsiderationItem[] storage dest,
-        ConsiderationItem[] memory src
-    ) internal {
+    function setConsiderationItems(ConsiderationItem[] storage dest, ConsiderationItem[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -339,21 +276,12 @@ library StructCopier {
         }
     }
 
-    function setFulfillment(
-        Fulfillment storage dest,
-        Fulfillment memory src
-    ) internal {
+    function setFulfillment(Fulfillment storage dest, Fulfillment memory src) internal {
         setFulfillmentComponents(dest.offerComponents, src.offerComponents);
-        setFulfillmentComponents(
-            dest.considerationComponents,
-            src.considerationComponents
-        );
+        setFulfillmentComponents(dest.considerationComponents, src.considerationComponents);
     }
 
-    function setFulfillments(
-        Fulfillment[] storage dest,
-        Fulfillment[] memory src
-    ) internal {
+    function setFulfillments(Fulfillment[] storage dest, Fulfillment[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -364,10 +292,9 @@ library StructCopier {
         }
     }
 
-    function setFulfillmentComponents(
-        FulfillmentComponent[] storage dest,
-        FulfillmentComponent[] memory src
-    ) internal {
+    function setFulfillmentComponents(FulfillmentComponent[] storage dest, FulfillmentComponent[] memory src)
+        internal
+    {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -376,8 +303,7 @@ library StructCopier {
         }
     }
 
-    bytes32 constant TEMP_FULFILLMENT_COMPONENTS =
-        keccak256("seaport-sol.temp.FulfillmentComponents");
+    bytes32 constant TEMP_FULFILLMENT_COMPONENTS = keccak256("seaport-sol.temp.FulfillmentComponents");
 
     function _getTempFulfillmentComponents()
         internal
@@ -390,20 +316,17 @@ library StructCopier {
         }
     }
 
-    function pushFulFillmentComponents(
-        FulfillmentComponent[][] storage dest,
-        FulfillmentComponent[] memory src
-    ) internal {
-        FulfillmentComponent[]
-            storage _tempFulfillmentComponents = _getTempFulfillmentComponents();
+    function pushFulFillmentComponents(FulfillmentComponent[][] storage dest, FulfillmentComponent[] memory src)
+        internal
+    {
+        FulfillmentComponent[] storage _tempFulfillmentComponents = _getTempFulfillmentComponents();
         setFulfillmentComponents(_tempFulfillmentComponents, src);
         dest.push(_tempFulfillmentComponents);
     }
 
-    function setFulfillmentComponentsArray(
-        FulfillmentComponent[][] storage dest,
-        FulfillmentComponent[][] memory src
-    ) internal {
+    function setFulfillmentComponentsArray(FulfillmentComponent[][] storage dest, FulfillmentComponent[][] memory src)
+        internal
+    {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -412,13 +335,12 @@ library StructCopier {
         }
     }
 
-    function toConsiderationItems(
-        OfferItem[] memory _offerItems,
-        address payable receiver
-    ) internal pure returns (ConsiderationItem[] memory) {
-        ConsiderationItem[] memory considerationItems = new ConsiderationItem[](
-            _offerItems.length
-        );
+    function toConsiderationItems(OfferItem[] memory _offerItems, address payable receiver)
+        internal
+        pure
+        returns (ConsiderationItem[] memory)
+    {
+        ConsiderationItem[] memory considerationItems = new ConsiderationItem[](_offerItems.length);
         for (uint256 i = 0; i < _offerItems.length; ++i) {
             considerationItems[i] = ConsiderationItem(
                 _offerItems[i].itemType,
@@ -432,12 +354,8 @@ library StructCopier {
         return considerationItems;
     }
 
-    function toOfferItems(
-        ConsiderationItem[] memory _considerationItems
-    ) internal pure returns (OfferItem[] memory) {
-        OfferItem[] memory _offerItems = new OfferItem[](
-            _considerationItems.length
-        );
+    function toOfferItems(ConsiderationItem[] memory _considerationItems) internal pure returns (OfferItem[] memory) {
+        OfferItem[] memory _offerItems = new OfferItem[](_considerationItems.length);
         for (uint256 i = 0; i < _offerItems.length; i++) {
             _offerItems[i] = OfferItem(
                 _considerationItems[i].itemType,
@@ -456,13 +374,8 @@ library StructCopier {
         address zone,
         bytes32 conduitKey
     ) public pure returns (OrderParameters memory) {
-        OfferItem[] memory _offerItems = toOfferItems(
-            orderParameters.consideration
-        );
-        ConsiderationItem[] memory _considerationItems = toConsiderationItems(
-            orderParameters.offer,
-            offerer
-        );
+        OfferItem[] memory _offerItems = toOfferItems(orderParameters.consideration);
+        ConsiderationItem[] memory _considerationItems = toConsiderationItems(orderParameters.offer, offerer);
 
         OrderParameters memory _mirrorOrderParameters = OrderParameters(
             offerer,
@@ -480,10 +393,7 @@ library StructCopier {
         return _mirrorOrderParameters;
     }
 
-    function setExecutions(
-        Execution[] storage dest,
-        Execution[] memory src
-    ) internal {
+    function setExecutions(Execution[] storage dest, Execution[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }
@@ -492,10 +402,7 @@ library StructCopier {
         }
     }
 
-    function setOrderParameters(
-        OrderParameters[] storage dest,
-        OrderParameters[] memory src
-    ) internal {
+    function setOrderParameters(OrderParameters[] storage dest, OrderParameters[] memory src) internal {
         while (dest.length != 0) {
             dest.pop();
         }

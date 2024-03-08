@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ConsiderationItem,
-    ReceivedItem
-} from "../../../lib/ConsiderationStructs.sol";
+import {ConsiderationItem, ReceivedItem} from "../../../lib/ConsiderationStructs.sol";
 
-import { ItemType } from "../../../lib/ConsiderationEnums.sol";
+import {ItemType} from "../../../lib/ConsiderationEnums.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
 /**
  * @title ReceivedItemLib
@@ -18,22 +15,19 @@ import { StructCopier } from "./StructCopier.sol";
  *         readable.
  */
 library ReceivedItemLib {
-    bytes32 private constant RECEIVED_ITEM_MAP_POSITION =
-        keccak256("seaport.ReceivedItemDefaults");
-    bytes32 private constant RECEIVED_ITEMS_MAP_POSITION =
-        keccak256("seaport.ReceivedItemsDefaults");
-    bytes32 private constant EMPTY_RECEIVED_ITEM =
-        keccak256(
-            abi.encode(
-                ReceivedItem({
-                    itemType: ItemType(0),
-                    token: address(0),
-                    identifier: 0,
-                    amount: 0,
-                    recipient: payable(address(0))
-                })
-            )
-        );
+    bytes32 private constant RECEIVED_ITEM_MAP_POSITION = keccak256("seaport.ReceivedItemDefaults");
+    bytes32 private constant RECEIVED_ITEMS_MAP_POSITION = keccak256("seaport.ReceivedItemsDefaults");
+    bytes32 private constant EMPTY_RECEIVED_ITEM = keccak256(
+        abi.encode(
+            ReceivedItem({
+                itemType: ItemType(0),
+                token: address(0),
+                identifier: 0,
+                amount: 0,
+                recipient: payable(address(0))
+            })
+        )
+    );
 
     /**
      * @dev Clears a default ReceivedItem from storage.
@@ -41,8 +35,7 @@ library ReceivedItemLib {
      * @param defaultName the name of the default to clear
      */
     function clear(string memory defaultName) internal {
-        mapping(string => ReceivedItem)
-            storage receivedItemMap = _receivedItemMap();
+        mapping(string => ReceivedItem) storage receivedItemMap = _receivedItemMap();
         ReceivedItem storage item = receivedItemMap[defaultName];
         clear(item);
     }
@@ -67,8 +60,7 @@ library ReceivedItemLib {
      * @param defaultsName the name of the default to clear
      */
     function clearMany(string memory defaultsName) internal {
-        mapping(string => ReceivedItem[])
-            storage receivedItemsMap = _receivedItemsMap();
+        mapping(string => ReceivedItem[]) storage receivedItemsMap = _receivedItemsMap();
         ReceivedItem[] storage items = receivedItemsMap[defaultsName];
         clearMany(items);
     }
@@ -91,14 +83,13 @@ library ReceivedItemLib {
      * @return the empty ReceivedItem
      */
     function empty() internal pure returns (ReceivedItem memory) {
-        return
-            ReceivedItem({
-                itemType: ItemType(0),
-                token: address(0),
-                identifier: 0,
-                amount: 0,
-                recipient: payable(address(0))
-            });
+        return ReceivedItem({
+            itemType: ItemType(0),
+            token: address(0),
+            identifier: 0,
+            amount: 0,
+            recipient: payable(address(0))
+        });
     }
 
     /**
@@ -108,11 +99,8 @@ library ReceivedItemLib {
      *
      * @return item the default ReceivedItem
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (ReceivedItem memory item) {
-        mapping(string => ReceivedItem)
-            storage receivedItemMap = _receivedItemMap();
+    function fromDefault(string memory defaultName) internal view returns (ReceivedItem memory item) {
+        mapping(string => ReceivedItem) storage receivedItemMap = _receivedItemMap();
         item = receivedItemMap[defaultName];
 
         if (keccak256(abi.encode(item)) == EMPTY_RECEIVED_ITEM) {
@@ -127,11 +115,8 @@ library ReceivedItemLib {
      *
      * @return items the default ReceivedItem
      */
-    function fromDefaultMany(
-        string memory defaultsName
-    ) internal view returns (ReceivedItem[] memory items) {
-        mapping(string => ReceivedItem[])
-            storage receivedItemsMap = _receivedItemsMap();
+    function fromDefaultMany(string memory defaultsName) internal view returns (ReceivedItem[] memory items) {
+        mapping(string => ReceivedItem[]) storage receivedItemsMap = _receivedItemsMap();
         items = receivedItemsMap[defaultsName];
 
         if (items.length == 0) {
@@ -147,12 +132,11 @@ library ReceivedItemLib {
      *
      * @return _receivedItem the saved ReceivedItem
      */
-    function saveDefault(
-        ReceivedItem memory receivedItem,
-        string memory defaultName
-    ) internal returns (ReceivedItem memory _receivedItem) {
-        mapping(string => ReceivedItem)
-            storage receivedItemMap = _receivedItemMap();
+    function saveDefault(ReceivedItem memory receivedItem, string memory defaultName)
+        internal
+        returns (ReceivedItem memory _receivedItem)
+    {
+        mapping(string => ReceivedItem) storage receivedItemMap = _receivedItemMap();
         receivedItemMap[defaultName] = receivedItem;
         return receivedItem;
     }
@@ -165,12 +149,11 @@ library ReceivedItemLib {
      *
      * @return _receivedItems the saved ReceivedItem
      */
-    function saveDefaultMany(
-        ReceivedItem[] memory receivedItems,
-        string memory defaultsName
-    ) internal returns (ReceivedItem[] memory _receivedItems) {
-        mapping(string => ReceivedItem[])
-            storage receivedItemsMap = _receivedItemsMap();
+    function saveDefaultMany(ReceivedItem[] memory receivedItems, string memory defaultsName)
+        internal
+        returns (ReceivedItem[] memory _receivedItems)
+    {
+        mapping(string => ReceivedItem[]) storage receivedItemsMap = _receivedItemsMap();
         ReceivedItem[] storage items = receivedItemsMap[defaultsName];
         setReceivedItems(items, receivedItems);
         return receivedItems;
@@ -184,10 +167,7 @@ library ReceivedItemLib {
      * @param newItems the ReceivedItems array in memory to push onto the items
      *                 array
      */
-    function setReceivedItems(
-        ReceivedItem[] storage items,
-        ReceivedItem[] memory newItems
-    ) internal {
+    function setReceivedItems(ReceivedItem[] storage items, ReceivedItem[] memory newItems) internal {
         clearMany(items);
         for (uint256 i = 0; i < newItems.length; i++) {
             items.push(newItems[i]);
@@ -201,17 +181,14 @@ library ReceivedItemLib {
      *
      * @custom:return copiedReceivedItem the copied ReceivedItem
      */
-    function copy(
-        ReceivedItem memory item
-    ) internal pure returns (ReceivedItem memory) {
-        return
-            ReceivedItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifier: item.identifier,
-                amount: item.amount,
-                recipient: item.recipient
-            });
+    function copy(ReceivedItem memory item) internal pure returns (ReceivedItem memory) {
+        return ReceivedItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifier: item.identifier,
+            amount: item.amount,
+            recipient: item.recipient
+        });
     }
 
     /**
@@ -221,9 +198,7 @@ library ReceivedItemLib {
      *
      * @custom:return copiedReceivedItems the copied ReceivedItems
      */
-    function copy(
-        ReceivedItem[] memory item
-    ) internal pure returns (ReceivedItem[] memory) {
+    function copy(ReceivedItem[] memory item) internal pure returns (ReceivedItem[] memory) {
         ReceivedItem[] memory copies = new ReceivedItem[](item.length);
         for (uint256 i = 0; i < item.length; i++) {
             copies[i] = ReceivedItemLib.copy(item[i]);
@@ -237,11 +212,7 @@ library ReceivedItemLib {
      * @custom:return receivedItemMap the storage position of the default
      *                                ReceivedItem map
      */
-    function _receivedItemMap()
-        private
-        pure
-        returns (mapping(string => ReceivedItem) storage receivedItemMap)
-    {
+    function _receivedItemMap() private pure returns (mapping(string => ReceivedItem) storage receivedItemMap) {
         bytes32 position = RECEIVED_ITEM_MAP_POSITION;
         assembly {
             receivedItemMap.slot := position
@@ -254,11 +225,7 @@ library ReceivedItemLib {
      * @custom:return receivedItemsMap the storage position of the default
      *                                 ReceivedItem array map
      */
-    function _receivedItemsMap()
-        private
-        pure
-        returns (mapping(string => ReceivedItem[]) storage receivedItemsMap)
-    {
+    function _receivedItemsMap() private pure returns (mapping(string => ReceivedItem[]) storage receivedItemsMap) {
         bytes32 position = RECEIVED_ITEMS_MAP_POSITION;
         assembly {
             receivedItemsMap.slot := position
@@ -276,10 +243,7 @@ library ReceivedItemLib {
      *
      * @custom:return item the ReceivedItem with the itemType field set
      */
-    function withItemType(
-        ReceivedItem memory item,
-        ItemType itemType
-    ) internal pure returns (ReceivedItem memory) {
+    function withItemType(ReceivedItem memory item, ItemType itemType) internal pure returns (ReceivedItem memory) {
         item.itemType = itemType;
         return item;
     }
@@ -292,10 +256,7 @@ library ReceivedItemLib {
      *
      * @custom:return item the ReceivedItem with the token field set
      */
-    function withToken(
-        ReceivedItem memory item,
-        address token
-    ) internal pure returns (ReceivedItem memory) {
+    function withToken(ReceivedItem memory item, address token) internal pure returns (ReceivedItem memory) {
         item.token = token;
         return item;
     }
@@ -308,10 +269,7 @@ library ReceivedItemLib {
      *
      * @custom:return item the ReceivedItem with the identifier field set
      */
-    function withIdentifier(
-        ReceivedItem memory item,
-        uint256 identifier
-    ) internal pure returns (ReceivedItem memory) {
+    function withIdentifier(ReceivedItem memory item, uint256 identifier) internal pure returns (ReceivedItem memory) {
         item.identifier = identifier;
         return item;
     }
@@ -324,10 +282,7 @@ library ReceivedItemLib {
      *
      * @custom:return item the ReceivedItem with the amount field set
      */
-    function withAmount(
-        ReceivedItem memory item,
-        uint256 amount
-    ) internal pure returns (ReceivedItem memory) {
+    function withAmount(ReceivedItem memory item, uint256 amount) internal pure returns (ReceivedItem memory) {
         item.amount = amount;
         return item;
     }
@@ -340,10 +295,7 @@ library ReceivedItemLib {
      *
      * @custom:return item the ReceivedItem with the recipient field set
      */
-    function withRecipient(
-        ReceivedItem memory item,
-        address recipient
-    ) internal pure returns (ReceivedItem memory) {
+    function withRecipient(ReceivedItem memory item, address recipient) internal pure returns (ReceivedItem memory) {
         item.recipient = payable(recipient);
         return item;
     }
@@ -355,17 +307,14 @@ library ReceivedItemLib {
      *
      * @custom:return considerationItem the converted ConsiderationItem
      */
-    function toConsiderationItem(
-        ReceivedItem memory item
-    ) internal pure returns (ConsiderationItem memory) {
-        return
-            ConsiderationItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifierOrCriteria: item.identifier,
-                startAmount: item.amount,
-                endAmount: item.amount,
-                recipient: item.recipient
-            });
+    function toConsiderationItem(ReceivedItem memory item) internal pure returns (ConsiderationItem memory) {
+        return ConsiderationItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifierOrCriteria: item.identifier,
+            startAmount: item.amount,
+            endAmount: item.amount,
+            recipient: item.recipient
+        });
     }
 }

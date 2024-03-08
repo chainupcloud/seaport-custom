@@ -2,40 +2,32 @@
 pragma solidity ^0.8.10;
 
 library SafeStaticCall {
-    function safeStaticCallBool(
-        address target,
-        bytes memory callData,
-        bool expectedReturn
-    ) internal view returns (bool) {
+    function safeStaticCallBool(address target, bytes memory callData, bool expectedReturn)
+        internal
+        view
+        returns (bool)
+    {
         (bool success, bytes memory res) = target.staticcall(callData);
         if (!success) return false;
         if (res.length != 32) return false;
 
-        if (
-            bytes32(res) &
-                0x0000000000000000000000000000000000000000000000000000000000000001 !=
-            bytes32(res)
-        ) {
+        if (bytes32(res) & 0x0000000000000000000000000000000000000000000000000000000000000001 != bytes32(res)) {
             return false;
         }
 
         return expectedReturn ? res[31] == 0x01 : res[31] == 0;
     }
 
-    function safeStaticCallAddress(
-        address target,
-        bytes memory callData,
-        address expectedReturn
-    ) internal view returns (bool) {
+    function safeStaticCallAddress(address target, bytes memory callData, address expectedReturn)
+        internal
+        view
+        returns (bool)
+    {
         (bool success, bytes memory res) = target.staticcall(callData);
         if (!success) return false;
         if (res.length != 32) return false;
 
-        if (
-            bytes32(res) &
-                0x000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF !=
-            bytes32(res)
-        ) {
+        if (bytes32(res) & 0x000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF != bytes32(res)) {
             // Ensure only 20 bytes used
             return false;
         }
@@ -43,11 +35,11 @@ library SafeStaticCall {
         return abi.decode(res, (address)) == expectedReturn;
     }
 
-    function safeStaticCallUint256(
-        address target,
-        bytes memory callData,
-        uint256 minExpectedReturn
-    ) internal view returns (bool) {
+    function safeStaticCallUint256(address target, bytes memory callData, uint256 minExpectedReturn)
+        internal
+        view
+        returns (bool)
+    {
         (bool success, bytes memory res) = target.staticcall(callData);
         if (!success) return false;
         if (res.length != 32) return false;
@@ -55,19 +47,15 @@ library SafeStaticCall {
         return abi.decode(res, (uint256)) >= minExpectedReturn;
     }
 
-    function safeStaticCallBytes4(
-        address target,
-        bytes memory callData,
-        bytes4 expectedReturn
-    ) internal view returns (bool) {
+    function safeStaticCallBytes4(address target, bytes memory callData, bytes4 expectedReturn)
+        internal
+        view
+        returns (bool)
+    {
         (bool success, bytes memory res) = target.staticcall(callData);
         if (!success) return false;
         if (res.length != 32) return false;
-        if (
-            bytes32(res) &
-                0xFFFFFFFF00000000000000000000000000000000000000000000000000000000 !=
-            bytes32(res)
-        ) {
+        if (bytes32(res) & 0xFFFFFFFF00000000000000000000000000000000000000000000000000000000 != bytes32(res)) {
             // Ensure only 4 bytes used
             return false;
         }

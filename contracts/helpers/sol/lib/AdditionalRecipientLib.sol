@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { AdditionalRecipient } from "../../../lib/ConsiderationStructs.sol";
+import {AdditionalRecipient} from "../../../lib/ConsiderationStructs.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
 /**
  * @title AdditionalRecipientLib
@@ -13,19 +13,10 @@ import { StructCopier } from "./StructCopier.sol";
  *         struct creation more readable.
  */
 library AdditionalRecipientLib {
-    bytes32 private constant ADDITIONAL_RECIPIENT_MAP_POSITION =
-        keccak256("seaport.AdditionalRecipientDefaults");
-    bytes32 private constant ADDITIONAL_RECIPIENTS_MAP_POSITION =
-        keccak256("seaport.AdditionalRecipientsDefaults");
+    bytes32 private constant ADDITIONAL_RECIPIENT_MAP_POSITION = keccak256("seaport.AdditionalRecipientDefaults");
+    bytes32 private constant ADDITIONAL_RECIPIENTS_MAP_POSITION = keccak256("seaport.AdditionalRecipientsDefaults");
     bytes32 private constant EMPTY_ADDITIONAL_RECIPIENT =
-        keccak256(
-            abi.encode(
-                AdditionalRecipient({
-                    amount: 0,
-                    recipient: payable(address(0))
-                })
-            )
-        );
+        keccak256(abi.encode(AdditionalRecipient({amount: 0, recipient: payable(address(0))})));
 
     /**
      * @dev Clears a default AdditionalRecipient from storage.
@@ -33,8 +24,7 @@ library AdditionalRecipientLib {
      * @param defaultName the name of the default to clear
      */
     function clear(string memory defaultName) internal {
-        mapping(string => AdditionalRecipient)
-            storage additionalRecipientMap = _additionalRecipientMap();
+        mapping(string => AdditionalRecipient) storage additionalRecipientMap = _additionalRecipientMap();
         AdditionalRecipient storage item = additionalRecipientMap[defaultName];
         clear(item);
     }
@@ -69,11 +59,8 @@ library AdditionalRecipientLib {
      *
      * @return item the AdditionalRecipient retrieved from storage
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (AdditionalRecipient memory item) {
-        mapping(string => AdditionalRecipient)
-            storage additionalRecipientMap = _additionalRecipientMap();
+    function fromDefault(string memory defaultName) internal view returns (AdditionalRecipient memory item) {
+        mapping(string => AdditionalRecipient) storage additionalRecipientMap = _additionalRecipientMap();
         item = additionalRecipientMap[defaultName];
 
         if (keccak256(abi.encode(item)) == EMPTY_ADDITIONAL_RECIPIENT) {
@@ -88,11 +75,8 @@ library AdditionalRecipientLib {
      *
      * @return items the AdditionalRecipients retrieved from storage
      */
-    function fromDefaultMany(
-        string memory defaultName
-    ) internal view returns (AdditionalRecipient[] memory items) {
-        mapping(string => AdditionalRecipient[])
-            storage additionalRecipientsMap = _additionalRecipientsMap();
+    function fromDefaultMany(string memory defaultName) internal view returns (AdditionalRecipient[] memory items) {
+        mapping(string => AdditionalRecipient[]) storage additionalRecipientsMap = _additionalRecipientsMap();
         items = additionalRecipientsMap[defaultName];
 
         if (items.length == 0) {
@@ -108,12 +92,11 @@ library AdditionalRecipientLib {
      *
      * @return _additionalRecipient the AdditionalRecipient saved as a default
      */
-    function saveDefault(
-        AdditionalRecipient memory additionalRecipient,
-        string memory defaultName
-    ) internal returns (AdditionalRecipient memory _additionalRecipient) {
-        mapping(string => AdditionalRecipient)
-            storage additionalRecipientMap = _additionalRecipientMap();
+    function saveDefault(AdditionalRecipient memory additionalRecipient, string memory defaultName)
+        internal
+        returns (AdditionalRecipient memory _additionalRecipient)
+    {
+        mapping(string => AdditionalRecipient) storage additionalRecipientMap = _additionalRecipientMap();
         additionalRecipientMap[defaultName] = additionalRecipient;
         return additionalRecipient;
     }
@@ -126,16 +109,12 @@ library AdditionalRecipientLib {
      *
      * @return _additionalRecipients the AdditionalRecipients saved as a default
      */
-    function saveDefaultMany(
-        AdditionalRecipient[] memory additionalRecipients,
-        string memory defaultName
-    ) internal returns (AdditionalRecipient[] memory _additionalRecipients) {
-        mapping(string => AdditionalRecipient[])
-            storage additionalRecipientsMap = _additionalRecipientsMap();
-        StructCopier.setAdditionalRecipients(
-            additionalRecipientsMap[defaultName],
-            additionalRecipients
-        );
+    function saveDefaultMany(AdditionalRecipient[] memory additionalRecipients, string memory defaultName)
+        internal
+        returns (AdditionalRecipient[] memory _additionalRecipients)
+    {
+        mapping(string => AdditionalRecipient[]) storage additionalRecipientsMap = _additionalRecipientsMap();
+        StructCopier.setAdditionalRecipients(additionalRecipientsMap[defaultName], additionalRecipients);
         return additionalRecipients;
     }
 
@@ -146,14 +125,8 @@ library AdditionalRecipientLib {
      *
      * @custom:return additionalRecipient the copy of the AdditionalRecipient
      */
-    function copy(
-        AdditionalRecipient memory item
-    ) internal pure returns (AdditionalRecipient memory) {
-        return
-            AdditionalRecipient({
-                amount: item.amount,
-                recipient: item.recipient
-            });
+    function copy(AdditionalRecipient memory item) internal pure returns (AdditionalRecipient memory) {
+        return AdditionalRecipient({amount: item.amount, recipient: item.recipient});
     }
 
     /**
@@ -163,12 +136,8 @@ library AdditionalRecipientLib {
      *
      * @custom:return additionalRecipients the copy of the AdditionalRecipients
      */
-    function copy(
-        AdditionalRecipient[] memory items
-    ) internal pure returns (AdditionalRecipient[] memory) {
-        AdditionalRecipient[] memory copiedItems = new AdditionalRecipient[](
-            items.length
-        );
+    function copy(AdditionalRecipient[] memory items) internal pure returns (AdditionalRecipient[] memory) {
+        AdditionalRecipient[] memory copiedItems = new AdditionalRecipient[](items.length);
         for (uint256 i = 0; i < items.length; i++) {
             copiedItems[i] = copy(items[i]);
         }
@@ -181,8 +150,7 @@ library AdditionalRecipientLib {
      * @custom:return item the empty AdditionalRecipient
      */
     function empty() internal pure returns (AdditionalRecipient memory) {
-        return
-            AdditionalRecipient({ amount: 0, recipient: payable(address(0)) });
+        return AdditionalRecipient({amount: 0, recipient: payable(address(0))});
     }
 
     /**
@@ -194,10 +162,7 @@ library AdditionalRecipientLib {
     function _additionalRecipientMap()
         private
         pure
-        returns (
-            mapping(string => AdditionalRecipient)
-                storage additionalRecipientMap
-        )
+        returns (mapping(string => AdditionalRecipient) storage additionalRecipientMap)
     {
         bytes32 position = ADDITIONAL_RECIPIENT_MAP_POSITION;
         assembly {
@@ -216,10 +181,7 @@ library AdditionalRecipientLib {
     function _additionalRecipientsMap()
         private
         pure
-        returns (
-            mapping(string => AdditionalRecipient[])
-                storage additionalRecipientsMap
-        )
+        returns (mapping(string => AdditionalRecipient[]) storage additionalRecipientsMap)
     {
         bytes32 position = ADDITIONAL_RECIPIENTS_MAP_POSITION;
         assembly {
@@ -238,10 +200,11 @@ library AdditionalRecipientLib {
      *
      * @custom:return _item the modified AdditionalRecipient
      */
-    function withAmount(
-        AdditionalRecipient memory item,
-        uint256 amount
-    ) internal pure returns (AdditionalRecipient memory) {
+    function withAmount(AdditionalRecipient memory item, uint256 amount)
+        internal
+        pure
+        returns (AdditionalRecipient memory)
+    {
         item.amount = amount;
         return item;
     }
@@ -254,10 +217,11 @@ library AdditionalRecipientLib {
      *
      * @custom:return _item the modified AdditionalRecipient
      */
-    function withRecipient(
-        AdditionalRecipient memory item,
-        address recipient
-    ) internal pure returns (AdditionalRecipient memory) {
+    function withRecipient(AdditionalRecipient memory item, address recipient)
+        internal
+        pure
+        returns (AdditionalRecipient memory)
+    {
         item.recipient = payable(recipient);
         return item;
     }

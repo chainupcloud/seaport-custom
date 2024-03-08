@@ -18,10 +18,7 @@ interface IERC721Receiver {
      *
      * @return bytes4 The magic value, unless throwing.
      */
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns (bytes4);
+    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)
+        external
+        returns (bytes4);
 }

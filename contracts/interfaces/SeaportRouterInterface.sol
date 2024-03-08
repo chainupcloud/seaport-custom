@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    AdvancedOrder,
-    CriteriaResolver,
-    FulfillmentComponent
-} from "../lib/ConsiderationStructs.sol";
+import {AdvancedOrder, CriteriaResolver, FulfillmentComponent} from "../lib/ConsiderationStructs.sol";
 
-import { Execution } from "../lib/ConsiderationStructs.sol";
+import {Execution} from "../lib/ConsiderationStructs.sol";
 
 /**
  * @title  SeaportRouterInterface
@@ -32,8 +28,9 @@ interface SeaportRouterInterface {
         CriteriaResolver[] criteriaResolvers;
         FulfillmentComponent[][] offerFulfillments;
         FulfillmentComponent[][] considerationFulfillments;
-        uint256 etherValue; /// The ether value to send with the set of orders.
+        uint256 etherValue;
     }
+    /// The ether value to send with the set of orders.
 
     /**
      * @dev Parameters for using fulfillAvailableAdvancedOrders
@@ -70,11 +67,7 @@ interface SeaportRouterInterface {
      * @dev Revert with an error if an ether transfer back to the fulfiller
      *      fails.
      */
-    error EtherReturnTransferFailed(
-        address recipient,
-        uint256 amount,
-        bytes returnData
-    );
+    error EtherReturnTransferFailed(address recipient, uint256 amount, bytes returnData);
 
     /**
      * @dev Fallback function to receive excess ether, in case total amount of
@@ -89,22 +82,14 @@ interface SeaportRouterInterface {
      *
      * @param params The parameters for fulfilling available advanced orders.
      */
-    function fulfillAvailableAdvancedOrders(
-        FulfillAvailableAdvancedOrdersParams calldata params
-    )
+    function fulfillAvailableAdvancedOrders(FulfillAvailableAdvancedOrdersParams calldata params)
         external
         payable
-        returns (
-            bool[][] memory availableOrders,
-            Execution[][] memory executions
-        );
+        returns (bool[][] memory availableOrders, Execution[][] memory executions);
 
     /**
      * @notice Returns the Seaport contracts allowed to be used through this
      *         router.
      */
-    function getAllowedSeaportContracts()
-        external
-        view
-        returns (address[] memory);
+    function getAllowedSeaportContracts() external view returns (address[] memory);
 }

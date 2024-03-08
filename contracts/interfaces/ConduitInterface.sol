@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    ConduitBatch1155Transfer,
-    ConduitTransfer
-} from "../conduit/lib/ConduitStructs.sol";
+import {ConduitBatch1155Transfer, ConduitTransfer} from "../conduit/lib/ConduitStructs.sol";
 
 /**
  * @title ConduitInterface
@@ -54,9 +51,7 @@ interface ConduitInterface {
      * @return magicValue A magic value indicating that the transfers were
      *                    performed successfully.
      */
-    function execute(
-        ConduitTransfer[] calldata transfers
-    ) external returns (bytes4 magicValue);
+    function execute(ConduitTransfer[] calldata transfers) external returns (bytes4 magicValue);
 
     /**
      * @notice Execute a sequence of batch 1155 transfers. Only a caller with an
@@ -67,9 +62,9 @@ interface ConduitInterface {
      * @return magicValue A magic value indicating that the transfers were
      *                    performed successfully.
      */
-    function executeBatch1155(
-        ConduitBatch1155Transfer[] calldata batch1155Transfers
-    ) external returns (bytes4 magicValue);
+    function executeBatch1155(ConduitBatch1155Transfer[] calldata batch1155Transfers)
+        external
+        returns (bytes4 magicValue);
 
     /**
      * @notice Execute a sequence of transfers, both single and batch 1155. Only

@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    BasicOrderType,
-    ItemType,
-    OrderType
-} from "../../../lib/ConsiderationEnums.sol";
+import {BasicOrderType, ItemType, OrderType} from "../../../lib/ConsiderationEnums.sol";
 
 library SeaportEnumsLib {
     /**
@@ -22,9 +18,7 @@ library SeaportEnumsLib {
      * @return offerTypeIsAdditionalRecipientsType whether the offer type is the
      *                                             additional recipients type
      */
-    function parseBasicOrderType(
-        BasicOrderType basicOrderType
-    )
+    function parseBasicOrderType(BasicOrderType basicOrderType)
         internal
         pure
         returns (
@@ -48,10 +42,7 @@ library SeaportEnumsLib {
 
             // If route > 2, receivedItemType is route - 2. If route is 2,
             // the receivedItemType is ERC20 (1). Otherwise, it is Eth (0).
-            considerationType := add(
-                mul(sub(route, 2), gt(route, 2)),
-                eq(route, 2)
-            )
+            considerationType := add(mul(sub(route, 2), gt(route, 2)), eq(route, 2))
 
             // If route > 3, offeredItemType is ERC20 (1). Route is 2 or 3,
             // offeredItemType = route. Route is 0 or 1, it is route + 2.

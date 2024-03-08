@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import { Side } from "./ConsiderationEnums.sol";
+import {Side} from "./ConsiderationEnums.sol";
 
 import {
     BadFraction_error_length,
@@ -112,11 +112,7 @@ function _revertBadFraction() pure {
  * @param shortfallAmount    The amount by which the consideration criteria were
  *                           not met.
  */
-function _revertConsiderationNotMet(
-    uint256 orderIndex,
-    uint256 considerationIndex,
-    uint256 shortfallAmount
-) pure {
+function _revertConsiderationNotMet(uint256 orderIndex, uint256 considerationIndex, uint256 shortfallAmount) pure {
     assembly {
         // Store left-padded selector with push4 (reduces bytecode),
         // mem[28:32] = selector
@@ -124,10 +120,7 @@ function _revertConsiderationNotMet(
 
         // Store arguments.
         mstore(ConsiderationNotMet_error_orderIndex_ptr, orderIndex)
-        mstore(
-            ConsiderationNotMet_error_considerationIndex_ptr,
-            considerationIndex
-        )
+        mstore(ConsiderationNotMet_error_considerationIndex_ptr, considerationIndex)
         mstore(ConsiderationNotMet_error_shortfallAmount_ptr, shortfallAmount)
 
         // revert(abi.encodeWithSignature(
@@ -166,10 +159,7 @@ function _revertInsufficientNativeTokensSupplied() pure {
         mstore(0, InsufficientNativeTokensSupplied_error_selector)
 
         // revert(abi.encodeWithSignature("InsufficientNativeTokensSupplied()"))
-        revert(
-            Error_selector_offset,
-            InsufficientNativeTokensSupplied_error_length
-        )
+        revert(Error_selector_offset, InsufficientNativeTokensSupplied_error_length)
     }
 }
 
@@ -186,10 +176,7 @@ function _revertInvalidBasicOrderParameterEncoding() pure {
         // revert(abi.encodeWithSignature(
         //     "InvalidBasicOrderParameterEncoding()"
         // ))
-        revert(
-            Error_selector_offset,
-            InvalidBasicOrderParameterEncoding_error_length
-        )
+        revert(Error_selector_offset, InvalidBasicOrderParameterEncoding_error_length)
     }
 }
 
@@ -387,28 +374,20 @@ function _revertInvalidTime(uint256 startTime, uint256 endTime) pure {
  * @param fulfillmentIndex         The index of the fulfillment that caused the
  *                                 error.
  */
-function _revertMismatchedFulfillmentOfferAndConsiderationComponents(
-    uint256 fulfillmentIndex
-) pure {
+function _revertMismatchedFulfillmentOfferAndConsiderationComponents(uint256 fulfillmentIndex) pure {
     assembly {
         // Store left-padded selector with push4 (reduces bytecode),
         // mem[28:32] = selector
         mstore(0, MismatchedOfferAndConsiderationComponents_error_selector)
 
         // Store fulfillment index argument.
-        mstore(
-            MismatchedOfferAndConsiderationComponents_error_idx_ptr,
-            fulfillmentIndex
-        )
+        mstore(MismatchedOfferAndConsiderationComponents_error_idx_ptr, fulfillmentIndex)
 
         // revert(abi.encodeWithSignature(
         //     "MismatchedFulfillmentOfferAndConsiderationComponents(uint256)",
         //     fulfillmentIndex
         // ))
-        revert(
-            Error_selector_offset,
-            MismatchedOfferAndConsiderationComponents_error_length
-        )
+        revert(Error_selector_offset, MismatchedOfferAndConsiderationComponents_error_length)
     }
 }
 
@@ -433,10 +412,7 @@ function _revertMissingFulfillmentComponentOnAggregation(Side side) pure {
         //     "MissingFulfillmentComponentOnAggregation(uint8)",
         //     side
         // ))
-        revert(
-            Error_selector_offset,
-            MissingFulfillmentComponentOnAggregation_error_length
-        )
+        revert(Error_selector_offset, MissingFulfillmentComponentOnAggregation_error_length)
     }
 }
 
@@ -453,10 +429,7 @@ function _revertMissingOriginalConsiderationItems() pure {
         // revert(abi.encodeWithSignature(
         //     "MissingOriginalConsiderationItems()"
         // ))
-        revert(
-            Error_selector_offset,
-            MissingOriginalConsiderationItems_error_length
-        )
+        revert(Error_selector_offset, MissingOriginalConsiderationItems_error_length)
     }
 }
 
@@ -501,10 +474,7 @@ function _revertOfferAndConsiderationRequiredOnFulfillment() pure {
         // revert(abi.encodeWithSignature(
         //     "OfferAndConsiderationRequiredOnFulfillment()"
         // ))
-        revert(
-            Error_selector_offset,
-            OfferAndConsiderationRequiredOnFulfillment_error_length
-        )
+        revert(Error_selector_offset, OfferAndConsiderationRequiredOnFulfillment_error_length)
     }
 }
 
@@ -551,10 +521,7 @@ function _revertOrderCriteriaResolverOutOfRange(Side side) pure {
         //     "OrderCriteriaResolverOutOfRange(uint8)",
         //     side
         // ))
-        revert(
-            Error_selector_offset,
-            OrderCriteriaResolverOutOfRange_error_length
-        )
+        revert(Error_selector_offset, OrderCriteriaResolverOutOfRange_error_length)
     }
 }
 
@@ -613,10 +580,7 @@ function _revertPartialFillsNotEnabledForOrder() pure {
         mstore(0, PartialFillsNotEnabledForOrder_error_selector)
 
         // revert(abi.encodeWithSignature("PartialFillsNotEnabledForOrder()"))
-        revert(
-            Error_selector_offset,
-            PartialFillsNotEnabledForOrder_error_length
-        )
+        revert(Error_selector_offset, PartialFillsNotEnabledForOrder_error_length)
     }
 }
 
@@ -624,10 +588,7 @@ function _revertPartialFillsNotEnabledForOrder() pure {
  * @dev Reverts execution with an "UnresolvedConsiderationCriteria" error
  *      message.
  */
-function _revertUnresolvedConsiderationCriteria(
-    uint256 orderIndex,
-    uint256 considerationIndex
-) pure {
+function _revertUnresolvedConsiderationCriteria(uint256 orderIndex, uint256 considerationIndex) pure {
     assembly {
         // Store left-padded selector with push4 (reduces bytecode),
         // mem[28:32] = selector
@@ -635,30 +596,21 @@ function _revertUnresolvedConsiderationCriteria(
 
         // Store orderIndex and considerationIndex arguments.
         mstore(UnresolvedConsiderationCriteria_error_orderIndex_ptr, orderIndex)
-        mstore(
-            UnresolvedConsiderationCriteria_error_considerationIdx_ptr,
-            considerationIndex
-        )
+        mstore(UnresolvedConsiderationCriteria_error_considerationIdx_ptr, considerationIndex)
 
         // revert(abi.encodeWithSignature(
         //     "UnresolvedConsiderationCriteria(uint256, uint256)",
         //     orderIndex,
         //     considerationIndex
         // ))
-        revert(
-            Error_selector_offset,
-            UnresolvedConsiderationCriteria_error_length
-        )
+        revert(Error_selector_offset, UnresolvedConsiderationCriteria_error_length)
     }
 }
 
 /**
  * @dev Reverts execution with an "UnresolvedOfferCriteria" error message.
  */
-function _revertUnresolvedOfferCriteria(
-    uint256 orderIndex,
-    uint256 offerIndex
-) pure {
+function _revertUnresolvedOfferCriteria(uint256 orderIndex, uint256 offerIndex) pure {
     assembly {
         // Store left-padded selector with push4 (reduces bytecode),
         // mem[28:32] = selector
@@ -704,9 +656,6 @@ function _revertConsiderationLengthNotEqualToTotalOriginal() pure {
         // revert(abi.encodeWithSignature(
         //     "ConsiderationLengthNotEqualToTotalOriginal()"
         // ))
-        revert(
-            Error_selector_offset,
-            ConsiderationLengthNotEqualToTotalOriginal_error_length
-        )
+        revert(Error_selector_offset, ConsiderationLengthNotEqualToTotalOriginal_error_length)
     }
 }

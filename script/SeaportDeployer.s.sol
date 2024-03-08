@@ -3,25 +3,21 @@ pragma solidity ^0.8.4;
 
 import "forge-std/Script.sol";
 
-import { Seaport } from "contracts/Seaport.sol";
+import {Seaport} from "contracts/Seaport.sol";
 
 interface ImmutableCreate2Factory {
-    function safeCreate2(
-        bytes32 salt,
-        bytes calldata initializationCode
-    ) external payable returns (address deploymentAddress);
+    function safeCreate2(bytes32 salt, bytes calldata initializationCode)
+        external
+        payable
+        returns (address deploymentAddress);
 }
 
-// forge script script/SeaportDeployer.s.sol:SeaportDeployer --skip test/  --rpc-url https://api.chainup.net/ethereum/holesky/ed670f52117b4eea8ccf9310b77ca0e5 --broadcast --verify --retries 10 --delay 30
-// forge verify-contract 0x32Fe9BF355a38Dd85c53B76Bb296f026066b2e0b Seaport --chain 17000 --constructor-args $(cast abi-encode "constructor(address)" 0x00000000F9490004C11Cef243f5400493c00Ad63) --etherscan-api-key MHVDXC3S36YTS89GXQZFB5HBVRCZ82BZTY --watch
 // NOTE: This script assumes that the CREATE2-related contracts have already been deployed.
 contract SeaportDeployer is Script {
     ImmutableCreate2Factory private constant IMMUTABLE_CREATE2_FACTORY =
         ImmutableCreate2Factory(0x0000000000FFe8B47B3e2130213B802212439497);
-    address private constant CONDUIT_CONTROLLER =
-        0x00000000F9490004C11Cef243f5400493c00Ad63;
-//    address private constant SEAPORT_ADDRESS =
-//        0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC;
+    address private constant CONDUIT_CONTROLLER = 0x00000000F9490004C11Cef243f5400493c00Ad63;
+    address private constant SEAPORT_ADDRESS = 0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC;
 
     function run() public {
         // Utilizes the locally-defined PRIVATE_KEY environment variable to sign txs.
@@ -32,10 +28,7 @@ contract SeaportDeployer is Script {
 
         // Packed and ABI-encoded contract bytecode and constructor arguments.
         // NOTE: The Seaport contract *must* be compiled using the optimized profile config.
-        bytes memory initCode = abi.encodePacked(
-            type(Seaport).creationCode,
-            abi.encode(CONDUIT_CONTROLLER)
-        );
+        bytes memory initCode = abi.encodePacked(type(Seaport).creationCode, abi.encode(CONDUIT_CONTROLLER));
 
         // Deploy the Seaport contract via ImmutableCreate2Factory.
         address seaport = IMMUTABLE_CREATE2_FACTORY.safeCreate2(salt, initCode);
@@ -43,7 +36,7 @@ contract SeaportDeployer is Script {
         console.log("seaportAddress:", seaport);
 
         // Verify that the deployed contract address matches what we're expecting.
-//        assert(seaport == SEAPORT_ADDRESS);
+        assert(seaport == SEAPORT_ADDRESS);
 
         vm.stopBroadcast();
     }

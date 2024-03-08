@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import { ERC721 } from "@rari-capital/solmate/src/tokens/ERC721.sol";
-import { ERC2981 } from "./ERC2981.sol";
+import {ERC721} from "@rari-capital/solmate/src/tokens/ERC721.sol";
+import {ERC2981} from "./ERC2981.sol";
 
 contract TestERC721Fee is ERC721, ERC2981 {
     /// @notice When set to false, `royaltyInfo` reverts
@@ -12,12 +12,8 @@ contract TestERC721Fee is ERC721, ERC2981 {
 
     constructor() ERC721("Fee", "FEE") {}
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721, ERC2981) returns (bool) {
-        return
-            ERC721.supportsInterface(interfaceId) ||
-            ERC2981.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC2981) returns (bool) {
+        return ERC721.supportsInterface(interfaceId) || ERC2981.supportsInterface(interfaceId);
     }
 
     function mint(address to, uint256 id) external {
@@ -32,10 +28,7 @@ contract TestERC721Fee is ERC721, ERC2981 {
         return "tokenURI";
     }
 
-    function royaltyInfo(
-        uint256,
-        uint256 _salePrice
-    ) public view override returns (address, uint256) {
+    function royaltyInfo(uint256, uint256 _salePrice) public view override returns (address, uint256) {
         if (!creatorFeeEnabled) {
             revert("creator fee disabled");
         }
@@ -43,10 +36,7 @@ contract TestERC721Fee is ERC721, ERC2981 {
             revert("sale price too low");
         }
 
-        return (
-            0x000000000000000000000000000000000000fEE2,
-            (_salePrice * (creatorFeeEnabled ? 250 : 0)) / 10000
-        ); // 2.5% fee to 0xFEE2
+        return (0x000000000000000000000000000000000000fEE2, (_salePrice * (creatorFeeEnabled ? 250 : 0)) / 10000); // 2.5% fee to 0xFEE2
     }
 
     function setCreatorFeeEnabled(bool enabled) public {

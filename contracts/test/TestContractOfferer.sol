@@ -1,25 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    ERC20Interface,
-    ERC721Interface,
-    ERC1155Interface
-} from "../interfaces/AbridgedTokenInterfaces.sol";
+import {ERC20Interface, ERC721Interface, ERC1155Interface} from "../interfaces/AbridgedTokenInterfaces.sol";
 
-import {
-    ContractOffererInterface
-} from "../interfaces/ContractOffererInterface.sol";
+import {ContractOffererInterface} from "../interfaces/ContractOffererInterface.sol";
 
-import { ERC165 } from "../interfaces/ERC165.sol";
+import {ERC165} from "../interfaces/ERC165.sol";
 
-import { ItemType } from "../lib/ConsiderationEnums.sol";
+import {ItemType} from "../lib/ConsiderationEnums.sol";
 
-import {
-    ReceivedItem,
-    Schema,
-    SpentItem
-} from "../lib/ConsiderationStructs.sol";
+import {ReceivedItem, Schema, SpentItem} from "../lib/ConsiderationStructs.sol";
 
 /**
  * @title TestContractOfferer
@@ -55,29 +45,21 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
 
     receive() external payable {}
 
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
         override(ERC165, ContractOffererInterface)
         returns (bool)
     {
-        return
-            interfaceId == type(ContractOffererInterface).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(ContractOffererInterface).interfaceId || super.supportsInterface(interfaceId);
     }
 
     /// In case of criteria based orders and non-wildcard items, the member
     /// `available.identifier` would correspond to the `identifierOrCriteria`
     /// i.e., the merkle-root.
     /// @param identifier corresponds to the actual token-id that gets transferred.
-    function activateWithCriteria(
-        SpentItem memory available,
-        SpentItem memory required,
-        uint256 identifier
-    ) public {
+    function activateWithCriteria(SpentItem memory available, SpentItem memory required, uint256 identifier) public {
         if (ready || fulfilled) {
             revert OrderUnavailable();
         }
@@ -91,13 +73,7 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         } else if (available.itemType == ItemType.ERC1155_WITH_CRITERIA) {
             ERC1155Interface token = ERC1155Interface(available.token);
 
-            token.safeTransferFrom(
-                msg.sender,
-                address(this),
-                identifier,
-                available.amount,
-                ""
-            );
+            token.safeTransferFrom(msg.sender, address(this), identifier, available.amount, "");
 
             token.setApprovalForAll(_SEAPORT, true);
         }
@@ -108,10 +84,7 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         ready = true;
     }
 
-    function activate(
-        SpentItem memory available,
-        SpentItem memory required
-    ) public payable {
+    function activate(SpentItem memory available, SpentItem memory required) public payable {
         if (ready || fulfilled) {
             revert OrderUnavailable();
         }
@@ -134,13 +107,7 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         } else if (available.itemType == ItemType.ERC1155) {
             ERC1155Interface token = ERC1155Interface(available.token);
 
-            token.safeTransferFrom(
-                msg.sender,
-                address(this),
-                available.identifier,
-                available.amount,
-                ""
-            );
+            token.safeTransferFrom(msg.sender, address(this), available.identifier, available.amount, "");
 
             token.setApprovalForAll(_SEAPORT, true);
         }
@@ -169,24 +136,14 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         extraRequired++;
     }
 
-    function generateOrder(
-        address,
-        SpentItem[] calldata,
-        SpentItem[] calldata,
-        bytes calldata context
-    )
+    function generateOrder(address, SpentItem[] calldata, SpentItem[] calldata, bytes calldata context)
         external
         virtual
         override
         returns (SpentItem[] memory offer, ReceivedItem[] memory consideration)
     {
         // Ensure the caller is Seaport & the order has not yet been fulfilled.
-        if (
-            !ready ||
-            fulfilled ||
-            msg.sender != _SEAPORT ||
-            context.length % 32 != 0
-        ) {
+        if (!ready || fulfilled || msg.sender != _SEAPORT || context.length % 32 != 0) {
             revert OrderUnavailable();
         }
 
@@ -212,25 +169,14 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         fulfilled = true;
     }
 
-    function previewOrder(
-        address caller,
-        address,
-        SpentItem[] calldata,
-        SpentItem[] calldata,
-        bytes calldata context
-    )
+    function previewOrder(address caller, address, SpentItem[] calldata, SpentItem[] calldata, bytes calldata context)
         external
         view
         override
         returns (SpentItem[] memory offer, ReceivedItem[] memory consideration)
     {
         // Ensure the caller is Seaport & the order has not yet been fulfilled.
-        if (
-            !ready ||
-            fulfilled ||
-            caller != _SEAPORT ||
-            context.length % 32 != 0
-        ) {
+        if (!ready || fulfilled || caller != _SEAPORT || context.length % 32 != 0) {
             revert OrderUnavailable();
         }
 
@@ -253,11 +199,7 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         }
     }
 
-    function getInventory()
-        external
-        view
-        returns (SpentItem[] memory offerable, SpentItem[] memory receivable)
-    {
+    function getInventory() external view returns (SpentItem[] memory offerable, SpentItem[] memory receivable) {
         // Set offerable and receivable supplied at deployment if unfulfilled.
         if (!ready || fulfilled) {
             offerable = new SpentItem[](0);
@@ -277,23 +219,14 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
     }
 
     function ratifyOrder(
-        SpentItem[] calldata /* offer */,
-        ReceivedItem[] calldata /* consideration */,
+        SpentItem[] calldata, /* offer */
+        ReceivedItem[] calldata, /* consideration */
         bytes calldata context,
         bytes32[] calldata orderHashes,
         uint256 /* contractNonce */
-    )
-        external
-        pure
-        virtual
-        override
-        returns (bytes4 /* ratifyOrderMagicValue */)
-    {
+    ) external pure virtual override returns (bytes4 /* ratifyOrderMagicValue */ ) {
         if (context.length > 32 && context.length % 32 == 0) {
-            bytes32[] memory expectedOrderHashes = abi.decode(
-                context,
-                (bytes32[])
-            );
+            bytes32[] memory expectedOrderHashes = abi.decode(context, (bytes32[]));
 
             uint256 expectedLength = expectedOrderHashes.length;
 
@@ -311,13 +244,7 @@ contract TestContractOfferer is ERC165, ContractOffererInterface {
         return ContractOffererInterface.ratifyOrder.selector;
     }
 
-    function onERC1155Received(
-        address,
-        address,
-        uint256,
-        uint256,
-        bytes calldata
-    ) external pure returns (bytes4) {
+    function onERC1155Received(address, address, uint256, uint256, bytes calldata) external pure returns (bytes4) {
         return bytes4(0xf23a6e61);
     }
 

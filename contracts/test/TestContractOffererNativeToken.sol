@@ -1,24 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    ERC721Interface,
-    ERC1155Interface
-} from "../interfaces/AbridgedTokenInterfaces.sol";
+import {ERC721Interface, ERC1155Interface} from "../interfaces/AbridgedTokenInterfaces.sol";
 
-import {
-    ContractOffererInterface
-} from "../interfaces/ContractOffererInterface.sol";
+import {ContractOffererInterface} from "../interfaces/ContractOffererInterface.sol";
 
-import { ERC165 } from "../interfaces/ERC165.sol";
+import {ERC165} from "../interfaces/ERC165.sol";
 
-import { ItemType } from "../lib/ConsiderationEnums.sol";
+import {ItemType} from "../lib/ConsiderationEnums.sol";
 
-import {
-    ReceivedItem,
-    Schema,
-    SpentItem
-} from "../lib/ConsiderationStructs.sol";
+import {ReceivedItem, Schema, SpentItem} from "../lib/ConsiderationStructs.sol";
 
 /**
  * @title TestContractOffererNativeToken
@@ -48,10 +39,7 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
 
     receive() external payable {}
 
-    function activate(
-        SpentItem memory available,
-        SpentItem memory required
-    ) public payable {
+    function activate(SpentItem memory available, SpentItem memory required) public payable {
         if (ready || fulfilled) {
             revert OrderUnavailable();
         }
@@ -66,11 +54,7 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
     /// `available.identifier` would correspond to the `identifierOrCriteria`
     /// i.e., the merkle-root.
     /// @param identifier corresponds to the actual token-id that gets transferred.
-    function activateWithCriteria(
-        SpentItem memory available,
-        SpentItem memory required,
-        uint256 identifier
-    ) public {
+    function activateWithCriteria(SpentItem memory available, SpentItem memory required, uint256 identifier) public {
         if (ready || fulfilled) {
             revert OrderUnavailable();
         }
@@ -84,13 +68,7 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
         } else if (available.itemType == ItemType.ERC1155_WITH_CRITERIA) {
             ERC1155Interface token = ERC1155Interface(available.token);
 
-            token.safeTransferFrom(
-                msg.sender,
-                address(this),
-                identifier,
-                available.amount,
-                ""
-            );
+            token.safeTransferFrom(msg.sender, address(this), identifier, available.amount, "");
 
             token.setApprovalForAll(_SEAPORT, true);
         }
@@ -124,20 +102,13 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
         SpentItem[] calldata minimumReceived,
         SpentItem[] calldata maximumSpent,
         bytes calldata /* context */
-    )
-        external
-        virtual
-        override
-        returns (SpentItem[] memory offer, ReceivedItem[] memory consideration)
-    {
+    ) external virtual override returns (SpentItem[] memory offer, ReceivedItem[] memory consideration) {
         // Set the offer and consideration that were supplied during deployment.
         offer = new SpentItem[](1);
         consideration = new ReceivedItem[](1);
 
         // Send eth to Seaport.
-        (bool success, ) = _SEAPORT.call{ value: minimumReceived[0].amount }(
-            ""
-        );
+        (bool success,) = _SEAPORT.call{value: minimumReceived[0].amount}("");
 
         // Revert if transaction fails.
         if (!success) {
@@ -163,13 +134,7 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
         fulfilled = true;
     }
 
-    function previewOrder(
-        address caller,
-        address,
-        SpentItem[] calldata,
-        SpentItem[] calldata,
-        bytes calldata context
-    )
+    function previewOrder(address caller, address, SpentItem[] calldata, SpentItem[] calldata, bytes calldata context)
         external
         view
         override
@@ -199,11 +164,7 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
         }
     }
 
-    function getInventory()
-        external
-        view
-        returns (SpentItem[] memory offerable, SpentItem[] memory receivable)
-    {
+    function getInventory() external view returns (SpentItem[] memory offerable, SpentItem[] memory receivable) {
         // Set offerable and receivable supplied at deployment if unfulfilled.
         if (!ready || fulfilled) {
             offerable = new SpentItem[](0);
@@ -223,43 +184,27 @@ contract TestContractOffererNativeToken is ContractOffererInterface, ERC165 {
     }
 
     function ratifyOrder(
-        SpentItem[] calldata /* offer */,
-        ReceivedItem[] calldata /* consideration */,
-        bytes calldata /* context */,
-        bytes32[] calldata /* orderHashes */,
+        SpentItem[] calldata, /* offer */
+        ReceivedItem[] calldata, /* consideration */
+        bytes calldata, /* context */
+        bytes32[] calldata, /* orderHashes */
         uint256 /* contractNonce */
-    )
-        external
-        pure
-        virtual
-        override
-        returns (bytes4 /* ratifyOrderMagicValue */)
-    {
+    ) external pure virtual override returns (bytes4 /* ratifyOrderMagicValue */ ) {
         return ContractOffererInterface.ratifyOrder.selector;
     }
 
-    function onERC1155Received(
-        address,
-        address,
-        uint256,
-        uint256,
-        bytes calldata
-    ) external pure returns (bytes4) {
+    function onERC1155Received(address, address, uint256, uint256, bytes calldata) external pure returns (bytes4) {
         return bytes4(0xf23a6e61);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
         override(ERC165, ContractOffererInterface)
         returns (bool)
     {
-        return
-            interfaceId == type(ContractOffererInterface).interfaceId ||
-            super.supportsInterface(interfaceId);
+        return interfaceId == type(ContractOffererInterface).interfaceId || super.supportsInterface(interfaceId);
     }
 
     /**

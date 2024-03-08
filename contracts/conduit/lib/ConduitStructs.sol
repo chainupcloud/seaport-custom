@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { ConduitItemType } from "./ConduitEnums.sol";
+import {ConduitItemType} from "./ConduitEnums.sol";
 
 /**
  * @dev A ConduitTransfer is a struct that contains the information needed for a

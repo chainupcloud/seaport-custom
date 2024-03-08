@@ -1,58 +1,27 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    ERC20Interface,
-    ERC721Interface,
-    ERC1155Interface
-} from "../interfaces/AbridgedTokenInterfaces.sol";
+import {ERC20Interface, ERC721Interface, ERC1155Interface} from "../interfaces/AbridgedTokenInterfaces.sol";
 
-import {
-    ReceivedItem,
-    Schema,
-    SpentItem,
-    ZoneParameters
-} from "../lib/ConsiderationStructs.sol";
+import {ReceivedItem, Schema, SpentItem, ZoneParameters} from "../lib/ConsiderationStructs.sol";
 
-import { ItemType } from "../lib/ConsiderationEnums.sol";
+import {ItemType} from "../lib/ConsiderationEnums.sol";
 
-import {
-    ConsiderationInterface
-} from "../interfaces/ConsiderationInterface.sol";
+import {ConsiderationInterface} from "../interfaces/ConsiderationInterface.sol";
 
-import {
-    ContractOffererInterface
-} from "../interfaces/ContractOffererInterface.sol";
+import {ContractOffererInterface} from "../interfaces/ContractOffererInterface.sol";
 
 contract TestCalldataHashContractOfferer is ContractOffererInterface {
-    error InvalidNativeTokenBalance(
-        uint256 expectedBalance,
-        uint256 actualBalance,
-        address checkedAddress
-    );
+    error InvalidNativeTokenBalance(uint256 expectedBalance, uint256 actualBalance, address checkedAddress);
     error InvalidERC20Balance(
-        uint256 expectedBalance,
-        uint256 actualBalance,
-        address checkedAddress,
-        address checkedToken
+        uint256 expectedBalance, uint256 actualBalance, address checkedAddress, address checkedToken
     );
     error InvalidERC1155Balance(
-        uint256 expectedBalance,
-        uint256 actualBalance,
-        address checkedAddress,
-        address checkedToken
+        uint256 expectedBalance, uint256 actualBalance, address checkedAddress, address checkedToken
     );
     // 0x38fb386a
-    error InvalidOwner(
-        address expectedOwner,
-        address actualOwner,
-        address checkedToken,
-        uint256 checkedTokenId
-    );
-    error IncorrectSeaportBalance(
-        uint256 expectedBalance,
-        uint256 actualBalance
-    );
+    error InvalidOwner(address expectedOwner, address actualOwner, address checkedToken, uint256 checkedTokenId);
+    error IncorrectSeaportBalance(uint256 expectedBalance, uint256 actualBalance);
     error InvalidDataHash(bytes32 expectedDataHash, bytes32 actualDataHash);
     error InvalidEthBalance(uint256 expectedBalance, uint256 actualBalance);
     error NativeTokenTransferFailed();
@@ -80,7 +49,7 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
     function activate(
         address,
         SpentItem[] memory minimumReceived,
-        SpentItem[] memory /* maximumSpent */,
+        SpentItem[] memory, /* maximumSpent */
         bytes calldata /* context */
     ) public payable {
         uint256 requiredEthBalance;
@@ -98,13 +67,7 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
             } else if (item.itemType == ItemType.ERC1155) {
                 ERC1155Interface token = ERC1155Interface(item.token);
 
-                token.safeTransferFrom(
-                    msg.sender,
-                    address(this),
-                    item.identifier,
-                    item.amount,
-                    ""
-                );
+                token.safeTransferFrom(msg.sender, address(this), item.identifier, item.amount, "");
 
                 token.setApprovalForAll(_SEAPORT, true);
             } else if (item.itemType == ItemType.ERC20) {
@@ -127,21 +90,14 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
      * @dev Generates an order with the specified minimum and maximum spent
      *      items. Validates data hash set in activate.
      */
-    function generateOrder(
-        address,
-        SpentItem[] calldata a,
-        SpentItem[] calldata b,
-        bytes calldata c
-    )
+    function generateOrder(address, SpentItem[] calldata a, SpentItem[] calldata b, bytes calldata c)
         external
         virtual
         override
         returns (SpentItem[] memory offer, ReceivedItem[] memory consideration)
     {
         {
-            (bool success, ) = payable(_SEAPORT).call{
-                value: address(this).balance
-            }("");
+            (bool success,) = payable(_SEAPORT).call{value: address(this).balance}("");
 
             if (!success) {
                 revert NativeTokenTransferFailed();
@@ -163,12 +119,9 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
 
             bytes32 calldataHash = keccak256(data);
 
-            uint256 contractOffererNonce = ConsiderationInterface(_SEAPORT)
-                .getContractOffererNonce(address(this));
+            uint256 contractOffererNonce = ConsiderationInterface(_SEAPORT).getContractOffererNonce(address(this));
 
-            bytes32 orderHash = bytes32(
-                contractOffererNonce ^ (uint256(uint160(address(this))) << 96)
-            );
+            bytes32 orderHash = bytes32(contractOffererNonce ^ (uint256(uint160(address(this))) << 96));
 
             // Store the hash of msg.data
             orderHashToGenerateOrderDataHash[orderHash] = calldataHash;
@@ -184,13 +137,7 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
      *      set of received items, maximum set of spent items, and context
      *      (supplied as extraData).
      */
-    function previewOrder(
-        address,
-        address,
-        SpentItem[] calldata a,
-        SpentItem[] calldata b,
-        bytes calldata
-    )
+    function previewOrder(address, address, SpentItem[] calldata a, SpentItem[] calldata b, bytes calldata)
         public
         view
         override
@@ -213,12 +160,12 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
      * @return ratifyOrderMagicValue The magic value to indicate things are OK.
      */
     function ratifyOrder(
-        SpentItem[] calldata minimumReceived /* offer */,
-        ReceivedItem[] calldata maximumSpent /* consideration */,
-        bytes calldata context /* context */,
-        bytes32[] calldata /* orderHashes */,
+        SpentItem[] calldata minimumReceived, /* offer */
+        ReceivedItem[] calldata maximumSpent, /* consideration */
+        bytes calldata context, /* context */
+        bytes32[] calldata, /* orderHashes */
         uint256 /* contractNonce */
-    ) external override returns (bytes4 /* ratifyOrderMagicValue */) {
+    ) external override returns (bytes4 /* ratifyOrderMagicValue */ ) {
         // Ratify the order.
         {
             // Get the length of msg.data
@@ -237,12 +184,9 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
 
             bytes32 calldataHash = keccak256(data);
 
-            uint256 contractOffererNonce = ConsiderationInterface(_SEAPORT)
-                .getContractOffererNonce(address(this));
+            uint256 contractOffererNonce = ConsiderationInterface(_SEAPORT).getContractOffererNonce(address(this));
 
-            bytes32 orderHash = bytes32(
-                contractOffererNonce ^ (uint256(uint160(address(this))) << 96)
-            );
+            bytes32 orderHash = bytes32(contractOffererNonce ^ (uint256(uint160(address(this))) << 96));
 
             // Store the hash of msg.data
             orderHashToRatifyOrderDataHash[orderHash] = calldataHash;
@@ -264,9 +208,8 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
         // in the context.  If neither is provided, this ternary will revert
         // with a generic, hard-to-debug revert when it tries to slice bytes
         // from the context.
-        address expectedOfferRecipient = _expectedOfferRecipient == address(0)
-            ? address(bytes20(context[0:20]))
-            : _expectedOfferRecipient;
+        address expectedOfferRecipient =
+            _expectedOfferRecipient == address(0) ? address(bytes20(context[0:20])) : _expectedOfferRecipient;
 
         // Ensure that the expected recipient has received all offer items.
         _assertValidSpentItems(expectedOfferRecipient, minimumReceived);
@@ -287,34 +230,25 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
         schemas[0].metadata = new bytes(0);
     }
 
-    function _convertSpentToReceived(
-        SpentItem[] calldata spentItems
-    ) internal view returns (ReceivedItem[] memory) {
-        ReceivedItem[] memory receivedItems = new ReceivedItem[](
-            spentItems.length
-        );
+    function _convertSpentToReceived(SpentItem[] calldata spentItems) internal view returns (ReceivedItem[] memory) {
+        ReceivedItem[] memory receivedItems = new ReceivedItem[](spentItems.length);
         for (uint256 i = 0; i < spentItems.length; ++i) {
             receivedItems[i] = _convertSpentToReceived(spentItems[i]);
         }
         return receivedItems;
     }
 
-    function _convertSpentToReceived(
-        SpentItem calldata spentItem
-    ) internal view returns (ReceivedItem memory) {
-        return
-            ReceivedItem({
-                itemType: spentItem.itemType,
-                token: spentItem.token,
-                identifier: spentItem.identifier,
-                amount: spentItem.amount,
-                recipient: payable(address(this))
-            });
+    function _convertSpentToReceived(SpentItem calldata spentItem) internal view returns (ReceivedItem memory) {
+        return ReceivedItem({
+            itemType: spentItem.itemType,
+            token: spentItem.token,
+            identifier: spentItem.identifier,
+            amount: spentItem.amount,
+            recipient: payable(address(this))
+        });
     }
 
-    function _assertValidReceivedItems(
-        ReceivedItem[] calldata receivedItems
-    ) internal view {
+    function _assertValidReceivedItems(ReceivedItem[] calldata receivedItems) internal view {
         address recipient;
         ItemType itemType;
         ReceivedItem memory receivedItem;
@@ -334,34 +268,18 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
                 _assertNativeTokenTransfer(receivedItem.amount, recipient);
             } else if (itemType == ItemType.ERC20) {
                 // ERC20 Token
-                _assertERC20Transfer(
-                    receivedItem.amount,
-                    receivedItem.token,
-                    recipient
-                );
+                _assertERC20Transfer(receivedItem.amount, receivedItem.token, recipient);
             } else if (itemType == ItemType.ERC721) {
                 // ERC721 Token
-                _assertERC721Transfer(
-                    receivedItem.identifier,
-                    receivedItem.token,
-                    recipient
-                );
+                _assertERC721Transfer(receivedItem.identifier, receivedItem.token, recipient);
             } else if (itemType == ItemType.ERC1155) {
                 // ERC1155 Token
-                _assertERC1155Transfer(
-                    receivedItem.amount,
-                    receivedItem.identifier,
-                    receivedItem.token,
-                    recipient
-                );
+                _assertERC1155Transfer(receivedItem.amount, receivedItem.identifier, receivedItem.token, recipient);
             }
         }
     }
 
-    function _assertValidSpentItems(
-        address expectedRecipient,
-        SpentItem[] calldata spentItems
-    ) internal view {
+    function _assertValidSpentItems(address expectedRecipient, SpentItem[] calldata spentItems) internal view {
         SpentItem memory spentItem;
         ItemType itemType;
 
@@ -378,83 +296,45 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
                 _assertNativeTokenTransfer(spentItem.amount, expectedRecipient);
             } else if (itemType == ItemType.ERC20) {
                 // ERC20 Token
-                _assertERC20Transfer(
-                    spentItem.amount,
-                    spentItem.token,
-                    expectedRecipient
-                );
+                _assertERC20Transfer(spentItem.amount, spentItem.token, expectedRecipient);
             } else if (itemType == ItemType.ERC721) {
                 // ERC721 Token
-                _assertERC721Transfer(
-                    spentItem.identifier,
-                    spentItem.token,
-                    expectedRecipient
-                );
+                _assertERC721Transfer(spentItem.identifier, spentItem.token, expectedRecipient);
             } else if (itemType == ItemType.ERC1155) {
                 // ERC1155 Token
-                _assertERC1155Transfer(
-                    spentItem.amount,
-                    spentItem.identifier,
-                    spentItem.token,
-                    expectedRecipient
-                );
+                _assertERC1155Transfer(spentItem.amount, spentItem.identifier, spentItem.token, expectedRecipient);
             }
         }
     }
 
-    function _assertNativeTokenTransfer(
-        uint256 expectedAmount,
-        address expectedRecipient
-    ) internal view {
+    function _assertNativeTokenTransfer(uint256 expectedAmount, address expectedRecipient) internal view {
         // If the amount we read from the spent item or received item (the
         // expected transfer value) is greater than the balance of the expected
         // recipient then revert, because that means the recipient did not
         // receive the expected amount at the time the order was ratified or
         // validated.
         if (expectedAmount > address(expectedRecipient).balance) {
-            revert InvalidNativeTokenBalance(
-                expectedAmount,
-                address(expectedRecipient).balance,
-                expectedRecipient
-            );
+            revert InvalidNativeTokenBalance(expectedAmount, address(expectedRecipient).balance, expectedRecipient);
         }
     }
 
-    function _assertERC20Transfer(
-        uint256 expectedAmount,
-        address token,
-        address expectedRecipient
-    ) internal view {
+    function _assertERC20Transfer(uint256 expectedAmount, address token, address expectedRecipient) internal view {
         // If the amount we read from the spent item or received item (the
         // expected transfer value) is greater than the balance of the expected
         // recipient, revert.
-        if (
-            expectedAmount > ERC20Interface(token).balanceOf(expectedRecipient)
-        ) {
+        if (expectedAmount > ERC20Interface(token).balanceOf(expectedRecipient)) {
             revert InvalidERC20Balance(
-                expectedAmount,
-                ERC20Interface(token).balanceOf(expectedRecipient),
-                expectedRecipient,
-                token
+                expectedAmount, ERC20Interface(token).balanceOf(expectedRecipient), expectedRecipient, token
             );
         }
     }
 
-    function _assertERC721Transfer(
-        uint256 checkedTokenId,
-        address token,
-        address expectedRecipient
-    ) internal view {
+    function _assertERC721Transfer(uint256 checkedTokenId, address token, address expectedRecipient) internal view {
         // If the actual owner of the token is not the expected recipient,
         // revert.
         address actualOwner = ERC721Interface(token).ownerOf(checkedTokenId);
         if (expectedRecipient != actualOwner) {
-            revert InvalidOwner(
-                expectedRecipient,
-                actualOwner,
-                token,
-                checkedTokenId
-            );
+            revert InvalidOwner(expectedRecipient, actualOwner, token, checkedTokenId);
         }
     }
 
@@ -467,16 +347,10 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
         // If the amount we read from the spent item or received item (the
         // expected transfer value) is greater than the balance of the expected
         // recipient, revert.
-        if (
-            expectedAmount >
-            ERC1155Interface(token).balanceOf(expectedRecipient, identifier)
-        ) {
+        if (expectedAmount > ERC1155Interface(token).balanceOf(expectedRecipient, identifier)) {
             revert InvalidERC1155Balance(
                 expectedAmount,
-                ERC1155Interface(token).balanceOf(
-                    expectedRecipient,
-                    identifier
-                ),
+                ERC1155Interface(token).balanceOf(expectedRecipient, identifier),
                 expectedRecipient,
                 token
             );
@@ -487,9 +361,13 @@ contract TestCalldataHashContractOfferer is ContractOffererInterface {
         _expectedOfferRecipient = expectedOfferRecipient;
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ContractOffererInterface) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ContractOffererInterface)
+        returns (bool)
+    {
         return interfaceId == type(ContractOffererInterface).interfaceId;
     }
 }

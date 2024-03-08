@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { ItemType } from "../../../lib/ConsiderationEnums.sol";
+import {ItemType} from "../../../lib/ConsiderationEnums.sol";
 import {
     Order,
     OrderParameters,
@@ -11,35 +11,20 @@ import {
     Schema,
     ZoneParameters
 } from "../../../lib/ConsiderationStructs.sol";
-import { ConsiderationTypeHashes } from "../lib/ConsiderationTypeHashes.sol";
-import {
-    ConsiderationInterface
-} from "../../../interfaces/ConsiderationInterface.sol";
-import {
-    ConduitControllerInterface
-} from "../../../interfaces/ConduitControllerInterface.sol";
-import {
-    ContractOffererInterface
-} from "../../../interfaces/ContractOffererInterface.sol";
-import { ZoneInterface } from "../../../interfaces/ZoneInterface.sol";
-import { GettersAndDerivers } from "../../../lib/GettersAndDerivers.sol";
-import {
-    SeaportValidatorInterface
-} from "../lib/SeaportValidatorInterface.sol";
-import { ZoneInterface } from "../../../interfaces/ZoneInterface.sol";
-import {
-    ERC20Interface,
-    ERC721Interface,
-    ERC1155Interface
-} from "../../../interfaces/AbridgedTokenInterfaces.sol";
-import { IERC165 } from "../../../interfaces/IERC165.sol";
-import { IERC2981 } from "../../../interfaces/IERC2981.sol";
-import {
-    ErrorsAndWarnings,
-    ErrorsAndWarningsLib
-} from "../lib/ErrorsAndWarnings.sol";
-import { SafeStaticCall } from "../lib/SafeStaticCall.sol";
-import { Murky } from "../lib/Murky.sol";
+import {ConsiderationTypeHashes} from "../lib/ConsiderationTypeHashes.sol";
+import {ConsiderationInterface} from "../../../interfaces/ConsiderationInterface.sol";
+import {ConduitControllerInterface} from "../../../interfaces/ConduitControllerInterface.sol";
+import {ContractOffererInterface} from "../../../interfaces/ContractOffererInterface.sol";
+import {ZoneInterface} from "../../../interfaces/ZoneInterface.sol";
+import {GettersAndDerivers} from "../../../lib/GettersAndDerivers.sol";
+import {SeaportValidatorInterface} from "../lib/SeaportValidatorInterface.sol";
+import {ZoneInterface} from "../../../interfaces/ZoneInterface.sol";
+import {ERC20Interface, ERC721Interface, ERC1155Interface} from "../../../interfaces/AbridgedTokenInterfaces.sol";
+import {IERC165} from "../../../interfaces/IERC165.sol";
+import {IERC2981} from "../../../interfaces/IERC2981.sol";
+import {ErrorsAndWarnings, ErrorsAndWarningsLib} from "../lib/ErrorsAndWarnings.sol";
+import {SafeStaticCall} from "../lib/SafeStaticCall.sol";
+import {Murky} from "../lib/Murky.sol";
 import {
     IssueParser,
     ValidationConfiguration,
@@ -60,7 +45,7 @@ import {
     GenericIssue,
     ConsiderationItemConfiguration
 } from "../lib/SeaportValidatorTypes.sol";
-import { Verifiers } from "../../../lib/Verifiers.sol";
+import {Verifiers} from "../../../lib/Verifiers.sol";
 
 /**
  * @title SeaportValidator
@@ -139,60 +124,48 @@ contract SeaportValidatorHelper is Murky {
         {
             bool canCheckFee = true;
             // Single offer item and at least one consideration
-            if (
-                orderParameters.offer.length != 1 ||
-                orderParameters.consideration.length == 0
-            ) {
+            if (orderParameters.offer.length != 1 || orderParameters.consideration.length == 0) {
                 // Not listing or offer, can't check fees
                 canCheckFee = false;
             } else if (
                 // Can't have both items be fungible
-                isPaymentToken(orderParameters.offer[0].itemType) &&
-                isPaymentToken(orderParameters.consideration[0].itemType)
+                isPaymentToken(orderParameters.offer[0].itemType)
+                    && isPaymentToken(orderParameters.consideration[0].itemType)
             ) {
                 // Not listing or offer, can't check fees
                 canCheckFee = false;
             } else if (
                 // Can't have both items be non-fungible
-                !isPaymentToken(orderParameters.offer[0].itemType) &&
-                !isPaymentToken(orderParameters.consideration[0].itemType)
+                !isPaymentToken(orderParameters.offer[0].itemType)
+                    && !isPaymentToken(orderParameters.consideration[0].itemType)
             ) {
                 // Not listing or offer, can't check fees
                 canCheckFee = false;
             }
             if (!canCheckFee) {
                 // Does not match required format
-                errorsAndWarnings.addError(
-                    GenericIssue.InvalidOrderFormat.parseInt()
-                );
+                errorsAndWarnings.addError(GenericIssue.InvalidOrderFormat.parseInt());
                 return errorsAndWarnings;
             }
         }
 
         // Validate secondary consideration items (fees)
-        (
-            uint256 tertiaryConsiderationIndex,
-            ErrorsAndWarnings memory errorsAndWarningsLocal
-        ) = _validateSecondaryConsiderationItems(
-                orderParameters,
-                ConsiderationItemConfiguration({
-                    primaryFeeRecipient: primaryFeeRecipient,
-                    primaryFeeBips: primaryFeeBips,
-                    checkCreatorFee: checkCreatorFee
-                })
-            );
+        (uint256 tertiaryConsiderationIndex, ErrorsAndWarnings memory errorsAndWarningsLocal) =
+        _validateSecondaryConsiderationItems(
+            orderParameters,
+            ConsiderationItemConfiguration({
+                primaryFeeRecipient: primaryFeeRecipient,
+                primaryFeeBips: primaryFeeBips,
+                checkCreatorFee: checkCreatorFee
+            })
+        );
 
         errorsAndWarnings.concat(errorsAndWarningsLocal);
 
         // Validate tertiary consideration items if not 0 (0 indicates error).
         // Only if no prior errors
         if (tertiaryConsiderationIndex != 0) {
-            errorsAndWarnings.concat(
-                _validateTertiaryConsiderationItems(
-                    orderParameters,
-                    tertiaryConsiderationIndex
-                )
-            );
+            errorsAndWarnings.concat(_validateTertiaryConsiderationItems(orderParameters, tertiaryConsiderationIndex));
         }
     }
 
@@ -201,17 +174,16 @@ contract SeaportValidatorHelper is Murky {
      * @param orderParameters The parameters for the order to validate
      * @return errorsAndWarnings  The errors and warnings
      */
-    function validateConsiderationItems(
-        OrderParameters memory orderParameters,
-        address seaportAddress
-    ) public view returns (ErrorsAndWarnings memory errorsAndWarnings) {
+    function validateConsiderationItems(OrderParameters memory orderParameters, address seaportAddress)
+        public
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings)
+    {
         errorsAndWarnings = ErrorsAndWarnings(new uint16[](0), new uint16[](0));
 
         // You must have a consideration item
         if (orderParameters.consideration.length == 0) {
-            errorsAndWarnings.addWarning(
-                ConsiderationIssue.ZeroItems.parseInt()
-            );
+            errorsAndWarnings.addWarning(ConsiderationIssue.ZeroItems.parseInt());
             return errorsAndWarnings;
         }
 
@@ -222,12 +194,9 @@ contract SeaportValidatorHelper is Murky {
         // Iterate over each consideration item
         for (uint256 i = 0; i < orderParameters.consideration.length; i++) {
             // Validate consideration item
-            errorsAndWarnings.concat(
-                validateConsiderationItem(orderParameters, i, seaportAddress)
-            );
+            errorsAndWarnings.concat(validateConsiderationItem(orderParameters, i, seaportAddress));
 
-            ConsiderationItem memory considerationItem1 = orderParameters
-                .consideration[i];
+            ConsiderationItem memory considerationItem1 = orderParameters.consideration[i];
 
             // Check if the offerer is the recipient
             if (!offererReceivingAtLeastOneItem) {
@@ -237,24 +206,17 @@ contract SeaportValidatorHelper is Murky {
             }
 
             // Check for duplicate consideration items
-            for (
-                uint256 j = i + 1;
-                j < orderParameters.consideration.length;
-                j++
-            ) {
+            for (uint256 j = i + 1; j < orderParameters.consideration.length; j++) {
                 // Iterate over each remaining consideration item
                 // (previous items already check with this item)
-                ConsiderationItem memory considerationItem2 = orderParameters
-                    .consideration[j];
+                ConsiderationItem memory considerationItem2 = orderParameters.consideration[j];
 
                 // Check if itemType, token, id, and recipient are the same
                 if (
-                    considerationItem2.itemType ==
-                    considerationItem1.itemType &&
-                    considerationItem2.token == considerationItem1.token &&
-                    considerationItem2.identifierOrCriteria ==
-                    considerationItem1.identifierOrCriteria &&
-                    considerationItem2.recipient == considerationItem1.recipient
+                    considerationItem2.itemType == considerationItem1.itemType
+                        && considerationItem2.token == considerationItem1.token
+                        && considerationItem2.identifierOrCriteria == considerationItem1.identifierOrCriteria
+                        && considerationItem2.recipient == considerationItem1.recipient
                 ) {
                     errorsAndWarnings.addWarning(
                         // Duplicate consideration item, warning
@@ -266,9 +228,7 @@ contract SeaportValidatorHelper is Murky {
 
         if (!offererReceivingAtLeastOneItem) {
             // Offerer is not receiving at least one consideration item
-            errorsAndWarnings.addWarning(
-                ConsiderationIssue.OffererNotReceivingAtLeastOneItem.parseInt()
-            );
+            errorsAndWarnings.addWarning(ConsiderationIssue.OffererNotReceivingAtLeastOneItem.parseInt());
         }
     }
 
@@ -287,11 +247,7 @@ contract SeaportValidatorHelper is Murky {
 
         // Validate the consideration item at considerationItemIndex
         errorsAndWarnings.concat(
-            validateConsiderationItemParameters(
-                orderParameters,
-                considerationItemIndex,
-                seaportAddress
-            )
+            validateConsiderationItemParameters(orderParameters, considerationItemIndex, seaportAddress)
         );
     }
 
@@ -308,42 +264,32 @@ contract SeaportValidatorHelper is Murky {
     ) public view returns (ErrorsAndWarnings memory errorsAndWarnings) {
         errorsAndWarnings = ErrorsAndWarnings(new uint16[](0), new uint16[](0));
 
-        ConsiderationItem memory considerationItem = orderParameters
-            .consideration[considerationItemIndex];
+        ConsiderationItem memory considerationItem = orderParameters.consideration[considerationItemIndex];
 
         // Check if startAmount and endAmount are zero
-        if (
-            considerationItem.startAmount == 0 &&
-            considerationItem.endAmount == 0
-        ) {
-            errorsAndWarnings.addError(
-                ConsiderationIssue.AmountZero.parseInt()
-            );
+        if (considerationItem.startAmount == 0 && considerationItem.endAmount == 0) {
+            errorsAndWarnings.addError(ConsiderationIssue.AmountZero.parseInt());
             return errorsAndWarnings;
         }
 
         // Check if the recipient is the null address
         if (considerationItem.recipient == address(0)) {
-            errorsAndWarnings.addError(
-                ConsiderationIssue.NullRecipient.parseInt()
-            );
+            errorsAndWarnings.addError(ConsiderationIssue.NullRecipient.parseInt());
         }
 
         if (
-            considerationItem.startAmount != considerationItem.endAmount &&
-            orderParameters.endTime > orderParameters.startTime
+            considerationItem.startAmount != considerationItem.endAmount
+                && orderParameters.endTime > orderParameters.startTime
         ) {
             // Check that amount velocity is not too high.
             // Assign larger and smaller amount values
-            (uint256 maxAmount, uint256 minAmount) = considerationItem
-                .startAmount > considerationItem.endAmount
+            (uint256 maxAmount, uint256 minAmount) = considerationItem.startAmount > considerationItem.endAmount
                 ? (considerationItem.startAmount, considerationItem.endAmount)
                 : (considerationItem.endAmount, considerationItem.startAmount);
 
             uint256 amountDelta = maxAmount - minAmount;
             // delta of time that order exists for
-            uint256 timeDelta = orderParameters.endTime -
-                orderParameters.startTime;
+            uint256 timeDelta = orderParameters.endTime - orderParameters.startTime;
 
             // Velocity scaled by 1e10 for precision
             uint256 velocity = (amountDelta * 1e10) / timeDelta;
@@ -353,32 +299,23 @@ contract SeaportValidatorHelper is Murky {
             // 278 * 60 * 30 ~= 500,000
             if (velocityPercentage > 278) {
                 // Over 50% change per 30 min
-                errorsAndWarnings.addError(
-                    ConsiderationIssue.AmountVelocityHigh.parseInt()
-                );
+                errorsAndWarnings.addError(ConsiderationIssue.AmountVelocityHigh.parseInt());
             }
             // 28 * 60 * 30 ~= 50,000
             else if (velocityPercentage > 28) {
                 // Over 5% change per 30 min
-                errorsAndWarnings.addWarning(
-                    ConsiderationIssue.AmountVelocityHigh.parseInt()
-                );
+                errorsAndWarnings.addWarning(ConsiderationIssue.AmountVelocityHigh.parseInt());
             }
 
             // Check for large amount steps
             if (minAmount <= 1e15) {
-                errorsAndWarnings.addWarning(
-                    ConsiderationIssue.AmountStepLarge.parseInt()
-                );
+                errorsAndWarnings.addWarning(ConsiderationIssue.AmountStepLarge.parseInt());
             }
         }
 
         if (considerationItem.itemType == ItemType.ERC721) {
             // ERC721 type requires amounts to be 1
-            if (
-                considerationItem.startAmount != 1 ||
-                considerationItem.endAmount != 1
-            ) {
+            if (considerationItem.startAmount != 1 || considerationItem.endAmount != 1) {
                 errorsAndWarnings.addError(ERC721Issue.AmountNotOne.parseInt());
             }
 
@@ -391,56 +328,37 @@ contract SeaportValidatorHelper is Murky {
             // Check that token exists
             if (
                 !considerationItem.token.safeStaticCallUint256(
-                    abi.encodeWithSelector(
-                        ERC721Interface.ownerOf.selector,
-                        considerationItem.identifierOrCriteria
-                    ),
-                    1
+                    abi.encodeWithSelector(ERC721Interface.ownerOf.selector, considerationItem.identifierOrCriteria), 1
                 )
             ) {
                 // Token does not exist
-                errorsAndWarnings.addError(
-                    ERC721Issue.IdentifierDNE.parseInt()
-                );
+                errorsAndWarnings.addError(ERC721Issue.IdentifierDNE.parseInt());
             }
-        } else if (
-            considerationItem.itemType == ItemType.ERC721_WITH_CRITERIA
-        ) {
+        } else if (considerationItem.itemType == ItemType.ERC721_WITH_CRITERIA) {
             // Check EIP165 interface
             if (!checkInterface(considerationItem.token, ERC721_INTERFACE_ID)) {
                 // Does not implement required interface
                 errorsAndWarnings.addError(ERC721Issue.InvalidToken.parseInt());
             }
         } else if (
-            considerationItem.itemType == ItemType.ERC1155 ||
-            considerationItem.itemType == ItemType.ERC1155_WITH_CRITERIA
+            considerationItem.itemType == ItemType.ERC1155
+                || considerationItem.itemType == ItemType.ERC1155_WITH_CRITERIA
         ) {
             // Check EIP165 interface
-            if (
-                !checkInterface(considerationItem.token, ERC1155_INTERFACE_ID)
-            ) {
+            if (!checkInterface(considerationItem.token, ERC1155_INTERFACE_ID)) {
                 // Does not implement required interface
-                errorsAndWarnings.addError(
-                    ERC1155Issue.InvalidToken.parseInt()
-                );
+                errorsAndWarnings.addError(ERC1155Issue.InvalidToken.parseInt());
             }
         } else if (considerationItem.itemType == ItemType.ERC20) {
             // ERC20 must have `identifierOrCriteria` be zero
             if (considerationItem.identifierOrCriteria != 0) {
-                errorsAndWarnings.addError(
-                    ERC20Issue.IdentifierNonZero.parseInt()
-                );
+                errorsAndWarnings.addError(ERC20Issue.IdentifierNonZero.parseInt());
             }
 
             // Check that it is an ERC20 token. ERC20 will return a uint256
             if (
                 !considerationItem.token.safeStaticCallUint256(
-                    abi.encodeWithSelector(
-                        ERC20Interface.allowance.selector,
-                        seaportAddress,
-                        seaportAddress
-                    ),
-                    0
+                    abi.encodeWithSelector(ERC20Interface.allowance.selector, seaportAddress, seaportAddress), 0
                 )
             ) {
                 // Not an ERC20 token
@@ -454,9 +372,7 @@ contract SeaportValidatorHelper is Murky {
             }
             // NATIVE must have `identifierOrCriteria` be zero
             if (considerationItem.identifierOrCriteria != 0) {
-                errorsAndWarnings.addError(
-                    NativeIssue.IdentifierNonZero.parseInt()
-                );
+                errorsAndWarnings.addError(NativeIssue.IdentifierNonZero.parseInt());
             }
         }
     }
@@ -467,15 +383,9 @@ contract SeaportValidatorHelper is Murky {
     )
         internal
         view
-        returns (
-            uint256 /* tertiaryConsiderationIndex */,
-            ErrorsAndWarnings memory /* errorsAndWarnings */
-        )
+        returns (uint256, /* tertiaryConsiderationIndex */ ErrorsAndWarnings memory /* errorsAndWarnings */ )
     {
-        ErrorsAndWarnings memory errorsAndWarnings = ErrorsAndWarnings(
-            new uint16[](0),
-            new uint16[](0)
-        );
+        ErrorsAndWarnings memory errorsAndWarnings = ErrorsAndWarnings(new uint16[](0), new uint16[](0));
 
         // Consideration item to hold expected creator fee info
         ConsiderationItem memory creatorFeeConsideration;
@@ -494,32 +404,20 @@ contract SeaportValidatorHelper is Murky {
 
             if (isPaymentToken(orderParameters.offer[0].itemType)) {
                 // Offer is an offer. Offer item is fungible and used for fees
-                creatorFeeConsideration.itemType = orderParameters
-                    .offer[0]
-                    .itemType;
+                creatorFeeConsideration.itemType = orderParameters.offer[0].itemType;
                 creatorFeeConsideration.token = orderParameters.offer[0].token;
                 transactionAmountStart = orderParameters.offer[0].startAmount;
                 transactionAmountEnd = orderParameters.offer[0].endAmount;
 
                 // Set non-fungible information for calculating creator fee
                 itemAddress = orderParameters.consideration[0].token;
-                itemIdentifier = orderParameters
-                    .consideration[0]
-                    .identifierOrCriteria;
+                itemIdentifier = orderParameters.consideration[0].identifierOrCriteria;
             } else {
                 // Offer is an offer. Consideration item is fungible and used for fees
-                creatorFeeConsideration.itemType = orderParameters
-                    .consideration[0]
-                    .itemType;
-                creatorFeeConsideration.token = orderParameters
-                    .consideration[0]
-                    .token;
-                transactionAmountStart = orderParameters
-                    .consideration[0]
-                    .startAmount;
-                transactionAmountEnd = orderParameters
-                    .consideration[0]
-                    .endAmount;
+                creatorFeeConsideration.itemType = orderParameters.consideration[0].itemType;
+                creatorFeeConsideration.token = orderParameters.consideration[0].token;
+                transactionAmountStart = orderParameters.consideration[0].startAmount;
+                transactionAmountEnd = orderParameters.consideration[0].endAmount;
 
                 // Set non-fungible information for calculating creator fees
                 itemAddress = orderParameters.offer[0].token;
@@ -530,78 +428,48 @@ contract SeaportValidatorHelper is Murky {
             primaryFeePresent = false;
             {
                 // Calculate primary fee start and end amounts
-                uint256 primaryFeeStartAmount = (transactionAmountStart *
-                    config.primaryFeeBips) / 10000;
-                uint256 primaryFeeEndAmount = (transactionAmountEnd *
-                    config.primaryFeeBips) / 10000;
+                uint256 primaryFeeStartAmount = (transactionAmountStart * config.primaryFeeBips) / 10000;
+                uint256 primaryFeeEndAmount = (transactionAmountEnd * config.primaryFeeBips) / 10000;
 
                 // Check if primary fee check is desired. Skip if calculated amount is zero.
-                if (
-                    config.primaryFeeRecipient != address(0) &&
-                    (primaryFeeStartAmount > 0 || primaryFeeEndAmount > 0)
-                ) {
+                if (config.primaryFeeRecipient != address(0) && (primaryFeeStartAmount > 0 || primaryFeeEndAmount > 0))
+                {
                     // Ensure primary fee is present
                     if (orderParameters.consideration.length < 2) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.Missing.parseInt()
-                        );
+                        errorsAndWarnings.addError(PrimaryFeeIssue.Missing.parseInt());
                         return (0, errorsAndWarnings);
                     }
                     primaryFeePresent = true;
 
-                    ConsiderationItem memory primaryFeeItem = orderParameters
-                        .consideration[1];
+                    ConsiderationItem memory primaryFeeItem = orderParameters.consideration[1];
 
                     // Check item type
-                    if (
-                        primaryFeeItem.itemType !=
-                        creatorFeeConsideration.itemType
-                    ) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.ItemType.parseInt()
-                        );
+                    if (primaryFeeItem.itemType != creatorFeeConsideration.itemType) {
+                        errorsAndWarnings.addError(PrimaryFeeIssue.ItemType.parseInt());
                         return (0, errorsAndWarnings);
                     }
                     // Check token
                     if (primaryFeeItem.token != creatorFeeConsideration.token) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.Token.parseInt()
-                        );
+                        errorsAndWarnings.addError(PrimaryFeeIssue.Token.parseInt());
                     }
                     // Check start amount
                     if (primaryFeeItem.startAmount < primaryFeeStartAmount) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.StartAmount.parseInt()
-                        );
+                        errorsAndWarnings.addError(PrimaryFeeIssue.StartAmount.parseInt());
                     }
                     // Check end amount
                     if (primaryFeeItem.endAmount < primaryFeeEndAmount) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.EndAmount.parseInt()
-                        );
+                        errorsAndWarnings.addError(PrimaryFeeIssue.EndAmount.parseInt());
                     }
                     // Check recipient
-                    if (
-                        primaryFeeItem.recipient != config.primaryFeeRecipient
-                    ) {
-                        errorsAndWarnings.addError(
-                            PrimaryFeeIssue.Recipient.parseInt()
-                        );
+                    if (primaryFeeItem.recipient != config.primaryFeeRecipient) {
+                        errorsAndWarnings.addError(PrimaryFeeIssue.Recipient.parseInt());
                     }
                 }
             }
 
             // Check creator fee
-            (
-                creatorFeeConsideration.recipient,
-                creatorFeeConsideration.startAmount,
-                creatorFeeConsideration.endAmount
-            ) = getCreatorFeeInfo(
-                itemAddress,
-                itemIdentifier,
-                transactionAmountStart,
-                transactionAmountEnd
-            );
+            (creatorFeeConsideration.recipient, creatorFeeConsideration.startAmount, creatorFeeConsideration.endAmount)
+            = getCreatorFeeInfo(itemAddress, itemIdentifier, transactionAmountStart, transactionAmountEnd);
         }
 
         // Flag indicating if creator fee is present in considerations
@@ -609,25 +477,19 @@ contract SeaportValidatorHelper is Murky {
 
         // Determine if should check for creator fee
         if (
-            creatorFeeConsideration.recipient != address(0) &&
-            config.checkCreatorFee &&
-            (creatorFeeConsideration.startAmount > 0 ||
-                creatorFeeConsideration.endAmount > 0)
+            creatorFeeConsideration.recipient != address(0) && config.checkCreatorFee
+                && (creatorFeeConsideration.startAmount > 0 || creatorFeeConsideration.endAmount > 0)
         ) {
             // Calculate index of creator fee consideration item
             uint16 creatorFeeConsiderationIndex = primaryFeePresent ? 2 : 1; // 2 if primary fee, ow 1
 
             // Check that creator fee consideration item exists
-            if (
-                orderParameters.consideration.length - 1 <
-                creatorFeeConsiderationIndex
-            ) {
+            if (orderParameters.consideration.length - 1 < creatorFeeConsiderationIndex) {
                 errorsAndWarnings.addError(CreatorFeeIssue.Missing.parseInt());
                 return (0, errorsAndWarnings);
             }
 
-            ConsiderationItem memory creatorFeeItem = orderParameters
-                .consideration[creatorFeeConsiderationIndex];
+            ConsiderationItem memory creatorFeeItem = orderParameters.consideration[creatorFeeConsiderationIndex];
 
             creatorFeePresent = true;
 
@@ -641,31 +503,21 @@ contract SeaportValidatorHelper is Murky {
                 errorsAndWarnings.addError(CreatorFeeIssue.Token.parseInt());
             }
             // Check start amount
-            if (
-                creatorFeeItem.startAmount < creatorFeeConsideration.startAmount
-            ) {
-                errorsAndWarnings.addError(
-                    CreatorFeeIssue.StartAmount.parseInt()
-                );
+            if (creatorFeeItem.startAmount < creatorFeeConsideration.startAmount) {
+                errorsAndWarnings.addError(CreatorFeeIssue.StartAmount.parseInt());
             }
             // Check end amount
             if (creatorFeeItem.endAmount < creatorFeeConsideration.endAmount) {
-                errorsAndWarnings.addError(
-                    CreatorFeeIssue.EndAmount.parseInt()
-                );
+                errorsAndWarnings.addError(CreatorFeeIssue.EndAmount.parseInt());
             }
             // Check recipient
             if (creatorFeeItem.recipient != creatorFeeConsideration.recipient) {
-                errorsAndWarnings.addError(
-                    CreatorFeeIssue.Recipient.parseInt()
-                );
+                errorsAndWarnings.addError(CreatorFeeIssue.Recipient.parseInt());
             }
         }
 
         // Calculate index of first tertiary consideration item
-        uint256 tertiaryConsiderationIndex = 1 +
-            (primaryFeePresent ? 1 : 0) +
-            (creatorFeePresent ? 1 : 0);
+        uint256 tertiaryConsiderationIndex = 1 + (primaryFeePresent ? 1 : 0) + (creatorFeePresent ? 1 : 0);
 
         return (tertiaryConsiderationIndex, errorsAndWarnings);
     }
@@ -674,10 +526,11 @@ contract SeaportValidatorHelper is Murky {
      * @notice Internal function for validating all consideration items after the fee items.
      *    Only additional acceptable consideration is private sale.
      */
-    function _validateTertiaryConsiderationItems(
-        OrderParameters memory orderParameters,
-        uint256 considerationItemIndex
-    ) internal pure returns (ErrorsAndWarnings memory errorsAndWarnings) {
+    function _validateTertiaryConsiderationItems(OrderParameters memory orderParameters, uint256 considerationItemIndex)
+        internal
+        pure
+        returns (ErrorsAndWarnings memory errorsAndWarnings)
+    {
         errorsAndWarnings = ErrorsAndWarnings(new uint16[](0), new uint16[](0));
 
         if (orderParameters.consideration.length <= considerationItemIndex) {
@@ -685,41 +538,30 @@ contract SeaportValidatorHelper is Murky {
             return errorsAndWarnings;
         }
 
-        ConsiderationItem memory privateSaleConsideration = orderParameters
-            .consideration[considerationItemIndex];
+        ConsiderationItem memory privateSaleConsideration = orderParameters.consideration[considerationItemIndex];
 
         // Check if offer is payment token. Private sale not possible if so.
         if (isPaymentToken(orderParameters.offer[0].itemType)) {
-            errorsAndWarnings.addError(
-                ConsiderationIssue.ExtraItems.parseInt()
-            );
+            errorsAndWarnings.addError(ConsiderationIssue.ExtraItems.parseInt());
             return errorsAndWarnings;
         }
 
         // Check if private sale to self
         if (privateSaleConsideration.recipient == orderParameters.offerer) {
-            errorsAndWarnings.addError(
-                ConsiderationIssue.PrivateSaleToSelf.parseInt()
-            );
+            errorsAndWarnings.addError(ConsiderationIssue.PrivateSaleToSelf.parseInt());
             return errorsAndWarnings;
         }
 
         // Ensure that private sale parameters match offer item.
         if (
-            privateSaleConsideration.itemType !=
-            orderParameters.offer[0].itemType ||
-            privateSaleConsideration.token != orderParameters.offer[0].token ||
-            orderParameters.offer[0].startAmount !=
-            privateSaleConsideration.startAmount ||
-            orderParameters.offer[0].endAmount !=
-            privateSaleConsideration.endAmount ||
-            orderParameters.offer[0].identifierOrCriteria !=
-            privateSaleConsideration.identifierOrCriteria
+            privateSaleConsideration.itemType != orderParameters.offer[0].itemType
+                || privateSaleConsideration.token != orderParameters.offer[0].token
+                || orderParameters.offer[0].startAmount != privateSaleConsideration.startAmount
+                || orderParameters.offer[0].endAmount != privateSaleConsideration.endAmount
+                || orderParameters.offer[0].identifierOrCriteria != privateSaleConsideration.identifierOrCriteria
         ) {
             // Invalid private sale, say extra consideration item
-            errorsAndWarnings.addError(
-                ConsiderationIssue.ExtraItems.parseInt()
-            );
+            errorsAndWarnings.addError(ConsiderationIssue.ExtraItems.parseInt());
             return errorsAndWarnings;
         }
 
@@ -728,9 +570,7 @@ contract SeaportValidatorHelper is Murky {
         // Should not be any additional consideration items
         if (orderParameters.consideration.length - 1 > considerationItemIndex) {
             // Extra consideration items
-            errorsAndWarnings.addError(
-                ConsiderationIssue.ExtraItems.parseInt()
-            );
+            errorsAndWarnings.addError(ConsiderationIssue.ExtraItems.parseInt());
             return errorsAndWarnings;
         }
     }
@@ -751,27 +591,12 @@ contract SeaportValidatorHelper is Murky {
         uint256 tokenId,
         uint256 transactionAmountStart,
         uint256 transactionAmountEnd
-    )
-        public
-        view
-        returns (
-            address payable recipient,
-            uint256 creatorFeeAmountStart,
-            uint256 creatorFeeAmountEnd
-        )
-    {
+    ) public view returns (address payable recipient, uint256 creatorFeeAmountStart, uint256 creatorFeeAmountEnd) {
         // Check if creator fee engine is on this chain
         if (address(creatorFeeEngine) != address(0)) {
             // Creator fee engine may revert if no creator fees are present.
-            try
-                creatorFeeEngine.getRoyaltyView(
-                    token,
-                    tokenId,
-                    transactionAmountStart
-                )
-            returns (
-                address payable[] memory creatorFeeRecipients,
-                uint256[] memory creatorFeeAmountsStart
+            try creatorFeeEngine.getRoyaltyView(token, tokenId, transactionAmountStart) returns (
+                address payable[] memory creatorFeeRecipients, uint256[] memory creatorFeeAmountsStart
             ) {
                 if (creatorFeeRecipients.length != 0) {
                     // Use first recipient and amount
@@ -785,15 +610,8 @@ contract SeaportValidatorHelper is Murky {
             // If fees found for start amount, check end amount
             if (recipient != address(0)) {
                 // Creator fee engine may revert if no creator fees are present.
-                try
-                    creatorFeeEngine.getRoyaltyView(
-                        token,
-                        tokenId,
-                        transactionAmountEnd
-                    )
-                returns (
-                    address payable[] memory,
-                    uint256[] memory creatorFeeAmountsEnd
+                try creatorFeeEngine.getRoyaltyView(token, tokenId, transactionAmountEnd) returns (
+                    address payable[] memory, uint256[] memory creatorFeeAmountsEnd
                 ) {
                     creatorFeeAmountEnd = creatorFeeAmountsEnd[0];
                 } catch {}
@@ -803,21 +621,14 @@ contract SeaportValidatorHelper is Murky {
             {
                 // Static call to token using ERC2981
                 (bool success, bytes memory res) = token.staticcall(
-                    abi.encodeWithSelector(
-                        IERC2981.royaltyInfo.selector,
-                        tokenId,
-                        transactionAmountStart
-                    )
+                    abi.encodeWithSelector(IERC2981.royaltyInfo.selector, tokenId, transactionAmountStart)
                 );
                 // Check if call succeeded
                 if (success) {
                     // Ensure 64 bytes returned
                     if (res.length == 64) {
                         // Decode result and assign recipient and start amount
-                        (recipient, creatorFeeAmountStart) = abi.decode(
-                            res,
-                            (address, uint256)
-                        );
+                        (recipient, creatorFeeAmountStart) = abi.decode(res, (address, uint256));
                     }
                 }
             }
@@ -826,21 +637,14 @@ contract SeaportValidatorHelper is Murky {
             if (recipient != address(0)) {
                 // Static call to token using ERC2981
                 (bool success, bytes memory res) = token.staticcall(
-                    abi.encodeWithSelector(
-                        IERC2981.royaltyInfo.selector,
-                        tokenId,
-                        transactionAmountEnd
-                    )
+                    abi.encodeWithSelector(IERC2981.royaltyInfo.selector, tokenId, transactionAmountEnd)
                 );
                 // Check if call succeeded
                 if (success) {
                     // Ensure 64 bytes returned
                     if (res.length == 64) {
                         // Decode result and assign end amount
-                        (, creatorFeeAmountEnd) = abi.decode(
-                            res,
-                            (address, uint256)
-                        );
+                        (, creatorFeeAmountEnd) = abi.decode(res, (address, uint256));
                     }
                 }
             }
@@ -852,18 +656,8 @@ contract SeaportValidatorHelper is Murky {
      * @param token The token address to check
      * @param interfaceHash The interface hash to check
      */
-    function checkInterface(
-        address token,
-        bytes4 interfaceHash
-    ) public view returns (bool) {
-        return
-            token.safeStaticCallBool(
-                abi.encodeWithSelector(
-                    IERC165.supportsInterface.selector,
-                    interfaceHash
-                ),
-                true
-            );
+    function checkInterface(address token, bytes4 interfaceHash) public view returns (bool) {
+        return token.safeStaticCallBool(abi.encodeWithSelector(IERC165.supportsInterface.selector, interfaceHash), true);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -876,9 +670,7 @@ contract SeaportValidatorHelper is Murky {
      * @param includedTokens An array of included token ids.
      * @return sortedTokens The sorted `includedTokens` array.
      */
-    function sortMerkleTokens(
-        uint256[] memory includedTokens
-    ) public pure returns (uint256[] memory sortedTokens) {
+    function sortMerkleTokens(uint256[] memory includedTokens) public pure returns (uint256[] memory sortedTokens) {
         // Sort token ids by the keccak256 hash of the id
         return _sortUint256ByHash(includedTokens);
     }
@@ -889,9 +681,7 @@ contract SeaportValidatorHelper is Murky {
      * @return merkleRoot The merkle root
      * @return errorsAndWarnings Errors and warnings from the operation
      */
-    function getMerkleRoot(
-        uint256[] memory includedTokens
-    )
+    function getMerkleRoot(uint256[] memory includedTokens)
         public
         pure
         returns (bytes32 merkleRoot, ErrorsAndWarnings memory errorsAndWarnings)
@@ -906,21 +696,12 @@ contract SeaportValidatorHelper is Murky {
      * @return merkleProof The merkle proof
      * @return errorsAndWarnings Errors and warnings from the operation
      */
-    function getMerkleProof(
-        uint256[] memory includedTokens,
-        uint256 targetIndex
-    )
+    function getMerkleProof(uint256[] memory includedTokens, uint256 targetIndex)
         public
         pure
-        returns (
-            bytes32[] memory merkleProof,
-            ErrorsAndWarnings memory errorsAndWarnings
-        )
+        returns (bytes32[] memory merkleProof, ErrorsAndWarnings memory errorsAndWarnings)
     {
-        (merkleProof, errorsAndWarnings) = _getProof(
-            includedTokens,
-            targetIndex
-        );
+        (merkleProof, errorsAndWarnings) = _getProof(includedTokens, targetIndex);
     }
 
     /**
@@ -931,11 +712,11 @@ contract SeaportValidatorHelper is Murky {
      * @param valueToProve The value to prove
      * @return whether proof is valid
      */
-    function verifyMerkleProof(
-        bytes32 merkleRoot,
-        bytes32[] memory merkleProof,
-        uint256 valueToProve
-    ) public pure returns (bool) {
+    function verifyMerkleProof(bytes32 merkleRoot, bytes32[] memory merkleProof, uint256 valueToProve)
+        public
+        pure
+        returns (bool)
+    {
         bytes32 hashedValue = keccak256(abi.encode(valueToProve));
 
         return _verifyProof(merkleRoot, merkleProof, hashedValue);
@@ -947,11 +728,7 @@ contract SeaportValidatorHelper is Murky {
 }
 
 interface CreatorFeeEngineInterface {
-    function getRoyaltyView(
-        address tokenAddress,
-        uint256 tokenId,
-        uint256 value
-    )
+    function getRoyaltyView(address tokenAddress, uint256 tokenId, uint256 value)
         external
         view
         returns (address payable[] memory recipients, uint256[] memory amounts);

@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    ConsiderationItem,
-    OfferItem,
-    SpentItem
-} from "../../../lib/ConsiderationStructs.sol";
+import {ConsiderationItem, OfferItem, SpentItem} from "../../../lib/ConsiderationStructs.sol";
 
-import { ItemType } from "../../../lib/ConsiderationEnums.sol";
+import {ItemType} from "../../../lib/ConsiderationEnums.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
 /**
  * @title OfferItemLib
@@ -18,22 +14,13 @@ import { StructCopier } from "./StructCopier.sol";
  *         It allows chaining of functions to make struct creation more readable.
  */
 library OfferItemLib {
-    bytes32 private constant OFFER_ITEM_MAP_POSITION =
-        keccak256("seaport.OfferItemDefaults");
-    bytes32 private constant OFFER_ITEMS_MAP_POSITION =
-        keccak256("seaport.OfferItemsDefaults");
-    bytes32 private constant EMPTY_OFFER_ITEM =
-        keccak256(
-            abi.encode(
-                OfferItem({
-                    itemType: ItemType(0),
-                    token: address(0),
-                    identifierOrCriteria: 0,
-                    startAmount: 0,
-                    endAmount: 0
-                })
-            )
-        );
+    bytes32 private constant OFFER_ITEM_MAP_POSITION = keccak256("seaport.OfferItemDefaults");
+    bytes32 private constant OFFER_ITEMS_MAP_POSITION = keccak256("seaport.OfferItemsDefaults");
+    bytes32 private constant EMPTY_OFFER_ITEM = keccak256(
+        abi.encode(
+            OfferItem({itemType: ItemType(0), token: address(0), identifierOrCriteria: 0, startAmount: 0, endAmount: 0})
+        )
+    );
 
     /**
      * @dev Clears an OfferItem from storage.
@@ -81,9 +68,7 @@ library OfferItemLib {
      *
      * @return item the OfferItem retrieved from storage
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (OfferItem memory item) {
+    function fromDefault(string memory defaultName) internal view returns (OfferItem memory item) {
         mapping(string => OfferItem) storage offerItemMap = _offerItemMap();
         item = offerItemMap[defaultName];
 
@@ -99,9 +84,7 @@ library OfferItemLib {
      *
      * @return items the OfferItems retrieved from storage
      */
-    function fromDefaultMany(
-        string memory defaultsName
-    ) internal view returns (OfferItem[] memory items) {
+    function fromDefaultMany(string memory defaultsName) internal view returns (OfferItem[] memory items) {
         mapping(string => OfferItem[]) storage offerItemsMap = _offerItemsMap();
         items = offerItemsMap[defaultsName];
 
@@ -118,10 +101,10 @@ library OfferItemLib {
      *
      * @return _offerItem the OfferItem saved as a default
      */
-    function saveDefault(
-        OfferItem memory offerItem,
-        string memory defaultName
-    ) internal returns (OfferItem memory _offerItem) {
+    function saveDefault(OfferItem memory offerItem, string memory defaultName)
+        internal
+        returns (OfferItem memory _offerItem)
+    {
         mapping(string => OfferItem) storage offerItemMap = _offerItemMap();
         offerItemMap[defaultName] = offerItem;
         return offerItem;
@@ -135,10 +118,10 @@ library OfferItemLib {
      *
      * @return _offerItems the OfferItems saved as a default
      */
-    function saveDefaultMany(
-        OfferItem[] memory offerItems,
-        string memory defaultsName
-    ) internal returns (OfferItem[] memory _offerItems) {
+    function saveDefaultMany(OfferItem[] memory offerItems, string memory defaultsName)
+        internal
+        returns (OfferItem[] memory _offerItems)
+    {
         mapping(string => OfferItem[]) storage offerItemsMap = _offerItemsMap();
         OfferItem[] storage items = offerItemsMap[defaultsName];
         clearMany(defaultsName);
@@ -153,17 +136,14 @@ library OfferItemLib {
      *
      * @custom:return copiedItem the copied OfferItem
      */
-    function copy(
-        OfferItem memory item
-    ) internal pure returns (OfferItem memory) {
-        return
-            OfferItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifierOrCriteria: item.identifierOrCriteria,
-                startAmount: item.startAmount,
-                endAmount: item.endAmount
-            });
+    function copy(OfferItem memory item) internal pure returns (OfferItem memory) {
+        return OfferItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifierOrCriteria: item.identifierOrCriteria,
+            startAmount: item.startAmount,
+            endAmount: item.endAmount
+        });
     }
 
     /**
@@ -173,9 +153,7 @@ library OfferItemLib {
      *
      * @custom:return copiedItems the copied OfferItems
      */
-    function copy(
-        OfferItem[] memory items
-    ) internal pure returns (OfferItem[] memory) {
+    function copy(OfferItem[] memory items) internal pure returns (OfferItem[] memory) {
         OfferItem[] memory copiedItems = new OfferItem[](items.length);
         for (uint256 i = 0; i < items.length; i++) {
             copiedItems[i] = copy(items[i]);
@@ -189,14 +167,13 @@ library OfferItemLib {
      * @custom:return emptyItem the empty OfferItem
      */
     function empty() internal pure returns (OfferItem memory) {
-        return
-            OfferItem({
-                itemType: ItemType.NATIVE,
-                token: address(0),
-                identifierOrCriteria: 0,
-                startAmount: 0,
-                endAmount: 0
-            });
+        return OfferItem({
+            itemType: ItemType.NATIVE,
+            token: address(0),
+            identifierOrCriteria: 0,
+            startAmount: 0,
+            endAmount: 0
+        });
     }
 
     /**
@@ -204,11 +181,7 @@ library OfferItemLib {
      *
      * @custom:return offerItemMap the default OfferItem map position
      */
-    function _offerItemMap()
-        private
-        pure
-        returns (mapping(string => OfferItem) storage offerItemMap)
-    {
+    function _offerItemMap() private pure returns (mapping(string => OfferItem) storage offerItemMap) {
         bytes32 position = OFFER_ITEM_MAP_POSITION;
         assembly {
             offerItemMap.slot := position
@@ -220,11 +193,7 @@ library OfferItemLib {
      *
      * @custom:return offerItemMap the default OfferItem array map position
      */
-    function _offerItemsMap()
-        private
-        pure
-        returns (mapping(string => OfferItem[]) storage offerItemMap)
-    {
+    function _offerItemsMap() private pure returns (mapping(string => OfferItem[]) storage offerItemMap) {
         bytes32 position = OFFER_ITEMS_MAP_POSITION;
         assembly {
             offerItemMap.slot := position
@@ -242,10 +211,7 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withItemType(
-        OfferItem memory item,
-        ItemType itemType
-    ) internal pure returns (OfferItem memory) {
+    function withItemType(OfferItem memory item, ItemType itemType) internal pure returns (OfferItem memory) {
         item.itemType = itemType;
         return item;
     }
@@ -258,10 +224,7 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withToken(
-        OfferItem memory item,
-        address token
-    ) internal pure returns (OfferItem memory) {
+    function withToken(OfferItem memory item, address token) internal pure returns (OfferItem memory) {
         item.token = token;
         return item;
     }
@@ -274,10 +237,11 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withIdentifierOrCriteria(
-        OfferItem memory item,
-        uint256 identifierOrCriteria
-    ) internal pure returns (OfferItem memory) {
+    function withIdentifierOrCriteria(OfferItem memory item, uint256 identifierOrCriteria)
+        internal
+        pure
+        returns (OfferItem memory)
+    {
         item.identifierOrCriteria = identifierOrCriteria;
         return item;
     }
@@ -290,10 +254,7 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withStartAmount(
-        OfferItem memory item,
-        uint256 startAmount
-    ) internal pure returns (OfferItem memory) {
+    function withStartAmount(OfferItem memory item, uint256 startAmount) internal pure returns (OfferItem memory) {
         item.startAmount = startAmount;
         return item;
     }
@@ -306,10 +267,7 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withEndAmount(
-        OfferItem memory item,
-        uint256 endAmount
-    ) internal pure returns (OfferItem memory) {
+    function withEndAmount(OfferItem memory item, uint256 endAmount) internal pure returns (OfferItem memory) {
         item.endAmount = endAmount;
         return item;
     }
@@ -322,10 +280,7 @@ library OfferItemLib {
      *
      * @custom:return _offerItem the modified OfferItem
      */
-    function withAmount(
-        OfferItem memory item,
-        uint256 amount
-    ) internal pure returns (OfferItem memory) {
+    function withAmount(OfferItem memory item, uint256 amount) internal pure returns (OfferItem memory) {
         item.startAmount = amount;
         item.endAmount = amount;
         return item;
@@ -338,16 +293,13 @@ library OfferItemLib {
      *
      * @custom:return spentItem the converted SpentItem
      */
-    function toSpentItem(
-        OfferItem memory item
-    ) internal pure returns (SpentItem memory) {
-        return
-            SpentItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifier: item.identifierOrCriteria,
-                amount: item.startAmount
-            });
+    function toSpentItem(OfferItem memory item) internal pure returns (SpentItem memory) {
+        return SpentItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifier: item.identifierOrCriteria,
+            amount: item.startAmount
+        });
     }
 
     /**
@@ -357,9 +309,7 @@ library OfferItemLib {
      *
      * @custom:return spentItems the converted SpentItem[]
      */
-    function toSpentItemArray(
-        OfferItem[] memory items
-    ) internal pure returns (SpentItem[] memory) {
+    function toSpentItemArray(OfferItem[] memory items) internal pure returns (SpentItem[] memory) {
         SpentItem[] memory spentItems = new SpentItem[](items.length);
         for (uint256 i = 0; i < items.length; i++) {
             spentItems[i] = toSpentItem(items[i]);
@@ -375,18 +325,18 @@ library OfferItemLib {
      *
      * @custom:return considerationItem the converted ConsiderationItem
      */
-    function toConsiderationItem(
-        OfferItem memory item,
-        address recipient
-    ) internal pure returns (ConsiderationItem memory) {
-        return
-            ConsiderationItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifierOrCriteria: item.identifierOrCriteria,
-                startAmount: item.startAmount,
-                endAmount: item.endAmount,
-                recipient: payable(recipient)
-            });
+    function toConsiderationItem(OfferItem memory item, address recipient)
+        internal
+        pure
+        returns (ConsiderationItem memory)
+    {
+        return ConsiderationItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifierOrCriteria: item.identifierOrCriteria,
+            startAmount: item.startAmount,
+            endAmount: item.endAmount,
+            recipient: payable(recipient)
+        });
     }
 }

@@ -1,19 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { ERC721Interface } from "../interfaces/AbridgedTokenInterfaces.sol";
+import {ERC721Interface} from "../interfaces/AbridgedTokenInterfaces.sol";
 
-import {
-    ContractOffererInterface
-} from "../interfaces/ContractOffererInterface.sol";
+import {ContractOffererInterface} from "../interfaces/ContractOffererInterface.sol";
 
-import { ItemType } from "../lib/ConsiderationEnums.sol";
+import {ItemType} from "../lib/ConsiderationEnums.sol";
 
-import {
-    ReceivedItem,
-    Schema,
-    SpentItem
-} from "../lib/ConsiderationStructs.sol";
+import {ReceivedItem, Schema, SpentItem} from "../lib/ConsiderationStructs.sol";
 
 contract TestBadContractOfferer is ContractOffererInterface {
     error IntentionalRevert();
@@ -42,12 +36,7 @@ contract TestBadContractOfferer is ContractOffererInterface {
      * @return offer         A tuple containing the offer items.
      * @return consideration A tuple containing the consideration items.
      */
-    function generateOrder(
-        address a,
-        SpentItem[] calldata b,
-        SpentItem[] calldata c,
-        bytes calldata d
-    )
+    function generateOrder(address a, SpentItem[] calldata b, SpentItem[] calldata c, bytes calldata d)
         external
         virtual
         override
@@ -76,12 +65,7 @@ contract TestBadContractOfferer is ContractOffererInterface {
         SpentItem[] calldata minimumReceived,
         SpentItem[] calldata maximumSpent,
         bytes calldata
-    )
-        public
-        view
-        override
-        returns (SpentItem[] memory offer, ReceivedItem[] memory consideration)
-    {
+    ) public view override returns (SpentItem[] memory offer, ReceivedItem[] memory consideration) {
         if (minimumReceived[0].identifier == 1) {
             offer = minimumReceived;
             consideration = new ReceivedItem[](1);
@@ -113,18 +97,22 @@ contract TestBadContractOfferer is ContractOffererInterface {
     }
 
     function ratifyOrder(
-        SpentItem[] calldata /* offer */,
-        ReceivedItem[] calldata /* consideration */,
-        bytes calldata /* context */,
-        bytes32[] calldata /* orderHashes */,
+        SpentItem[] calldata, /* offer */
+        ReceivedItem[] calldata, /* consideration */
+        bytes calldata, /* context */
+        bytes32[] calldata, /* orderHashes */
         uint256 /* contractNonce */
-    ) external pure override returns (bytes4 /* ratifyOrderMagicValue */) {
+    ) external pure override returns (bytes4 /* ratifyOrderMagicValue */ ) {
         return TestBadContractOfferer.ratifyOrder.selector;
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ContractOffererInterface) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ContractOffererInterface)
+        returns (bool)
+    {
         return interfaceId == type(ContractOffererInterface).interfaceId;
     }
 

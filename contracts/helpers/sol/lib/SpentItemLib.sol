@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { OfferItem, SpentItem } from "../../../lib/ConsiderationStructs.sol";
+import {OfferItem, SpentItem} from "../../../lib/ConsiderationStructs.sol";
 
-import { ItemType } from "../../../lib/ConsiderationEnums.sol";
+import {ItemType} from "../../../lib/ConsiderationEnums.sol";
 
 /**
  * @title SpentItemLib
@@ -13,21 +13,10 @@ import { ItemType } from "../../../lib/ConsiderationEnums.sol";
  *         readable.
  */
 library SpentItemLib {
-    bytes32 private constant SPENT_ITEM_MAP_POSITION =
-        keccak256("seaport.SpentItemDefaults");
-    bytes32 private constant SPENT_ITEMS_MAP_POSITION =
-        keccak256("seaport.SpentItemsDefaults");
+    bytes32 private constant SPENT_ITEM_MAP_POSITION = keccak256("seaport.SpentItemDefaults");
+    bytes32 private constant SPENT_ITEMS_MAP_POSITION = keccak256("seaport.SpentItemsDefaults");
     bytes32 private constant EMPTY_SPENT_ITEM =
-        keccak256(
-            abi.encode(
-                SpentItem({
-                    itemType: ItemType(0),
-                    token: address(0),
-                    identifier: 0,
-                    amount: 0
-                })
-            )
-        );
+        keccak256(abi.encode(SpentItem({itemType: ItemType(0), token: address(0), identifier: 0, amount: 0})));
 
     /**
      * @dev Creates an empty SpentItem.
@@ -92,9 +81,7 @@ library SpentItemLib {
      *
      * @return item the SpentItem
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (SpentItem memory item) {
+    function fromDefault(string memory defaultName) internal view returns (SpentItem memory item) {
         mapping(string => SpentItem) storage spentItemMap = _spentItemMap();
         item = spentItemMap[defaultName];
 
@@ -110,9 +97,7 @@ library SpentItemLib {
      *
      * @return items the SpentItems
      */
-    function fromDefaultMany(
-        string memory defaultsName
-    ) internal view returns (SpentItem[] memory items) {
+    function fromDefaultMany(string memory defaultsName) internal view returns (SpentItem[] memory items) {
         mapping(string => SpentItem[]) storage spentItemsMap = _spentItemsMap();
         items = spentItemsMap[defaultsName];
 
@@ -129,10 +114,10 @@ library SpentItemLib {
      *
      * @return _spentItem the saved SpentItem
      */
-    function saveDefault(
-        SpentItem memory spentItem,
-        string memory defaultName
-    ) internal returns (SpentItem memory _spentItem) {
+    function saveDefault(SpentItem memory spentItem, string memory defaultName)
+        internal
+        returns (SpentItem memory _spentItem)
+    {
         mapping(string => SpentItem) storage spentItemMap = _spentItemMap();
         spentItemMap[defaultName] = spentItem;
         return spentItem;
@@ -146,10 +131,10 @@ library SpentItemLib {
      *
      * @return _spentItems the saved SpentItems
      */
-    function saveDefaultMany(
-        SpentItem[] memory spentItems,
-        string memory defaultsName
-    ) internal returns (SpentItem[] memory _spentItems) {
+    function saveDefaultMany(SpentItem[] memory spentItems, string memory defaultsName)
+        internal
+        returns (SpentItem[] memory _spentItems)
+    {
         mapping(string => SpentItem[]) storage spentItemsMap = _spentItemsMap();
         SpentItem[] storage items = spentItemsMap[defaultsName];
         setSpentItems(items, spentItems);
@@ -164,10 +149,7 @@ library SpentItemLib {
      * @param newItems the SpentItem array in memory to push onto the items
      *                 array
      */
-    function setSpentItems(
-        SpentItem[] storage items,
-        SpentItem[] memory newItems
-    ) internal {
+    function setSpentItems(SpentItem[] storage items, SpentItem[] memory newItems) internal {
         clearMany(items);
         for (uint256 i = 0; i < newItems.length; i++) {
             items.push(newItems[i]);
@@ -181,16 +163,8 @@ library SpentItemLib {
      *
      * @custom:return copiedItem the copied SpentItem
      */
-    function copy(
-        SpentItem memory item
-    ) internal pure returns (SpentItem memory) {
-        return
-            SpentItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifier: item.identifier,
-                amount: item.amount
-            });
+    function copy(SpentItem memory item) internal pure returns (SpentItem memory) {
+        return SpentItem({itemType: item.itemType, token: item.token, identifier: item.identifier, amount: item.amount});
     }
 
     /**
@@ -200,9 +174,7 @@ library SpentItemLib {
      *
      * @custom:return copiedItems the copied SpentItems
      */
-    function copy(
-        SpentItem[] memory items
-    ) internal pure returns (SpentItem[] memory) {
+    function copy(SpentItem[] memory items) internal pure returns (SpentItem[] memory) {
         SpentItem[] memory copiedItems = new SpentItem[](items.length);
         for (uint256 i = 0; i < items.length; i++) {
             copiedItems[i] = copy(items[i]);
@@ -215,11 +187,7 @@ library SpentItemLib {
      *
      * @custom:return position the storage position of the default SpentItem map
      */
-    function _spentItemMap()
-        private
-        pure
-        returns (mapping(string => SpentItem) storage spentItemMap)
-    {
+    function _spentItemMap() private pure returns (mapping(string => SpentItem) storage spentItemMap) {
         bytes32 position = SPENT_ITEM_MAP_POSITION;
         assembly {
             spentItemMap.slot := position
@@ -232,11 +200,7 @@ library SpentItemLib {
      * @custom:return position the storage position of the default SpentItem
      *                         array map
      */
-    function _spentItemsMap()
-        private
-        pure
-        returns (mapping(string => SpentItem[]) storage spentItemsMap)
-    {
+    function _spentItemsMap() private pure returns (mapping(string => SpentItem[]) storage spentItemsMap) {
         bytes32 position = SPENT_ITEMS_MAP_POSITION;
         assembly {
             spentItemsMap.slot := position
@@ -254,10 +218,7 @@ library SpentItemLib {
      *
      * @custom:return item the SpentItem with the itemType field set
      */
-    function withItemType(
-        SpentItem memory item,
-        ItemType itemType
-    ) internal pure returns (SpentItem memory) {
+    function withItemType(SpentItem memory item, ItemType itemType) internal pure returns (SpentItem memory) {
         item.itemType = itemType;
         return item;
     }
@@ -270,10 +231,7 @@ library SpentItemLib {
      *
      * @custom:return item the SpentItem with the token field set
      */
-    function withToken(
-        SpentItem memory item,
-        address token
-    ) internal pure returns (SpentItem memory) {
+    function withToken(SpentItem memory item, address token) internal pure returns (SpentItem memory) {
         item.token = token;
         return item;
     }
@@ -286,10 +244,7 @@ library SpentItemLib {
      *
      * @custom:return item the SpentItem with the identifier field set
      */
-    function withIdentifier(
-        SpentItem memory item,
-        uint256 identifier
-    ) internal pure returns (SpentItem memory) {
+    function withIdentifier(SpentItem memory item, uint256 identifier) internal pure returns (SpentItem memory) {
         item.identifier = identifier;
         return item;
     }
@@ -302,10 +257,7 @@ library SpentItemLib {
      *
      * @custom:return item the SpentItem with the amount field set
      */
-    function withAmount(
-        SpentItem memory item,
-        uint256 amount
-    ) internal pure returns (SpentItem memory) {
+    function withAmount(SpentItem memory item, uint256 amount) internal pure returns (SpentItem memory) {
         item.amount = amount;
         return item;
     }
@@ -317,16 +269,13 @@ library SpentItemLib {
      *
      * @custom:return offerItem the converted OfferItem
      */
-    function toOfferItem(
-        SpentItem memory item
-    ) internal pure returns (OfferItem memory) {
-        return
-            OfferItem({
-                itemType: item.itemType,
-                token: item.token,
-                identifierOrCriteria: item.identifier,
-                startAmount: item.amount,
-                endAmount: item.amount
-            });
+    function toOfferItem(SpentItem memory item) internal pure returns (OfferItem memory) {
+        return OfferItem({
+            itemType: item.itemType,
+            token: item.token,
+            identifierOrCriteria: item.identifier,
+            startAmount: item.amount,
+            endAmount: item.amount
+        });
     }
 }

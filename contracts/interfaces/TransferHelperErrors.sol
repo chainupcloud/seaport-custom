@@ -29,23 +29,13 @@ interface TransferHelperErrors {
      * @dev Revert with an error when a call to an ERC721 receiver reverts with
      *      bytes data.
      */
-    error ERC721ReceiverErrorRevertBytes(
-        bytes reason,
-        address receiver,
-        address sender,
-        uint256 identifier
-    );
+    error ERC721ReceiverErrorRevertBytes(bytes reason, address receiver, address sender, uint256 identifier);
 
     /**
      * @dev Revert with an error when a call to an ERC721 receiver reverts with
      *      string reason.
      */
-    error ERC721ReceiverErrorRevertString(
-        string reason,
-        address receiver,
-        address sender,
-        uint256 identifier
-    );
+    error ERC721ReceiverErrorRevertString(string reason, address receiver, address sender, uint256 identifier);
 
     /**
      * @dev Revert with an error when an ERC20 token has an invalid identifier.
@@ -67,19 +57,11 @@ interface TransferHelperErrors {
      * @dev Revert with an error when a call to a conduit reverts with a
      *      reason string.
      */
-    error ConduitErrorRevertString(
-        string reason,
-        bytes32 conduitKey,
-        address conduit
-    );
+    error ConduitErrorRevertString(string reason, bytes32 conduitKey, address conduit);
 
     /**
      * @dev Revert with an error when a call to a conduit reverts with bytes
      *      data.
      */
-    error ConduitErrorRevertBytes(
-        bytes reason,
-        bytes32 conduitKey,
-        address conduit
-    );
+    error ConduitErrorRevertBytes(bytes reason, bytes32 conduitKey, address conduit);
 }

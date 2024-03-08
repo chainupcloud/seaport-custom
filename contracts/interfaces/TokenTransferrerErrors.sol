@@ -39,13 +39,7 @@ interface TokenTransferrerErrors {
      * @param identifier The identifier for the attempted transfer.
      * @param amount     The amount for the attempted transfer.
      */
-    error TokenTransferGenericFailure(
-        address token,
-        address from,
-        address to,
-        uint256 identifier,
-        uint256 amount
-    );
+    error TokenTransferGenericFailure(address token, address from, address to, uint256 identifier, uint256 amount);
 
     /**
      * @dev Revert with an error when a batch ERC1155 token transfer reverts.
@@ -57,11 +51,7 @@ interface TokenTransferrerErrors {
      * @param amounts     The amounts for the attempted transfer.
      */
     error ERC1155BatchTransferGenericFailure(
-        address token,
-        address from,
-        address to,
-        uint256[] identifiers,
-        uint256[] amounts
+        address token, address from, address to, uint256[] identifiers, uint256[] amounts
     );
 
     /**
@@ -73,12 +63,7 @@ interface TokenTransferrerErrors {
      * @param to         The recipient of the attempted ERC20 transfer.
      * @param amount     The amount for the attempted ERC20 transfer.
      */
-    error BadReturnValueFromERC20OnTransfer(
-        address token,
-        address from,
-        address to,
-        uint256 amount
-    );
+    error BadReturnValueFromERC20OnTransfer(address token, address from, address to, uint256 amount);
 
     /**
      * @dev Revert with an error when an account being called as an assumed

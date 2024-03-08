@@ -32,10 +32,7 @@ library ArrayHelpers {
         }
     }
 
-    function flatten(
-        MemoryPointer array1,
-        MemoryPointer array2
-    ) internal view returns (MemoryPointer newArray) {
+    function flatten(MemoryPointer array1, MemoryPointer array2) internal view returns (MemoryPointer newArray) {
         unchecked {
             uint256 arrayLength1 = array1.readUint256();
             uint256 arrayLength2 = array2.readUint256();
@@ -55,11 +52,11 @@ library ArrayHelpers {
         }
     }
 
-    function flattenThree(
-        MemoryPointer array1,
-        MemoryPointer array2,
-        MemoryPointer array3
-    ) internal view returns (MemoryPointer newArray) {
+    function flattenThree(MemoryPointer array1, MemoryPointer array2, MemoryPointer array3)
+        internal
+        view
+        returns (MemoryPointer newArray)
+    {
         unchecked {
             uint256 arrayLength1 = array1.readUint256();
             uint256 arrayLength2 = array2.readUint256();
@@ -68,9 +65,7 @@ library ArrayHelpers {
             uint256 array2HeadSize = arrayLength2 * 32;
             uint256 array3HeadSize = arrayLength3 * 32;
 
-            newArray = malloc(
-                array1HeadSize + array2HeadSize + array3HeadSize + 32
-            );
+            newArray = malloc(array1HeadSize + array2HeadSize + array3HeadSize + 32);
             newArray.write(arrayLength1 + arrayLength2 + arrayLength3);
 
             MemoryPointer dst = newArray.next();
@@ -81,10 +76,7 @@ library ArrayHelpers {
                 array2.next().copy(dst.offset(array1HeadSize), array2HeadSize);
             }
             if (arrayLength3 > 0) {
-                array3.next().copy(
-                    dst.offset(array1HeadSize + array2HeadSize),
-                    array3HeadSize
-                );
+                array3.next().copy(dst.offset(array1HeadSize + array2HeadSize), array3HeadSize);
             }
         }
     }
@@ -505,11 +497,11 @@ library ArrayHelpers {
      * @return          the value of the first element in the array where
      *                  predicate is true and 0 otherwise.
      */
-    function find(
-        MemoryPointer array,
-        function(uint256, uint256) internal pure returns (bool) predicate,
-        uint256 arg
-    ) internal pure returns (uint256) {
+    function find(MemoryPointer array, function(uint256, uint256) internal pure returns (bool) predicate, uint256 arg)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 length = array.readUint256();
             MemoryPointer srcPosition = array.next();
@@ -541,11 +533,11 @@ library ArrayHelpers {
      * @custom:return   the value of the first element in the array where
      *                  predicate is trueand 0 otherwise.
      */
-    function find(
-        MemoryPointer array,
-        function(uint256) internal pure returns (bool) predicate,
-        uint256 fromIndex
-    ) internal pure returns (uint256) {
+    function find(MemoryPointer array, function(uint256) internal pure returns (bool) predicate, uint256 fromIndex)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 length = array.readUint256();
             MemoryPointer srcPosition = array.next().offset(fromIndex * 0x20);
@@ -576,10 +568,11 @@ library ArrayHelpers {
      * @return          the value of the first element in the array where
      *                  predicate is true and 0 otherwise.
      */
-    function find(
-        MemoryPointer array,
-        function(uint256) internal pure returns (bool) predicate
-    ) internal pure returns (uint256) {
+    function find(MemoryPointer array, function(uint256) internal pure returns (bool) predicate)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 length = array.readUint256();
             MemoryPointer srcPosition = array.next();
@@ -604,18 +597,13 @@ library ArrayHelpers {
      * @param array         array to search
      * @param searchElement the value to locate in the array.
      */
-    function indexOf(
-        MemoryPointer array,
-        uint256 searchElement
-    ) internal pure returns (int256 index) {
+    function indexOf(MemoryPointer array, uint256 searchElement) internal pure returns (int256 index) {
         unchecked {
             int256 length = array.readInt256();
             MemoryPointer src = array;
             int256 reachedEnd;
             while (
-                ((reachedEnd = toInt(index == length)) |
-                    toInt((src = src.next()).readUint256() == searchElement)) ==
-                0
+                ((reachedEnd = toInt(index == length)) | toInt((src = src.next()).readUint256() == searchElement)) == 0
             ) {
                 index += 1;
             }
@@ -696,10 +684,7 @@ library ArrayHelpers {
     //                      includes with one argument                      //
     // =====================================================================//
 
-    function includes(
-        MemoryPointer array,
-        uint256 value
-    ) internal pure returns (bool) {
+    function includes(MemoryPointer array, uint256 value) internal pure returns (bool) {
         return indexOf(array, value) != -1;
     }
 }

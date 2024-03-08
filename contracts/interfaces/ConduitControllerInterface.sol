@@ -36,11 +36,7 @@ interface ConduitControllerInterface {
      * @param previousOwner The previous owner of the conduit.
      * @param newOwner      The new owner of the conduit.
      */
-    event OwnershipTransferred(
-        address indexed conduit,
-        address indexed previousOwner,
-        address indexed newOwner
-    );
+    event OwnershipTransferred(address indexed conduit, address indexed previousOwner, address indexed newOwner);
 
     /**
      * @dev Emit an event whenever a conduit owner registers a new potential
@@ -67,10 +63,7 @@ interface ConduitControllerInterface {
      * @dev Revert with an error when attempting to set a new potential owner
      *      that is already set.
      */
-    error NewPotentialOwnerAlreadySet(
-        address conduit,
-        address newPotentialOwner
-    );
+    error NewPotentialOwnerAlreadySet(address conduit, address newPotentialOwner);
 
     /**
      * @dev Revert with an error when attempting to cancel ownership transfer
@@ -130,10 +123,7 @@ interface ConduitControllerInterface {
      *
      * @return conduit The address of the newly deployed conduit.
      */
-    function createConduit(
-        bytes32 conduitKey,
-        address initialOwner
-    ) external returns (address conduit);
+    function createConduit(bytes32 conduitKey, address initialOwner) external returns (address conduit);
 
     /**
      * @notice Open or close a channel on a given conduit, thereby allowing the
@@ -147,11 +137,7 @@ interface ConduitControllerInterface {
      * @param channel The channel to open or close on the conduit.
      * @param isOpen  A boolean indicating whether to open or close the channel.
      */
-    function updateChannel(
-        address conduit,
-        address channel,
-        bool isOpen
-    ) external;
+    function updateChannel(address conduit, address channel, bool isOpen) external;
 
     /**
      * @notice Initiate conduit ownership transfer by assigning a new potential
@@ -162,10 +148,7 @@ interface ConduitControllerInterface {
      * @param conduit The conduit for which to initiate ownership transfer.
      * @param newPotentialOwner The new potential owner of the conduit.
      */
-    function transferOwnership(
-        address conduit,
-        address newPotentialOwner
-    ) external;
+    function transferOwnership(address conduit, address newPotentialOwner) external;
 
     /**
      * @notice Clear the currently set potential owner, if any, from a conduit.
@@ -215,9 +198,7 @@ interface ConduitControllerInterface {
      * @return exists  A boolean indicating whether the derived conduit has been
      *                 deployed or not.
      */
-    function getConduit(
-        bytes32 conduitKey
-    ) external view returns (address conduit, bool exists);
+    function getConduit(bytes32 conduitKey) external view returns (address conduit, bool exists);
 
     /**
      * @notice Retrieve the potential owner, if any, for a given conduit. The
@@ -229,9 +210,7 @@ interface ConduitControllerInterface {
      *
      * @return potentialOwner The potential owner, if any, for the conduit.
      */
-    function getPotentialOwner(
-        address conduit
-    ) external view returns (address potentialOwner);
+    function getPotentialOwner(address conduit) external view returns (address potentialOwner);
 
     /**
      * @notice Retrieve the status (either open or closed) of a given channel on
@@ -242,10 +221,7 @@ interface ConduitControllerInterface {
      *
      * @return isOpen The status of the channel on the given conduit.
      */
-    function getChannelStatus(
-        address conduit,
-        address channel
-    ) external view returns (bool isOpen);
+    function getChannelStatus(address conduit, address channel) external view returns (bool isOpen);
 
     /**
      * @notice Retrieve the total number of open channels for a given conduit.
@@ -254,9 +230,7 @@ interface ConduitControllerInterface {
      *
      * @return totalChannels The total number of open channels for the conduit.
      */
-    function getTotalChannels(
-        address conduit
-    ) external view returns (uint256 totalChannels);
+    function getTotalChannels(address conduit) external view returns (uint256 totalChannels);
 
     /**
      * @notice Retrieve an open channel at a specific index for a given conduit.
@@ -268,10 +242,7 @@ interface ConduitControllerInterface {
      *
      * @return channel The open channel, if any, at the specified channel index.
      */
-    function getChannel(
-        address conduit,
-        uint256 channelIndex
-    ) external view returns (address channel);
+    function getChannel(address conduit, uint256 channelIndex) external view returns (address channel);
 
     /**
      * @notice Retrieve all open channels for a given conduit. Note that calling
@@ -282,15 +253,10 @@ interface ConduitControllerInterface {
      *
      * @return channels An array of open channels on the given conduit.
      */
-    function getChannels(
-        address conduit
-    ) external view returns (address[] memory channels);
+    function getChannels(address conduit) external view returns (address[] memory channels);
 
     /**
      * @dev Retrieve the conduit creation code and runtime code hashes.
      */
-    function getConduitCodeHashes()
-        external
-        view
-        returns (bytes32 creationCodeHash, bytes32 runtimeCodeHash);
+    function getConduitCodeHashes() external view returns (bytes32 creationCodeHash, bytes32 runtimeCodeHash);
 }

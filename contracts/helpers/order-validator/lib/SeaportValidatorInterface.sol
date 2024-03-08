@@ -1,14 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import { ItemType } from "../../../lib/ConsiderationEnums.sol";
-import {
-    Order,
-    OrderParameters,
-    ZoneParameters
-} from "../../../lib/ConsiderationStructs.sol";
-import { ErrorsAndWarnings } from "./ErrorsAndWarnings.sol";
-import { ValidationConfiguration } from "./SeaportValidatorTypes.sol";
+import {ItemType} from "../../../lib/ConsiderationEnums.sol";
+import {Order, OrderParameters, ZoneParameters} from "../../../lib/ConsiderationStructs.sol";
+import {ErrorsAndWarnings} from "./ErrorsAndWarnings.sol";
+import {ValidationConfiguration} from "./SeaportValidatorTypes.sol";
 
 /**
  * @title SeaportValidator
@@ -26,18 +22,16 @@ interface SeaportValidatorInterface {
      * @param order The order to validate.
      * @return errorsAndWarnings The errors and warnings found in the order.
      */
-    function isValidOrder(
-        Order calldata order,
-        address seaportAddress
-    ) external returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function isValidOrder(Order calldata order, address seaportAddress)
+        external
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Same as `isValidOrder` but allows for more configuration related to fee validation.
      */
-    function isValidOrderWithConfiguration(
-        ValidationConfiguration memory validationConfiguration,
-        Order memory order
-    ) external returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function isValidOrderWithConfiguration(ValidationConfiguration memory validationConfiguration, Order memory order)
+        external
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Same as `isValidOrderWithConfiguration` but doesn't call `validate` on Seaport.
@@ -52,10 +46,10 @@ interface SeaportValidatorInterface {
      * @param conduitKey The conduit key to check.
      * @return errorsAndWarnings The errors and warnings
      */
-    function isValidConduit(
-        bytes32 conduitKey,
-        address seaportAddress
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function isValidConduit(bytes32 conduitKey, address seaportAddress)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     // TODO: Need to add support for order with extra data
     /**
@@ -63,20 +57,18 @@ interface SeaportValidatorInterface {
      * @param orderParameters The parameters for the order to validate
      * @return errorsAndWarnings An ErrorsAndWarnings structs with results
      */
-    function isValidZone(
-        OrderParameters memory orderParameters
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function isValidZone(OrderParameters memory orderParameters)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
-    function validateSignature(
-        Order memory order,
-        address seaportAddress
-    ) external returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateSignature(Order memory order, address seaportAddress)
+        external
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
-    function validateSignatureWithCounter(
-        Order memory order,
-        uint256 counter,
-        address seaportAddress
-    ) external returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateSignatureWithCounter(Order memory order, uint256 counter, address seaportAddress)
+        external
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Check the time validity of an order
@@ -96,30 +88,30 @@ interface SeaportValidatorInterface {
      * @param orderParameters The parameters for the order to validate
      * @return errorsAndWarnings  The errors and warnings
      */
-    function validateOrderStatus(
-        OrderParameters memory orderParameters,
-        address seaportAddress
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateOrderStatus(OrderParameters memory orderParameters, address seaportAddress)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Validate all offer items for an order
      * @param orderParameters The parameters for the order to validate
      * @return errorsAndWarnings  The errors and warnings
      */
-    function validateOfferItems(
-        OrderParameters memory orderParameters,
-        address seaportAddress
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateOfferItems(OrderParameters memory orderParameters, address seaportAddress)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Validate all consideration items for an order
      * @param orderParameters The parameters for the order to validate
      * @return errorsAndWarnings  The errors and warnings
      */
-    function validateConsiderationItems(
-        OrderParameters memory orderParameters,
-        address seaportAddress
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateConsiderationItems(OrderParameters memory orderParameters, address seaportAddress)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Strict validation operates under tight assumptions. It validates primary
@@ -174,11 +166,10 @@ interface SeaportValidatorInterface {
      * @param offerItemIndex The index of the offerItem in offer array to validate
      * @return errorsAndWarnings An ErrorsAndWarnings structs with results
      */
-    function validateOfferItem(
-        OrderParameters memory orderParameters,
-        uint256 offerItemIndex,
-        address seaportAddress
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateOfferItem(OrderParameters memory orderParameters, uint256 offerItemIndex, address seaportAddress)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Validates the OfferItem parameters. This includes token contract validation
@@ -211,20 +202,17 @@ interface SeaportValidatorInterface {
      * @param zoneParameters The parameters for the zone to validate
      * @return errorsAndWarnings An ErrorsAndWarnings structs with results
      */
-    function validateOrderWithZone(
-        OrderParameters memory orderParameters,
-        ZoneParameters memory zoneParameters
-    ) external view returns (ErrorsAndWarnings memory errorsAndWarnings);
+    function validateOrderWithZone(OrderParameters memory orderParameters, ZoneParameters memory zoneParameters)
+        external
+        view
+        returns (ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Gets the approval address for the given conduit key
      * @param conduitKey Conduit key to get approval address for
      * @return errorsAndWarnings An ErrorsAndWarnings structs with results
      */
-    function getApprovalAddress(
-        bytes32 conduitKey,
-        address seaportAddress
-    )
+    function getApprovalAddress(bytes32 conduitKey, address seaportAddress)
         external
         view
         returns (address, ErrorsAndWarnings memory errorsAndWarnings);
@@ -234,10 +222,7 @@ interface SeaportValidatorInterface {
      * @param token The token address to check
      * @param interfaceHash The interface hash to check
      */
-    function checkInterface(
-        address token,
-        bytes4 interfaceHash
-    ) external view returns (bool);
+    function checkInterface(address token, bytes4 interfaceHash) external view returns (bool);
 
     function isPaymentToken(ItemType itemType) external pure returns (bool);
 
@@ -251,9 +236,7 @@ interface SeaportValidatorInterface {
      * @param includedTokens An array of included token ids.
      * @return sortedTokens The sorted `includedTokens` array.
      */
-    function sortMerkleTokens(
-        uint256[] memory includedTokens
-    ) external view returns (uint256[] memory sortedTokens);
+    function sortMerkleTokens(uint256[] memory includedTokens) external view returns (uint256[] memory sortedTokens);
 
     /**
      * @notice Creates a merkle root for includedTokens.
@@ -261,15 +244,10 @@ interface SeaportValidatorInterface {
      * @return merkleRoot The merkle root
      * @return errorsAndWarnings Errors and warnings from the operation
      */
-    function getMerkleRoot(
-        uint256[] memory includedTokens
-    )
+    function getMerkleRoot(uint256[] memory includedTokens)
         external
         view
-        returns (
-            bytes32 merkleRoot,
-            ErrorsAndWarnings memory errorsAndWarnings
-        );
+        returns (bytes32 merkleRoot, ErrorsAndWarnings memory errorsAndWarnings);
 
     /**
      * @notice Creates a merkle proof for the the targetIndex contained in includedTokens.
@@ -278,20 +256,13 @@ interface SeaportValidatorInterface {
      * @return merkleProof The merkle proof
      * @return errorsAndWarnings Errors and warnings from the operation
      */
-    function getMerkleProof(
-        uint256[] memory includedTokens,
-        uint256 targetIndex
-    )
+    function getMerkleProof(uint256[] memory includedTokens, uint256 targetIndex)
         external
         view
-        returns (
-            bytes32[] memory merkleProof,
-            ErrorsAndWarnings memory errorsAndWarnings
-        );
+        returns (bytes32[] memory merkleProof, ErrorsAndWarnings memory errorsAndWarnings);
 
-    function verifyMerkleProof(
-        bytes32 merkleRoot,
-        bytes32[] memory merkleProof,
-        uint256 valueToProve
-    ) external view returns (bool);
+    function verifyMerkleProof(bytes32 merkleRoot, bytes32[] memory merkleProof, uint256 valueToProve)
+        external
+        view
+        returns (bool);
 }

@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    OrderParameters,
-    ReceivedItem,
-    SpentItem
-} from "../lib/ConsiderationStructs.sol";
+import {OrderParameters, ReceivedItem, SpentItem} from "../lib/ConsiderationStructs.sol";
 
 /**
  * @title ConsiderationEventsAndErrors
@@ -44,11 +40,7 @@ interface ConsiderationEventsAndErrors {
      * @param offerer   The offerer of the cancelled order.
      * @param zone      The zone of the cancelled order.
      */
-    event OrderCancelled(
-        bytes32 orderHash,
-        address indexed offerer,
-        address indexed zone
-    );
+    event OrderCancelled(bytes32 orderHash, address indexed offerer, address indexed zone);
 
     /**
      * @dev Emit an event whenever an order is explicitly validated. Note that
@@ -130,11 +122,7 @@ interface ConsiderationEventsAndErrors {
      *                           order.
      * @param shortfallAmount    The unfulfilled consideration amount.
      */
-    error ConsiderationNotMet(
-        uint256 orderIndex,
-        uint256 considerationIndex,
-        uint256 shortfallAmount
-    );
+    error ConsiderationNotMet(uint256 orderIndex, uint256 considerationIndex, uint256 shortfallAmount);
 
     /**
      * @dev Revert with an error when insufficient native tokens are supplied as

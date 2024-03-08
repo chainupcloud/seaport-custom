@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    Fulfillment,
-    FulfillmentComponent
-} from "../../../lib/ConsiderationStructs.sol";
+import {Fulfillment, FulfillmentComponent} from "../../../lib/ConsiderationStructs.sol";
 
-import { FulfillmentComponentLib } from "./FulfillmentComponentLib.sol";
+import {FulfillmentComponentLib} from "./FulfillmentComponentLib.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
 /**
  * @title FulfillmentLib
@@ -18,10 +15,8 @@ import { StructCopier } from "./StructCopier.sol";
  *         readable.
  */
 library FulfillmentLib {
-    bytes32 private constant FULFILLMENT_MAP_POSITION =
-        keccak256("seaport.FulfillmentDefaults");
-    bytes32 private constant FULFILLMENTS_MAP_POSITION =
-        keccak256("seaport.FulfillmentsDefaults");
+    bytes32 private constant FULFILLMENT_MAP_POSITION = keccak256("seaport.FulfillmentDefaults");
+    bytes32 private constant FULFILLMENTS_MAP_POSITION = keccak256("seaport.FulfillmentsDefaults");
 
     using FulfillmentComponentLib for FulfillmentComponent[];
     using StructCopier for FulfillmentComponent[];
@@ -32,15 +27,12 @@ library FulfillmentLib {
      * @param defaultName the name of the default to clear
      */
     function clear(string memory defaultName) internal {
-        mapping(string => Fulfillment)
-            storage fulfillmentMap = _fulfillmentMap();
+        mapping(string => Fulfillment) storage fulfillmentMap = _fulfillmentMap();
         Fulfillment storage _fulfillment = fulfillmentMap[defaultName];
         // clear all fields
         FulfillmentComponent[] memory components;
         _fulfillment.offerComponents.setFulfillmentComponents(components);
-        _fulfillment.considerationComponents.setFulfillmentComponents(
-            components
-        );
+        _fulfillment.considerationComponents.setFulfillmentComponents(components);
     }
 
     /**
@@ -50,11 +42,8 @@ library FulfillmentLib {
      *
      * @return item the Fulfillment retrieved from storage
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (Fulfillment memory item) {
-        mapping(string => Fulfillment)
-            storage fulfillmentMap = _fulfillmentMap();
+    function fromDefault(string memory defaultName) internal view returns (Fulfillment memory item) {
+        mapping(string => Fulfillment) storage fulfillmentMap = _fulfillmentMap();
         item = fulfillmentMap[defaultName];
     }
 
@@ -65,11 +54,8 @@ library FulfillmentLib {
      *
      * @return items the Fulfillment array retrieved from storage
      */
-    function fromDefaultMany(
-        string memory defaultName
-    ) internal view returns (Fulfillment[] memory items) {
-        mapping(string => Fulfillment[])
-            storage fulfillmentsMap = _fulfillmentsMap();
+    function fromDefaultMany(string memory defaultName) internal view returns (Fulfillment[] memory items) {
+        mapping(string => Fulfillment[]) storage fulfillmentsMap = _fulfillmentsMap();
         items = fulfillmentsMap[defaultName];
     }
 
@@ -81,12 +67,11 @@ library FulfillmentLib {
      *
      * @return _fulfillment the Fulfillment saved as a default
      */
-    function saveDefault(
-        Fulfillment memory fulfillment,
-        string memory defaultName
-    ) internal returns (Fulfillment memory _fulfillment) {
-        mapping(string => Fulfillment)
-            storage fulfillmentMap = _fulfillmentMap();
+    function saveDefault(Fulfillment memory fulfillment, string memory defaultName)
+        internal
+        returns (Fulfillment memory _fulfillment)
+    {
+        mapping(string => Fulfillment) storage fulfillmentMap = _fulfillmentMap();
         StructCopier.setFulfillment(fulfillmentMap[defaultName], fulfillment);
 
         return fulfillment;
@@ -100,16 +85,12 @@ library FulfillmentLib {
      *
      * @return _fulfillments the Fulfillment array saved as a default
      */
-    function saveDefaultMany(
-        Fulfillment[] memory fulfillments,
-        string memory defaultName
-    ) internal returns (Fulfillment[] memory _fulfillments) {
-        mapping(string => Fulfillment[])
-            storage fulfillmentsMap = _fulfillmentsMap();
-        StructCopier.setFulfillments(
-            fulfillmentsMap[defaultName],
-            fulfillments
-        );
+    function saveDefaultMany(Fulfillment[] memory fulfillments, string memory defaultName)
+        internal
+        returns (Fulfillment[] memory _fulfillments)
+    {
+        mapping(string => Fulfillment[]) storage fulfillmentsMap = _fulfillmentsMap();
+        StructCopier.setFulfillments(fulfillmentsMap[defaultName], fulfillments);
         return fulfillments;
     }
 
@@ -120,16 +101,11 @@ library FulfillmentLib {
      *
      * @custom:return copiedFulfillment the copied Fulfillment
      */
-    function copy(
-        Fulfillment memory _fulfillment
-    ) internal pure returns (Fulfillment memory) {
-        return
-            Fulfillment({
-                offerComponents: _fulfillment.offerComponents.copy(),
-                considerationComponents: _fulfillment
-                    .considerationComponents
-                    .copy()
-            });
+    function copy(Fulfillment memory _fulfillment) internal pure returns (Fulfillment memory) {
+        return Fulfillment({
+            offerComponents: _fulfillment.offerComponents.copy(),
+            considerationComponents: _fulfillment.considerationComponents.copy()
+        });
     }
 
     /**
@@ -139,12 +115,8 @@ library FulfillmentLib {
      *
      * @custom:return copiedFulfillments the copied Fulfillment array
      */
-    function copy(
-        Fulfillment[] memory _fulfillments
-    ) internal pure returns (Fulfillment[] memory) {
-        Fulfillment[] memory copiedItems = new Fulfillment[](
-            _fulfillments.length
-        );
+    function copy(Fulfillment[] memory _fulfillments) internal pure returns (Fulfillment[] memory) {
+        Fulfillment[] memory copiedItems = new Fulfillment[](_fulfillments.length);
         for (uint256 i = 0; i < _fulfillments.length; i++) {
             copiedItems[i] = copy(_fulfillments[i]);
         }
@@ -158,11 +130,7 @@ library FulfillmentLib {
      */
     function empty() internal pure returns (Fulfillment memory) {
         FulfillmentComponent[] memory components;
-        return
-            Fulfillment({
-                offerComponents: components,
-                considerationComponents: components
-            });
+        return Fulfillment({offerComponents: components, considerationComponents: components});
     }
 
     /**
@@ -171,11 +139,7 @@ library FulfillmentLib {
      * @return fulfillmentMap the storage position of the default Fulfillment
      *                        map
      */
-    function _fulfillmentMap()
-        private
-        pure
-        returns (mapping(string => Fulfillment) storage fulfillmentMap)
-    {
+    function _fulfillmentMap() private pure returns (mapping(string => Fulfillment) storage fulfillmentMap) {
         bytes32 position = FULFILLMENT_MAP_POSITION;
         assembly {
             fulfillmentMap.slot := position
@@ -188,11 +152,7 @@ library FulfillmentLib {
      * @return fulfillmentsMap the storage position of the default Fulfillment
      *                         array map
      */
-    function _fulfillmentsMap()
-        private
-        pure
-        returns (mapping(string => Fulfillment[]) storage fulfillmentsMap)
-    {
+    function _fulfillmentsMap() private pure returns (mapping(string => Fulfillment[]) storage fulfillmentsMap) {
         bytes32 position = FULFILLMENTS_MAP_POSITION;
         assembly {
             fulfillmentsMap.slot := position
@@ -211,10 +171,11 @@ library FulfillmentLib {
      *
      * @custom:return _fulfillment the Fulfillment with the offer components set
      */
-    function withOfferComponents(
-        Fulfillment memory _fulfillment,
-        FulfillmentComponent[] memory components
-    ) internal pure returns (Fulfillment memory) {
+    function withOfferComponents(Fulfillment memory _fulfillment, FulfillmentComponent[] memory components)
+        internal
+        pure
+        returns (Fulfillment memory)
+    {
         _fulfillment.offerComponents = components.copy();
         return _fulfillment;
     }
@@ -230,10 +191,11 @@ library FulfillmentLib {
      * @custom:return _fulfillment the Fulfillment with the consideration
      *                             components set
      */
-    function withConsiderationComponents(
-        Fulfillment memory _fulfillment,
-        FulfillmentComponent[] memory components
-    ) internal pure returns (Fulfillment memory) {
+    function withConsiderationComponents(Fulfillment memory _fulfillment, FulfillmentComponent[] memory components)
+        internal
+        pure
+        returns (Fulfillment memory)
+    {
         _fulfillment.considerationComponents = components.copy();
         return _fulfillment;
     }

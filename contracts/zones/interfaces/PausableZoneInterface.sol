@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { SeaportInterface } from "../../interfaces/SeaportInterface.sol";
+import {SeaportInterface} from "../../interfaces/SeaportInterface.sol";
 
 import {
     AdvancedOrder,
@@ -30,10 +30,9 @@ interface PausableZoneInterface {
      * @return cancelled A boolean indicating whether the supplied orders have
      *                   been successfully cancelled.
      */
-    function cancelOrders(
-        SeaportInterface seaport,
-        OrderComponents[] calldata orders
-    ) external returns (bool cancelled);
+    function cancelOrders(SeaportInterface seaport, OrderComponents[] calldata orders)
+        external
+        returns (bool cancelled);
 
     /**
      * @notice Execute an arbitrary number of matched orders, each with
@@ -50,11 +49,10 @@ interface PausableZoneInterface {
      *                    transfers performed as part of matching the given
      *                    orders.
      */
-    function executeMatchOrders(
-        SeaportInterface seaport,
-        Order[] calldata orders,
-        Fulfillment[] calldata fulfillments
-    ) external payable returns (Execution[] memory executions);
+    function executeMatchOrders(SeaportInterface seaport, Order[] calldata orders, Fulfillment[] calldata fulfillments)
+        external
+        payable
+        returns (Execution[] memory executions);
 
     /**
      * @notice Execute an arbitrary number of matched advanced orders,

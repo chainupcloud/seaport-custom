@@ -9,9 +9,7 @@ uint256 constant EIP712_ConsiderationItem_size = 0xe0;
 uint256 constant EIP712_DomainSeparator_offset = 0x02;
 uint256 constant EIP712_OrderHash_offset = 0x22;
 uint256 constant EIP712_DigestPayload_size = 0x42;
-uint256 constant EIP_712_PREFIX = (
-    0x1901000000000000000000000000000000000000000000000000000000000000
-);
+uint256 constant EIP_712_PREFIX = (0x1901000000000000000000000000000000000000000000000000000000000000);
 
 contract ConsiderationTypeHashes {
     bytes32 internal immutable _NAME_HASH;
@@ -21,8 +19,7 @@ contract ConsiderationTypeHashes {
     bytes32 internal immutable _CONSIDERATION_ITEM_TYPEHASH;
     bytes32 internal immutable _ORDER_TYPEHASH;
     bytes32 internal immutable _DOMAIN_SEPARATOR;
-    address internal constant seaportAddress =
-        address(0x00000000000006c7676171937C444f6BDe3D6282);
+    address internal constant seaportAddress = address(0x00000000000006c7676171937C444f6BDe3D6282);
 
     constructor() {
         // Derive hash of the name of the contract.
@@ -45,12 +42,12 @@ contract ConsiderationTypeHashes {
         // prettier-ignore
         bytes memory considerationItemTypeString = abi.encodePacked(
             "ConsiderationItem(",
-                "uint8 itemType,",
-                "address token,",
-                "uint256 identifierOrCriteria,",
-                "uint256 startAmount,",
-                "uint256 endAmount,",
-                "address recipient",
+            "uint8 itemType,",
+            "address token,",
+            "uint256 identifierOrCriteria,",
+            "uint256 startAmount,",
+            "uint256 endAmount,",
+            "address recipient",
             ")"
         );
 
@@ -58,37 +55,30 @@ contract ConsiderationTypeHashes {
         // prettier-ignore
         bytes memory orderComponentsPartialTypeString = abi.encodePacked(
             "OrderComponents(",
-                "address offerer,",
-                "address zone,",
-                "OfferItem[] offer,",
-                "ConsiderationItem[] consideration,",
-                "uint8 orderType,",
-                "uint256 startTime,",
-                "uint256 endTime,",
-                "bytes32 zoneHash,",
-                "uint256 salt,",
-                "bytes32 conduitKey,",
-                "uint256 counter",
+            "address offerer,",
+            "address zone,",
+            "OfferItem[] offer,",
+            "ConsiderationItem[] consideration,",
+            "uint8 orderType,",
+            "uint256 startTime,",
+            "uint256 endTime,",
+            "bytes32 zoneHash,",
+            "uint256 salt,",
+            "bytes32 conduitKey,",
+            "uint256 counter",
             ")"
         );
         // Derive the OfferItem type hash using the corresponding type string.
         bytes32 offerItemTypehash = keccak256(offerItemTypeString);
 
         // Derive ConsiderationItem type hash using corresponding type string.
-        bytes32 considerationItemTypehash = keccak256(
-            considerationItemTypeString
-        );
+        bytes32 considerationItemTypehash = keccak256(considerationItemTypeString);
 
         // Construct the primary EIP-712 domain type string.
         // prettier-ignore
         _EIP_712_DOMAIN_TYPEHASH = keccak256(
             abi.encodePacked(
-                "EIP712Domain(",
-                    "string name,",
-                    "string version,",
-                    "uint256 chainId,",
-                    "address verifyingContract",
-                ")"
+                "EIP712Domain(", "string name,", "string version,", "uint256 chainId,", "address verifyingContract", ")"
             )
         );
 
@@ -97,11 +87,7 @@ contract ConsiderationTypeHashes {
 
         // Derive OrderItem type hash via combination of relevant type strings.
         _ORDER_TYPEHASH = keccak256(
-            abi.encodePacked(
-                orderComponentsPartialTypeString,
-                considerationItemTypeString,
-                offerItemTypeString
-            )
+            abi.encodePacked(orderComponentsPartialTypeString, considerationItemTypeString, offerItemTypeString)
         );
 
         _DOMAIN_SEPARATOR = _deriveDomainSeparator();
@@ -114,15 +100,7 @@ contract ConsiderationTypeHashes {
      */
     function _deriveDomainSeparator() internal view returns (bytes32) {
         // prettier-ignore
-        return keccak256(
-            abi.encode(
-                _EIP_712_DOMAIN_TYPEHASH,
-                _NAME_HASH,
-                _VERSION_HASH,
-                block.chainid,
-                seaportAddress
-            )
-        );
+        return keccak256(abi.encode(_EIP_712_DOMAIN_TYPEHASH, _NAME_HASH, _VERSION_HASH, block.chainid, seaportAddress));
     }
 
     /**
@@ -133,9 +111,7 @@ contract ConsiderationTypeHashes {
      *
      * @return value The hash.
      */
-    function _deriveEIP712Digest(
-        bytes32 orderHash
-    ) internal view returns (bytes32 value) {
+    function _deriveEIP712Digest(bytes32 orderHash) internal view returns (bytes32 value) {
         bytes32 domainSeparator = _DOMAIN_SEPARATOR;
         // Leverage scratch space to perform an efficient hash.
         assembly {
@@ -166,20 +142,17 @@ contract ConsiderationTypeHashes {
      *
      * @return The hash.
      */
-    function _hashOfferItem(
-        OfferItem memory offerItem
-    ) internal view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    _OFFER_ITEM_TYPEHASH,
-                    offerItem.itemType,
-                    offerItem.token,
-                    offerItem.identifierOrCriteria,
-                    offerItem.startAmount,
-                    offerItem.endAmount
-                )
-            );
+    function _hashOfferItem(OfferItem memory offerItem) internal view returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                _OFFER_ITEM_TYPEHASH,
+                offerItem.itemType,
+                offerItem.token,
+                offerItem.identifierOrCriteria,
+                offerItem.startAmount,
+                offerItem.endAmount
+            )
+        );
     }
 
     /**
@@ -189,21 +162,18 @@ contract ConsiderationTypeHashes {
      *
      * @return The hash.
      */
-    function _hashConsiderationItem(
-        ConsiderationItem memory considerationItem
-    ) internal view returns (bytes32) {
-        return
-            keccak256(
-                abi.encode(
-                    _CONSIDERATION_ITEM_TYPEHASH,
-                    considerationItem.itemType,
-                    considerationItem.token,
-                    considerationItem.identifierOrCriteria,
-                    considerationItem.startAmount,
-                    considerationItem.endAmount,
-                    considerationItem.recipient
-                )
-            );
+    function _hashConsiderationItem(ConsiderationItem memory considerationItem) internal view returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                _CONSIDERATION_ITEM_TYPEHASH,
+                considerationItem.itemType,
+                considerationItem.token,
+                considerationItem.identifierOrCriteria,
+                considerationItem.startAmount,
+                considerationItem.endAmount,
+                considerationItem.recipient
+            )
+        );
     }
 
     /**
@@ -217,17 +187,14 @@ contract ConsiderationTypeHashes {
      *
      * @return orderHash The hash.
      */
-    function _deriveOrderHash(
-        OrderParameters memory orderParameters,
-        uint256 counter
-    ) internal view returns (bytes32 orderHash) {
+    function _deriveOrderHash(OrderParameters memory orderParameters, uint256 counter)
+        internal
+        view
+        returns (bytes32 orderHash)
+    {
         // Designate new memory regions for offer and consideration item hashes.
-        bytes32[] memory offerHashes = new bytes32[](
-            orderParameters.offer.length
-        );
-        bytes32[] memory considerationHashes = new bytes32[](
-            orderParameters.totalOriginalConsiderationItems
-        );
+        bytes32[] memory offerHashes = new bytes32[](orderParameters.offer.length);
+        bytes32[] memory considerationHashes = new bytes32[](orderParameters.totalOriginalConsiderationItems);
 
         // Iterate over each offer on the order.
         for (uint256 i = 0; i < orderParameters.offer.length; ++i) {
@@ -236,35 +203,28 @@ contract ConsiderationTypeHashes {
         }
 
         // Iterate over each consideration on the order.
-        for (
-            uint256 i = 0;
-            i < orderParameters.totalOriginalConsiderationItems;
-            ++i
-        ) {
+        for (uint256 i = 0; i < orderParameters.totalOriginalConsiderationItems; ++i) {
             // Hash the consideration and place the result into memory.
-            considerationHashes[i] = _hashConsiderationItem(
-                orderParameters.consideration[i]
-            );
+            considerationHashes[i] = _hashConsiderationItem(orderParameters.consideration[i]);
         }
 
         // Derive and return the order hash as specified by EIP-712.
 
-        return
-            keccak256(
-                abi.encode(
-                    _ORDER_TYPEHASH,
-                    orderParameters.offerer,
-                    orderParameters.zone,
-                    keccak256(abi.encodePacked(offerHashes)),
-                    keccak256(abi.encodePacked(considerationHashes)),
-                    orderParameters.orderType,
-                    orderParameters.startTime,
-                    orderParameters.endTime,
-                    orderParameters.zoneHash,
-                    orderParameters.salt,
-                    orderParameters.conduitKey,
-                    counter
-                )
-            );
+        return keccak256(
+            abi.encode(
+                _ORDER_TYPEHASH,
+                orderParameters.offerer,
+                orderParameters.zone,
+                keccak256(abi.encodePacked(offerHashes)),
+                keccak256(abi.encodePacked(considerationHashes)),
+                orderParameters.orderType,
+                orderParameters.startTime,
+                orderParameters.endTime,
+                orderParameters.zoneHash,
+                orderParameters.salt,
+                orderParameters.conduitKey,
+                counter
+            )
+        );
     }
 }

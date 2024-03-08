@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import {
-    ErrorsAndWarnings,
-    ErrorsAndWarningsLib
-} from "./ErrorsAndWarnings.sol";
+import {ErrorsAndWarnings, ErrorsAndWarningsLib} from "./ErrorsAndWarnings.sol";
 
-import { IssueParser, MerkleIssue } from "./SeaportValidatorTypes.sol";
+import {IssueParser, MerkleIssue} from "./SeaportValidatorTypes.sol";
 
 contract Murky {
     using ErrorsAndWarningsLib for ErrorsAndWarnings;
@@ -14,11 +11,7 @@ contract Murky {
 
     bool internal constant HASH_ODD_WITH_ZERO = false;
 
-    function _verifyProof(
-        bytes32 root,
-        bytes32[] memory proof,
-        bytes32 valueToProve
-    ) internal pure returns (bool) {
+    function _verifyProof(bytes32 root, bytes32[] memory proof, bytes32 valueToProve) internal pure returns (bool) {
         // proof length must be less than max array size
         bytes32 rollingHash = valueToProve;
         uint256 length = proof.length;
@@ -30,16 +23,14 @@ contract Murky {
         return root == rollingHash;
     }
 
-    /********************
+    /**
+     *
      * HASHING FUNCTION *
-     ********************/
+     *
+     */
 
     /// ascending sort and concat prior to hashing
-    function _hashLeafPairs(bytes32 left, bytes32 right)
-        internal
-        pure
-        returns (bytes32 _hash)
-    {
+    function _hashLeafPairs(bytes32 left, bytes32 right) internal pure returns (bytes32 _hash) {
         assembly {
             switch lt(left, right)
             case 0 {
@@ -54,10 +45,11 @@ contract Murky {
         }
     }
 
-    /********************
+    /**
+     *
      * PROOF GENERATION *
-     ********************/
-
+     *
+     */
     function _getRoot(uint256[] memory data)
         internal
         pure
@@ -105,9 +97,7 @@ contract Murky {
                     newLength := add(1, div(length, 2))
                     oddLength := 1
                 }
-                default {
-                    newLength := div(length, 2)
-                }
+                default { newLength := div(length, 2) }
                 // todo: necessary?
                 // mstore(_data, newLength)
                 let resultIndexPointer := add(0x20, _data)
@@ -116,11 +106,7 @@ contract Murky {
                 // stop iterating over for loop at length-1
                 let stopIteration := add(_data, mul(length, 0x20))
                 // write result array in-place over data array
-                for {
-
-                } lt(dataIndexPointer, stopIteration) {
-
-                } {
+                for {} lt(dataIndexPointer, stopIteration) {} {
                     // get next two elements from data, hash them together
                     let data1 := mload(dataIndexPointer)
                     let data2 := mload(add(dataIndexPointer, 0x20))
@@ -137,24 +123,14 @@ contract Murky {
                     let data1 := mload(dataIndexPointer)
                     let nextValue
                     switch _hashOddWithZero
-                    case 0 {
-                        nextValue := data1
-                    }
-                    default {
-                        nextValue := hashLeafPairs(data1, 0)
-                    }
+                    case 0 { nextValue := data1 }
+                    default { nextValue := hashLeafPairs(data1, 0) }
                     mstore(resultIndexPointer, nextValue)
                 }
             }
 
             let dataLength := mload(data)
-            for {
-
-            } gt(dataLength, 1) {
-
-            } {
-                dataLength := hashLevel(data, dataLength, hashOddWithZero)
-            }
+            for {} gt(dataLength, 1) {} { dataLength := hashLevel(data, dataLength, hashOddWithZero) }
             result := mload(add(0x20, data))
         }
     }
@@ -162,10 +138,7 @@ contract Murky {
     function _getProof(uint256[] memory data, uint256 node)
         internal
         pure
-        returns (
-            bytes32[] memory result,
-            ErrorsAndWarnings memory errorsAndWarnings
-        )
+        returns (bytes32[] memory result, ErrorsAndWarnings memory errorsAndWarnings)
     {
         errorsAndWarnings = ErrorsAndWarnings(new uint16[](0), new uint16[](0));
 
@@ -214,9 +187,7 @@ contract Murky {
                     newLength := add(1, div(length, 2))
                     oddLength := 1
                 }
-                default {
-                    newLength := div(length, 2)
-                }
+                default { newLength := div(length, 2) }
                 // todo: necessary?
                 // mstore(_data, newLength)
                 let resultIndexPointer := add(0x20, _data)
@@ -225,11 +196,7 @@ contract Murky {
                 // stop iterating over for loop at length-1
                 let stopIteration := add(_data, mul(length, 0x20))
                 // write result array in-place over data array
-                for {
-
-                } lt(dataIndexPointer, stopIteration) {
-
-                } {
+                for {} lt(dataIndexPointer, stopIteration) {} {
                     // get next two elements from data, hash them together
                     let data1 := mload(dataIndexPointer)
                     let data2 := mload(add(dataIndexPointer, 0x20))
@@ -246,12 +213,8 @@ contract Murky {
                     let data1 := mload(dataIndexPointer)
                     let nextValue
                     switch _hashOddWithZero
-                    case 0 {
-                        nextValue := data1
-                    }
-                    default {
-                        nextValue := hashLeafPairs(data1, 0)
-                    }
+                    case 0 { nextValue := data1 }
+                    default { nextValue := hashLeafPairs(data1, 0) }
                     mstore(resultIndexPointer, nextValue)
                 }
             }
@@ -266,9 +229,7 @@ contract Murky {
             let dataLength := mload(data)
             for {
                 // repeat until only one element is left
-            } gt(dataLength, 1) {
-
-            } {
+            } gt(dataLength, 1) {} {
                 // bool if node is odd
                 let oddNodeIndex := and(node, 1)
                 // bool if node is last
@@ -281,10 +242,7 @@ contract Murky {
                     // store data[node+1] at result[i]
                     // get pointer to result[node+1] by adding 2 to node and multiplying by 0x20
                     // to account for the fact that result points to array length, not first index
-                    mstore(
-                        resultIndexPtr,
-                        mload(add(data, mul(0x20, add(2, node))))
-                    )
+                    mstore(resultIndexPtr, mload(add(data, mul(0x20, add(2, node)))))
                 }
                 // 10 - node is last
                 case 2 {
@@ -316,32 +274,18 @@ contract Murky {
     /**
      * Hashes each element of the input array in place using keccak256
      */
-    function _processInput(uint256[] memory data)
-        private
-        pure
-        returns (bool sorted)
-    {
+    function _processInput(uint256[] memory data) private pure returns (bool sorted) {
         sorted = true;
 
         // Hash inputs with keccak256
         for (uint256 i = 0; i < data.length; ++i) {
             assembly {
-                mstore(
-                    add(data, mul(0x20, add(1, i))),
-                    keccak256(add(data, mul(0x20, add(1, i))), 0x20)
-                )
+                mstore(add(data, mul(0x20, add(1, i))), keccak256(add(data, mul(0x20, add(1, i))), 0x20))
                 // for every element after the first, hashed value must be greater than the last one
                 if and(
                     gt(i, 0),
-                    iszero(
-                        gt(
-                            mload(add(data, mul(0x20, add(1, i)))),
-                            mload(add(data, mul(0x20, add(1, sub(i, 1)))))
-                        )
-                    )
-                ) {
-                    sorted := 0 // Elements not ordered by hash
-                }
+                    iszero(gt(mload(add(data, mul(0x20, add(1, i)))), mload(add(data, mul(0x20, add(1, sub(i, 1)))))))
+                ) { sorted := 0 } // Elements not ordered by hash
             }
         }
     }
@@ -352,17 +296,10 @@ contract Murky {
         bytes32 hash;
     }
 
-    function _sortUint256ByHash(uint256[] memory values)
-        internal
-        pure
-        returns (uint256[] memory sortedValues)
-    {
+    function _sortUint256ByHash(uint256[] memory values) internal pure returns (uint256[] memory sortedValues) {
         HashAndIntTuple[] memory toSort = new HashAndIntTuple[](values.length);
         for (uint256 i = 0; i < values.length; i++) {
-            toSort[i] = HashAndIntTuple(
-                values[i],
-                keccak256(abi.encode(values[i]))
-            );
+            toSort[i] = HashAndIntTuple(values[i], keccak256(abi.encode(values[i])));
         }
 
         _quickSort(toSort, 0, int256(toSort.length - 1));
@@ -373,11 +310,7 @@ contract Murky {
         }
     }
 
-    function _quickSort(
-        HashAndIntTuple[] memory arr,
-        int256 left,
-        int256 right
-    ) internal pure {
+    function _quickSort(HashAndIntTuple[] memory arr, int256 left, int256 right) internal pure {
         int256 i = left;
         int256 j = right;
         if (i == j) return;
@@ -386,10 +319,7 @@ contract Murky {
             while (arr[uint256(i)].hash < pivot) i++;
             while (pivot < arr[uint256(j)].hash) j--;
             if (i <= j) {
-                (arr[uint256(i)], arr[uint256(j)]) = (
-                    arr[uint256(j)],
-                    arr[uint256(i)]
-                );
+                (arr[uint256(i)], arr[uint256(j)]) = (arr[uint256(j)], arr[uint256(i)]);
                 i++;
                 j--;
             }

@@ -24,21 +24,14 @@ library SeaportArrays {
         return arr;
     }
 
-    function Orders(
-        Order memory a,
-        Order memory b
-    ) internal pure returns (Order[] memory) {
+    function Orders(Order memory a, Order memory b) internal pure returns (Order[] memory) {
         Order[] memory arr = new Order[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function Orders(
-        Order memory a,
-        Order memory b,
-        Order memory c
-    ) internal pure returns (Order[] memory) {
+    function Orders(Order memory a, Order memory b, Order memory c) internal pure returns (Order[] memory) {
         Order[] memory arr = new Order[](3);
         arr[0] = a;
         arr[1] = b;
@@ -46,12 +39,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function Orders(
-        Order memory a,
-        Order memory b,
-        Order memory c,
-        Order memory d
-    ) internal pure returns (Order[] memory) {
+    function Orders(Order memory a, Order memory b, Order memory c, Order memory d)
+        internal
+        pure
+        returns (Order[] memory)
+    {
         Order[] memory arr = new Order[](4);
         arr[0] = a;
         arr[1] = b;
@@ -60,13 +52,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function Orders(
-        Order memory a,
-        Order memory b,
-        Order memory c,
-        Order memory d,
-        Order memory e
-    ) internal pure returns (Order[] memory) {
+    function Orders(Order memory a, Order memory b, Order memory c, Order memory d, Order memory e)
+        internal
+        pure
+        returns (Order[] memory)
+    {
         Order[] memory arr = new Order[](5);
         arr[0] = a;
         arr[1] = b;
@@ -76,14 +66,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function Orders(
-        Order memory a,
-        Order memory b,
-        Order memory c,
-        Order memory d,
-        Order memory e,
-        Order memory f
-    ) internal pure returns (Order[] memory) {
+    function Orders(Order memory a, Order memory b, Order memory c, Order memory d, Order memory e, Order memory f)
+        internal
+        pure
+        returns (Order[] memory)
+    {
         Order[] memory arr = new Order[](6);
         arr[0] = a;
         arr[1] = b;
@@ -114,29 +101,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function AdvancedOrders(
-        AdvancedOrder memory a
-    ) internal pure returns (AdvancedOrder[] memory) {
+    function AdvancedOrders(AdvancedOrder memory a) internal pure returns (AdvancedOrder[] memory) {
         AdvancedOrder[] memory arr = new AdvancedOrder[](1);
         arr[0] = a;
         return arr;
     }
 
-    function AdvancedOrders(
-        AdvancedOrder memory a,
-        AdvancedOrder memory b
-    ) internal pure returns (AdvancedOrder[] memory) {
+    function AdvancedOrders(AdvancedOrder memory a, AdvancedOrder memory b)
+        internal
+        pure
+        returns (AdvancedOrder[] memory)
+    {
         AdvancedOrder[] memory arr = new AdvancedOrder[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function AdvancedOrders(
-        AdvancedOrder memory a,
-        AdvancedOrder memory b,
-        AdvancedOrder memory c
-    ) internal pure returns (AdvancedOrder[] memory) {
+    function AdvancedOrders(AdvancedOrder memory a, AdvancedOrder memory b, AdvancedOrder memory c)
+        internal
+        pure
+        returns (AdvancedOrder[] memory)
+    {
         AdvancedOrder[] memory arr = new AdvancedOrder[](3);
         arr[0] = a;
         arr[1] = b;
@@ -212,29 +198,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function OrderComponentsArray(
-        OrderComponents memory a
-    ) internal pure returns (OrderComponents[] memory) {
+    function OrderComponentsArray(OrderComponents memory a) internal pure returns (OrderComponents[] memory) {
         OrderComponents[] memory arr = new OrderComponents[](1);
         arr[0] = a;
         return arr;
     }
 
-    function OrderComponentsArray(
-        OrderComponents memory a,
-        OrderComponents memory b
-    ) internal pure returns (OrderComponents[] memory) {
+    function OrderComponentsArray(OrderComponents memory a, OrderComponents memory b)
+        internal
+        pure
+        returns (OrderComponents[] memory)
+    {
         OrderComponents[] memory arr = new OrderComponents[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function OrderComponentsArray(
-        OrderComponents memory a,
-        OrderComponents memory b,
-        OrderComponents memory c
-    ) internal pure returns (OrderComponents[] memory) {
+    function OrderComponentsArray(OrderComponents memory a, OrderComponents memory b, OrderComponents memory c)
+        internal
+        pure
+        returns (OrderComponents[] memory)
+    {
         OrderComponents[] memory arr = new OrderComponents[](3);
         arr[0] = a;
         arr[1] = b;
@@ -310,29 +295,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function OrderParametersArray(
-        OrderParameters memory a
-    ) internal pure returns (OrderParameters[] memory) {
+    function OrderParametersArray(OrderParameters memory a) internal pure returns (OrderParameters[] memory) {
         OrderParameters[] memory arr = new OrderParameters[](1);
         arr[0] = a;
         return arr;
     }
 
-    function OrderParametersArray(
-        OrderParameters memory a,
-        OrderParameters memory b
-    ) internal pure returns (OrderParameters[] memory) {
+    function OrderParametersArray(OrderParameters memory a, OrderParameters memory b)
+        internal
+        pure
+        returns (OrderParameters[] memory)
+    {
         OrderParameters[] memory arr = new OrderParameters[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function OrderParametersArray(
-        OrderParameters memory a,
-        OrderParameters memory b,
-        OrderParameters memory c
-    ) internal pure returns (OrderParameters[] memory) {
+    function OrderParametersArray(OrderParameters memory a, OrderParameters memory b, OrderParameters memory c)
+        internal
+        pure
+        returns (OrderParameters[] memory)
+    {
         OrderParameters[] memory arr = new OrderParameters[](3);
         arr[0] = a;
         arr[1] = b;
@@ -408,29 +392,24 @@ library SeaportArrays {
         return arr;
     }
 
-    function OfferItems(
-        OfferItem memory a
-    ) internal pure returns (OfferItem[] memory) {
+    function OfferItems(OfferItem memory a) internal pure returns (OfferItem[] memory) {
         OfferItem[] memory arr = new OfferItem[](1);
         arr[0] = a;
         return arr;
     }
 
-    function OfferItems(
-        OfferItem memory a,
-        OfferItem memory b
-    ) internal pure returns (OfferItem[] memory) {
+    function OfferItems(OfferItem memory a, OfferItem memory b) internal pure returns (OfferItem[] memory) {
         OfferItem[] memory arr = new OfferItem[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function OfferItems(
-        OfferItem memory a,
-        OfferItem memory b,
-        OfferItem memory c
-    ) internal pure returns (OfferItem[] memory) {
+    function OfferItems(OfferItem memory a, OfferItem memory b, OfferItem memory c)
+        internal
+        pure
+        returns (OfferItem[] memory)
+    {
         OfferItem[] memory arr = new OfferItem[](3);
         arr[0] = a;
         arr[1] = b;
@@ -438,12 +417,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function OfferItems(
-        OfferItem memory a,
-        OfferItem memory b,
-        OfferItem memory c,
-        OfferItem memory d
-    ) internal pure returns (OfferItem[] memory) {
+    function OfferItems(OfferItem memory a, OfferItem memory b, OfferItem memory c, OfferItem memory d)
+        internal
+        pure
+        returns (OfferItem[] memory)
+    {
         OfferItem[] memory arr = new OfferItem[](4);
         arr[0] = a;
         arr[1] = b;
@@ -506,29 +484,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function ConsiderationItems(
-        ConsiderationItem memory a
-    ) internal pure returns (ConsiderationItem[] memory) {
+    function ConsiderationItems(ConsiderationItem memory a) internal pure returns (ConsiderationItem[] memory) {
         ConsiderationItem[] memory arr = new ConsiderationItem[](1);
         arr[0] = a;
         return arr;
     }
 
-    function ConsiderationItems(
-        ConsiderationItem memory a,
-        ConsiderationItem memory b
-    ) internal pure returns (ConsiderationItem[] memory) {
+    function ConsiderationItems(ConsiderationItem memory a, ConsiderationItem memory b)
+        internal
+        pure
+        returns (ConsiderationItem[] memory)
+    {
         ConsiderationItem[] memory arr = new ConsiderationItem[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function ConsiderationItems(
-        ConsiderationItem memory a,
-        ConsiderationItem memory b,
-        ConsiderationItem memory c
-    ) internal pure returns (ConsiderationItem[] memory) {
+    function ConsiderationItems(ConsiderationItem memory a, ConsiderationItem memory b, ConsiderationItem memory c)
+        internal
+        pure
+        returns (ConsiderationItem[] memory)
+    {
         ConsiderationItem[] memory arr = new ConsiderationItem[](3);
         arr[0] = a;
         arr[1] = b;
@@ -604,29 +581,24 @@ library SeaportArrays {
         return arr;
     }
 
-    function SpentItems(
-        SpentItem memory a
-    ) internal pure returns (SpentItem[] memory) {
+    function SpentItems(SpentItem memory a) internal pure returns (SpentItem[] memory) {
         SpentItem[] memory arr = new SpentItem[](1);
         arr[0] = a;
         return arr;
     }
 
-    function SpentItems(
-        SpentItem memory a,
-        SpentItem memory b
-    ) internal pure returns (SpentItem[] memory) {
+    function SpentItems(SpentItem memory a, SpentItem memory b) internal pure returns (SpentItem[] memory) {
         SpentItem[] memory arr = new SpentItem[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function SpentItems(
-        SpentItem memory a,
-        SpentItem memory b,
-        SpentItem memory c
-    ) internal pure returns (SpentItem[] memory) {
+    function SpentItems(SpentItem memory a, SpentItem memory b, SpentItem memory c)
+        internal
+        pure
+        returns (SpentItem[] memory)
+    {
         SpentItem[] memory arr = new SpentItem[](3);
         arr[0] = a;
         arr[1] = b;
@@ -634,12 +606,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function SpentItems(
-        SpentItem memory a,
-        SpentItem memory b,
-        SpentItem memory c,
-        SpentItem memory d
-    ) internal pure returns (SpentItem[] memory) {
+    function SpentItems(SpentItem memory a, SpentItem memory b, SpentItem memory c, SpentItem memory d)
+        internal
+        pure
+        returns (SpentItem[] memory)
+    {
         SpentItem[] memory arr = new SpentItem[](4);
         arr[0] = a;
         arr[1] = b;
@@ -702,29 +673,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function ReceivedItems(
-        ReceivedItem memory a
-    ) internal pure returns (ReceivedItem[] memory) {
+    function ReceivedItems(ReceivedItem memory a) internal pure returns (ReceivedItem[] memory) {
         ReceivedItem[] memory arr = new ReceivedItem[](1);
         arr[0] = a;
         return arr;
     }
 
-    function ReceivedItems(
-        ReceivedItem memory a,
-        ReceivedItem memory b
-    ) internal pure returns (ReceivedItem[] memory) {
+    function ReceivedItems(ReceivedItem memory a, ReceivedItem memory b)
+        internal
+        pure
+        returns (ReceivedItem[] memory)
+    {
         ReceivedItem[] memory arr = new ReceivedItem[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function ReceivedItems(
-        ReceivedItem memory a,
-        ReceivedItem memory b,
-        ReceivedItem memory c
-    ) internal pure returns (ReceivedItem[] memory) {
+    function ReceivedItems(ReceivedItem memory a, ReceivedItem memory b, ReceivedItem memory c)
+        internal
+        pure
+        returns (ReceivedItem[] memory)
+    {
         ReceivedItem[] memory arr = new ReceivedItem[](3);
         arr[0] = a;
         arr[1] = b;
@@ -732,12 +702,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function ReceivedItems(
-        ReceivedItem memory a,
-        ReceivedItem memory b,
-        ReceivedItem memory c,
-        ReceivedItem memory d
-    ) internal pure returns (ReceivedItem[] memory) {
+    function ReceivedItems(ReceivedItem memory a, ReceivedItem memory b, ReceivedItem memory c, ReceivedItem memory d)
+        internal
+        pure
+        returns (ReceivedItem[] memory)
+    {
         ReceivedItem[] memory arr = new ReceivedItem[](4);
         arr[0] = a;
         arr[1] = b;
@@ -800,18 +769,21 @@ library SeaportArrays {
         return arr;
     }
 
-    function FulfillmentComponents(
-        FulfillmentComponent memory a
-    ) internal pure returns (FulfillmentComponent[] memory) {
+    function FulfillmentComponents(FulfillmentComponent memory a)
+        internal
+        pure
+        returns (FulfillmentComponent[] memory)
+    {
         FulfillmentComponent[] memory arr = new FulfillmentComponent[](1);
         arr[0] = a;
         return arr;
     }
 
-    function FulfillmentComponents(
-        FulfillmentComponent memory a,
-        FulfillmentComponent memory b
-    ) internal pure returns (FulfillmentComponent[] memory) {
+    function FulfillmentComponents(FulfillmentComponent memory a, FulfillmentComponent memory b)
+        internal
+        pure
+        returns (FulfillmentComponent[] memory)
+    {
         FulfillmentComponent[] memory arr = new FulfillmentComponent[](2);
         arr[0] = a;
         arr[1] = b;
@@ -898,18 +870,21 @@ library SeaportArrays {
         return arr;
     }
 
-    function FulfillmentComponentArrays(
-        FulfillmentComponent[] memory a
-    ) internal pure returns (FulfillmentComponent[][] memory) {
+    function FulfillmentComponentArrays(FulfillmentComponent[] memory a)
+        internal
+        pure
+        returns (FulfillmentComponent[][] memory)
+    {
         FulfillmentComponent[][] memory arr = new FulfillmentComponent[][](1);
         arr[0] = a;
         return arr;
     }
 
-    function FulfillmentComponentArrays(
-        FulfillmentComponent[] memory a,
-        FulfillmentComponent[] memory b
-    ) internal pure returns (FulfillmentComponent[][] memory) {
+    function FulfillmentComponentArrays(FulfillmentComponent[] memory a, FulfillmentComponent[] memory b)
+        internal
+        pure
+        returns (FulfillmentComponent[][] memory)
+    {
         FulfillmentComponent[][] memory arr = new FulfillmentComponent[][](2);
         arr[0] = a;
         arr[1] = b;
@@ -996,29 +971,28 @@ library SeaportArrays {
         return arr;
     }
 
-    function CriteriaResolvers(
-        CriteriaResolver memory a
-    ) internal pure returns (CriteriaResolver[] memory) {
+    function CriteriaResolvers(CriteriaResolver memory a) internal pure returns (CriteriaResolver[] memory) {
         CriteriaResolver[] memory arr = new CriteriaResolver[](1);
         arr[0] = a;
         return arr;
     }
 
-    function CriteriaResolvers(
-        CriteriaResolver memory a,
-        CriteriaResolver memory b
-    ) internal pure returns (CriteriaResolver[] memory) {
+    function CriteriaResolvers(CriteriaResolver memory a, CriteriaResolver memory b)
+        internal
+        pure
+        returns (CriteriaResolver[] memory)
+    {
         CriteriaResolver[] memory arr = new CriteriaResolver[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function CriteriaResolvers(
-        CriteriaResolver memory a,
-        CriteriaResolver memory b,
-        CriteriaResolver memory c
-    ) internal pure returns (CriteriaResolver[] memory) {
+    function CriteriaResolvers(CriteriaResolver memory a, CriteriaResolver memory b, CriteriaResolver memory c)
+        internal
+        pure
+        returns (CriteriaResolver[] memory)
+    {
         CriteriaResolver[] memory arr = new CriteriaResolver[](3);
         arr[0] = a;
         arr[1] = b;
@@ -1094,18 +1068,17 @@ library SeaportArrays {
         return arr;
     }
 
-    function AdditionalRecipients(
-        AdditionalRecipient memory a
-    ) internal pure returns (AdditionalRecipient[] memory) {
+    function AdditionalRecipients(AdditionalRecipient memory a) internal pure returns (AdditionalRecipient[] memory) {
         AdditionalRecipient[] memory arr = new AdditionalRecipient[](1);
         arr[0] = a;
         return arr;
     }
 
-    function AdditionalRecipients(
-        AdditionalRecipient memory a,
-        AdditionalRecipient memory b
-    ) internal pure returns (AdditionalRecipient[] memory) {
+    function AdditionalRecipients(AdditionalRecipient memory a, AdditionalRecipient memory b)
+        internal
+        pure
+        returns (AdditionalRecipient[] memory)
+    {
         AdditionalRecipient[] memory arr = new AdditionalRecipient[](2);
         arr[0] = a;
         arr[1] = b;
@@ -1192,18 +1165,21 @@ library SeaportArrays {
         return arr;
     }
 
-    function BasicOrderParametersArray(
-        BasicOrderParameters memory a
-    ) internal pure returns (BasicOrderParameters[] memory) {
+    function BasicOrderParametersArray(BasicOrderParameters memory a)
+        internal
+        pure
+        returns (BasicOrderParameters[] memory)
+    {
         BasicOrderParameters[] memory arr = new BasicOrderParameters[](1);
         arr[0] = a;
         return arr;
     }
 
-    function BasicOrderParametersArray(
-        BasicOrderParameters memory a,
-        BasicOrderParameters memory b
-    ) internal pure returns (BasicOrderParameters[] memory) {
+    function BasicOrderParametersArray(BasicOrderParameters memory a, BasicOrderParameters memory b)
+        internal
+        pure
+        returns (BasicOrderParameters[] memory)
+    {
         BasicOrderParameters[] memory arr = new BasicOrderParameters[](2);
         arr[0] = a;
         arr[1] = b;
@@ -1290,29 +1266,24 @@ library SeaportArrays {
         return arr;
     }
 
-    function Fulfillments(
-        Fulfillment memory a
-    ) internal pure returns (Fulfillment[] memory) {
+    function Fulfillments(Fulfillment memory a) internal pure returns (Fulfillment[] memory) {
         Fulfillment[] memory arr = new Fulfillment[](1);
         arr[0] = a;
         return arr;
     }
 
-    function Fulfillments(
-        Fulfillment memory a,
-        Fulfillment memory b
-    ) internal pure returns (Fulfillment[] memory) {
+    function Fulfillments(Fulfillment memory a, Fulfillment memory b) internal pure returns (Fulfillment[] memory) {
         Fulfillment[] memory arr = new Fulfillment[](2);
         arr[0] = a;
         arr[1] = b;
         return arr;
     }
 
-    function Fulfillments(
-        Fulfillment memory a,
-        Fulfillment memory b,
-        Fulfillment memory c
-    ) internal pure returns (Fulfillment[] memory) {
+    function Fulfillments(Fulfillment memory a, Fulfillment memory b, Fulfillment memory c)
+        internal
+        pure
+        returns (Fulfillment[] memory)
+    {
         Fulfillment[] memory arr = new Fulfillment[](3);
         arr[0] = a;
         arr[1] = b;
@@ -1320,12 +1291,11 @@ library SeaportArrays {
         return arr;
     }
 
-    function Fulfillments(
-        Fulfillment memory a,
-        Fulfillment memory b,
-        Fulfillment memory c,
-        Fulfillment memory d
-    ) internal pure returns (Fulfillment[] memory) {
+    function Fulfillments(Fulfillment memory a, Fulfillment memory b, Fulfillment memory c, Fulfillment memory d)
+        internal
+        pure
+        returns (Fulfillment[] memory)
+    {
         Fulfillment[] memory arr = new Fulfillment[](4);
         arr[0] = a;
         arr[1] = b;

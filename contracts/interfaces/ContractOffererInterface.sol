@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {
-    ReceivedItem,
-    Schema,
-    SpentItem
-} from "../lib/ConsiderationStructs.sol";
-import { IERC165 } from "../interfaces/IERC165.sol";
+import {ReceivedItem, Schema, SpentItem} from "../lib/ConsiderationStructs.sol";
+import {IERC165} from "../interfaces/IERC165.sol";
 
 /**
  * @title ContractOffererInterface
@@ -32,9 +28,7 @@ interface ContractOffererInterface is IERC165 {
         SpentItem[] calldata minimumReceived,
         SpentItem[] calldata maximumSpent,
         bytes calldata context // encoded based on the schemaID
-    )
-        external
-        returns (SpentItem[] memory offer, ReceivedItem[] memory consideration);
+    ) external returns (SpentItem[] memory offer, ReceivedItem[] memory consideration);
 
     /**
      * @dev Ratifies an order with the specified offer, consideration, and
@@ -79,10 +73,7 @@ interface ContractOffererInterface is IERC165 {
         SpentItem[] calldata minimumReceived,
         SpentItem[] calldata maximumSpent,
         bytes calldata context // encoded based on the schemaID
-    )
-        external
-        view
-        returns (SpentItem[] memory offer, ReceivedItem[] memory consideration);
+    ) external view returns (SpentItem[] memory offer, ReceivedItem[] memory consideration);
 
     /**
      * @dev Gets the metadata for this contract offerer.
@@ -90,17 +81,9 @@ interface ContractOffererInterface is IERC165 {
      * @return name    The name of the contract offerer.
      * @return schemas The schemas supported by the contract offerer.
      */
-    function getSeaportMetadata()
-        external
-        view
-        returns (
-            string memory name,
-            Schema[] memory schemas // map to Seaport Improvement Proposal IDs
-        );
+    function getSeaportMetadata() external view returns (string memory name, Schema[] memory schemas); // map to Seaport Improvement Proposal IDs
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) external view override returns (bool);
+    function supportsInterface(bytes4 interfaceId) external view override returns (bool);
 
     // Additional functions and/or events based on implemented schemaIDs
 }

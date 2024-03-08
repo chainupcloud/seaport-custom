@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { Side } from "../lib/ConsiderationEnums.sol";
+import {Side} from "../lib/ConsiderationEnums.sol";
 
 /**
  * @title CriteriaResolutionErrors
@@ -37,10 +37,7 @@ interface CriteriaResolutionErrors {
      * @param considerationIndex The index of the consideration item that still
      *                           has unresolved criteria.
      */
-    error UnresolvedConsiderationCriteria(
-        uint256 orderIndex,
-        uint256 considerationIndex
-    );
+    error UnresolvedConsiderationCriteria(uint256 orderIndex, uint256 considerationIndex);
 
     /**
      * @dev Revert with an error when providing a criteria resolver that refers

@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { ZoneInterface } from "../interfaces/ZoneInterface.sol";
+import {ZoneInterface} from "../interfaces/ZoneInterface.sol";
 
-import { ERC165 } from "../interfaces/ERC165.sol";
+import {ERC165} from "../interfaces/ERC165.sol";
 
-import { Schema, ZoneParameters } from "../lib/ConsiderationStructs.sol";
+import {Schema, ZoneParameters} from "../lib/ConsiderationStructs.sol";
 
 contract TestZone is ERC165, ZoneInterface {
-    function validateOrder(
-        ZoneParameters calldata zoneParameters
-    ) external pure override returns (bytes4 validOrderMagicValue) {
+    function validateOrder(ZoneParameters calldata zoneParameters)
+        external
+        pure
+        override
+        returns (bytes4 validOrderMagicValue)
+    {
         if (zoneParameters.extraData.length == 0) {
             if (zoneParameters.zoneHash == bytes32(uint256(1))) {
                 revert("Revert on zone hash 1");
@@ -25,14 +28,8 @@ contract TestZone is ERC165, ZoneInterface {
             assembly {
                 revert(0, 0)
             }
-        } else if (
-            zoneParameters.extraData.length > 32 &&
-            zoneParameters.extraData.length % 32 == 0
-        ) {
-            bytes32[] memory expectedOrderHashes = abi.decode(
-                zoneParameters.extraData,
-                (bytes32[])
-            );
+        } else if (zoneParameters.extraData.length > 32 && zoneParameters.extraData.length % 32 == 0) {
+            bytes32[] memory expectedOrderHashes = abi.decode(zoneParameters.extraData, (bytes32[]));
 
             uint256 expectedLength = expectedOrderHashes.length;
 
@@ -47,9 +44,8 @@ contract TestZone is ERC165, ZoneInterface {
             }
         }
 
-        validOrderMagicValue = zoneParameters.zoneHash != bytes32(uint256(3))
-            ? ZoneInterface.validateOrder.selector
-            : bytes4(0xffffffff);
+        validOrderMagicValue =
+            zoneParameters.zoneHash != bytes32(uint256(3)) ? ZoneInterface.validateOrder.selector : bytes4(0xffffffff);
     }
 
     /**
@@ -71,11 +67,7 @@ contract TestZone is ERC165, ZoneInterface {
         return ("TestZone", schemas);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC165, ZoneInterface) returns (bool) {
-        return
-            interfaceId == type(ZoneInterface).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId) public view override(ERC165, ZoneInterface) returns (bool) {
+        return interfaceId == type(ZoneInterface).interfaceId || super.supportsInterface(interfaceId);
     }
 }

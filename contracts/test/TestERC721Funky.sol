@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import { ERC721 } from "@rari-capital/solmate/src/tokens/ERC721.sol";
+import {ERC721} from "@rari-capital/solmate/src/tokens/ERC721.sol";
 
 /**
  * @notice TestERC721Funky is an ERC721 that implements ERC2981 with an incorrect return type.

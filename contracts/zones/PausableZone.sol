@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { ZoneInterface } from "../interfaces/ZoneInterface.sol";
+import {ZoneInterface} from "../interfaces/ZoneInterface.sol";
 
-import {
-    PausableZoneEventsAndErrors
-} from "./interfaces/PausableZoneEventsAndErrors.sol";
+import {PausableZoneEventsAndErrors} from "./interfaces/PausableZoneEventsAndErrors.sol";
 
-import { ERC165 } from "../interfaces/ERC165.sol";
+import {ERC165} from "../interfaces/ERC165.sol";
 
-import { SeaportInterface } from "../interfaces/SeaportInterface.sol";
+import {SeaportInterface} from "../interfaces/SeaportInterface.sol";
 
 import {
     AdvancedOrder,
@@ -22,7 +20,7 @@ import {
     ZoneParameters
 } from "../lib/ConsiderationStructs.sol";
 
-import { PausableZoneInterface } from "./interfaces/PausableZoneInterface.sol";
+import {PausableZoneInterface} from "./interfaces/PausableZoneInterface.sol";
 
 /**
  * @title  PausableZone
@@ -32,12 +30,7 @@ import { PausableZoneInterface } from "./interfaces/PausableZoneInterface.sol";
  *         restricted orders that have it set as their zone. Note that this zone
  *         cannot execute orders that return native tokens to the fulfiller.
  */
-contract PausableZone is
-    ERC165,
-    PausableZoneEventsAndErrors,
-    ZoneInterface,
-    PausableZoneInterface
-{
+contract PausableZone is ERC165, PausableZoneEventsAndErrors, ZoneInterface, PausableZoneInterface {
     // Set an immutable controller that can pause the zone & update an operator.
     address internal immutable _controller;
 
@@ -91,10 +84,12 @@ contract PausableZone is
      * @return cancelled A boolean indicating whether the supplied orders have
      *                   been successfully cancelled.
      */
-    function cancelOrders(
-        SeaportInterface seaport,
-        OrderComponents[] calldata orders
-    ) external override isOperator returns (bool cancelled) {
+    function cancelOrders(SeaportInterface seaport, OrderComponents[] calldata orders)
+        external
+        override
+        isOperator
+        returns (bool cancelled)
+    {
         // Call cancel on Seaport and return its boolean value.
         cancelled = seaport.cancel(orders);
     }
@@ -119,9 +114,7 @@ contract PausableZone is
      *
      * @param operatorToAssign The address to assign as the operator.
      */
-    function assignOperator(
-        address operatorToAssign
-    ) external override isController {
+    function assignOperator(address operatorToAssign) external override isController {
         // Ensure the operator being assigned is not the null address.
         if (operatorToAssign == address(0)) {
             revert PauserCanNotBeSetAsZero();
@@ -150,11 +143,7 @@ contract PausableZone is
      *                    transfers performed as part of matching the given
      *                    orders.
      */
-    function executeMatchOrders(
-        SeaportInterface seaport,
-        Order[] calldata orders,
-        Fulfillment[] calldata fulfillments
-    )
+    function executeMatchOrders(SeaportInterface seaport, Order[] calldata orders, Fulfillment[] calldata fulfillments)
         external
         payable
         override
@@ -163,10 +152,7 @@ contract PausableZone is
     {
         // Call matchOrders on Seaport and return the sequence of transfers
         // performed as part of matching the given orders.
-        executions = seaport.matchOrders{ value: msg.value }(
-            orders,
-            fulfillments
-        );
+        executions = seaport.matchOrders{value: msg.value}(orders, fulfillments);
     }
 
     /**
@@ -195,21 +181,10 @@ contract PausableZone is
         AdvancedOrder[] calldata orders,
         CriteriaResolver[] calldata criteriaResolvers,
         Fulfillment[] calldata fulfillments
-    )
-        external
-        payable
-        override
-        isOperator
-        returns (Execution[] memory executions)
-    {
+    ) external payable override isOperator returns (Execution[] memory executions) {
         // Call matchAdvancedOrders on Seaport and return the sequence of
         // transfers performed as part of matching the given orders.
-        executions = seaport.matchAdvancedOrders{ value: msg.value }(
-            orders,
-            criteriaResolvers,
-            fulfillments,
-            msg.sender
-        );
+        executions = seaport.matchAdvancedOrders{value: msg.value}(orders, criteriaResolvers, fulfillments, msg.sender);
     }
 
     /**
@@ -256,11 +231,7 @@ contract PausableZone is
         return ("PausableZone", schemas);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC165, ZoneInterface) returns (bool) {
-        return
-            interfaceId == type(ZoneInterface).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId) public view override(ERC165, ZoneInterface) returns (bool) {
+        return interfaceId == type(ZoneInterface).interfaceId || super.supportsInterface(interfaceId);
     }
 }

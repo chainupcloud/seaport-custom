@@ -10,7 +10,7 @@ import {
     OrderComponents
 } from "../../lib/ConsiderationStructs.sol";
 
-import { SeaportInterface } from "../../interfaces/SeaportInterface.sol";
+import {SeaportInterface} from "../../interfaces/SeaportInterface.sol";
 
 /**
  * @title  PausableZoneController
@@ -140,10 +140,7 @@ interface PausableZoneControllerInterface {
      * @param pausableZoneAddress The zone address to assign operator role.
      * @param operatorToAssign    The address to assign as operator.
      */
-    function assignOperator(
-        address pausableZoneAddress,
-        address operatorToAssign
-    ) external;
+    function assignOperator(address pausableZoneAddress, address operatorToAssign) external;
 
     /**
      * @notice An external view function that returns the owner.

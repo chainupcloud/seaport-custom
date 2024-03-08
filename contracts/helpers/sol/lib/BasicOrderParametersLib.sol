@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {
-    AdditionalRecipient,
-    BasicOrderParameters,
-    OrderParameters
-} from "../../../lib/ConsiderationStructs.sol";
+import {AdditionalRecipient, BasicOrderParameters, OrderParameters} from "../../../lib/ConsiderationStructs.sol";
 
-import { BasicOrderType } from "../../../lib/ConsiderationEnums.sol";
+import {BasicOrderType} from "../../../lib/ConsiderationEnums.sol";
 
-import { StructCopier } from "./StructCopier.sol";
+import {StructCopier} from "./StructCopier.sol";
 
-import { AdditionalRecipientLib } from "./AdditionalRecipientLib.sol";
+import {AdditionalRecipientLib} from "./AdditionalRecipientLib.sol";
 
 /**
  * @title BasicOrderParametersLib
@@ -24,35 +20,33 @@ library BasicOrderParametersLib {
     using BasicOrderParametersLib for BasicOrderParameters;
     using AdditionalRecipientLib for AdditionalRecipient[];
 
-    bytes32 private constant BASIC_ORDER_PARAMETERS_MAP_POSITION =
-        keccak256("seaport.BasicOrderParametersDefaults");
+    bytes32 private constant BASIC_ORDER_PARAMETERS_MAP_POSITION = keccak256("seaport.BasicOrderParametersDefaults");
     bytes32 private constant BASIC_ORDER_PARAMETERS_ARRAY_MAP_POSITION =
         keccak256("seaport.BasicOrderParametersArrayDefaults");
-    bytes32 private constant EMPTY_BASIC_ORDER_PARAMETERS =
-        keccak256(
-            abi.encode(
-                BasicOrderParameters({
-                    considerationToken: address(0),
-                    considerationIdentifier: 0,
-                    considerationAmount: 0,
-                    offerer: payable(address(0)),
-                    zone: address(0),
-                    offerToken: address(0),
-                    offerIdentifier: 0,
-                    offerAmount: 0,
-                    basicOrderType: BasicOrderType(0),
-                    startTime: 0,
-                    endTime: 0,
-                    zoneHash: bytes32(0),
-                    salt: 0,
-                    offererConduitKey: bytes32(0),
-                    fulfillerConduitKey: bytes32(0),
-                    totalOriginalAdditionalRecipients: 0,
-                    additionalRecipients: new AdditionalRecipient[](0),
-                    signature: ""
-                })
-            )
-        );
+    bytes32 private constant EMPTY_BASIC_ORDER_PARAMETERS = keccak256(
+        abi.encode(
+            BasicOrderParameters({
+                considerationToken: address(0),
+                considerationIdentifier: 0,
+                considerationAmount: 0,
+                offerer: payable(address(0)),
+                zone: address(0),
+                offerToken: address(0),
+                offerIdentifier: 0,
+                offerAmount: 0,
+                basicOrderType: BasicOrderType(0),
+                startTime: 0,
+                endTime: 0,
+                zoneHash: bytes32(0),
+                salt: 0,
+                offererConduitKey: bytes32(0),
+                fulfillerConduitKey: bytes32(0),
+                totalOriginalAdditionalRecipients: 0,
+                additionalRecipients: new AdditionalRecipient[](0),
+                signature: ""
+            })
+        )
+    );
 
     /**
      * @dev Clears a default BasicOrderParameters from storage.
@@ -79,10 +73,7 @@ library BasicOrderParametersLib {
         basicParameters.offererConduitKey = bytes32(0);
         basicParameters.fulfillerConduitKey = bytes32(0);
         basicParameters.totalOriginalAdditionalRecipients = 0;
-        StructCopier.setAdditionalRecipients(
-            basicParameters.additionalRecipients,
-            additionalRecipients
-        );
+        StructCopier.setAdditionalRecipients(basicParameters.additionalRecipients, additionalRecipients);
         basicParameters.signature = new bytes(0);
     }
 
@@ -91,9 +82,7 @@ library BasicOrderParametersLib {
      *
      * @param basicParametersArray the name of the default to clear
      */
-    function clear(
-        BasicOrderParameters[] storage basicParametersArray
-    ) internal {
+    function clear(BasicOrderParameters[] storage basicParametersArray) internal {
         while (basicParametersArray.length > 0) {
             basicParametersArray[basicParametersArray.length - 1].clear();
             basicParametersArray.pop();
@@ -106,11 +95,8 @@ library BasicOrderParametersLib {
      * @param defaultName the name of the default to clear
      */
     function clear(string memory defaultName) internal {
-        mapping(string => BasicOrderParameters)
-            storage orderParametersMap = _orderParametersMap();
-        BasicOrderParameters storage basicParameters = orderParametersMap[
-            defaultName
-        ];
+        mapping(string => BasicOrderParameters) storage orderParametersMap = _orderParametersMap();
+        BasicOrderParameters storage basicParameters = orderParametersMap[defaultName];
         basicParameters.clear();
     }
 
@@ -150,11 +136,8 @@ library BasicOrderParametersLib {
      *
      * @return item the selected default BasicOrderParameters
      */
-    function fromDefault(
-        string memory defaultName
-    ) internal view returns (BasicOrderParameters memory item) {
-        mapping(string => BasicOrderParameters)
-            storage orderParametersMap = _orderParametersMap();
+    function fromDefault(string memory defaultName) internal view returns (BasicOrderParameters memory item) {
+        mapping(string => BasicOrderParameters) storage orderParametersMap = _orderParametersMap();
         item = orderParametersMap[defaultName];
 
         if (keccak256(abi.encode(item)) == EMPTY_BASIC_ORDER_PARAMETERS) {
@@ -169,11 +152,8 @@ library BasicOrderParametersLib {
      *
      * @return items the selected default BasicOrderParameters array
      */
-    function fromDefaultMany(
-        string memory defaultName
-    ) internal view returns (BasicOrderParameters[] memory items) {
-        mapping(string => BasicOrderParameters[])
-            storage orderParametersArrayMap = _orderParametersArrayMap();
+    function fromDefaultMany(string memory defaultName) internal view returns (BasicOrderParameters[] memory items) {
+        mapping(string => BasicOrderParameters[]) storage orderParametersArrayMap = _orderParametersArrayMap();
         items = orderParametersArrayMap[defaultName];
 
         if (items.length == 0) {
@@ -189,15 +169,12 @@ library BasicOrderParametersLib {
      *
      * @return _orderParameters the saved BasicOrderParameters
      */
-    function saveDefault(
-        BasicOrderParameters memory orderParameters,
-        string memory defaultName
-    ) internal returns (BasicOrderParameters memory _orderParameters) {
-        mapping(string => BasicOrderParameters)
-            storage orderParametersMap = _orderParametersMap();
-        BasicOrderParameters storage destination = orderParametersMap[
-            defaultName
-        ];
+    function saveDefault(BasicOrderParameters memory orderParameters, string memory defaultName)
+        internal
+        returns (BasicOrderParameters memory _orderParameters)
+    {
+        mapping(string => BasicOrderParameters) storage orderParametersMap = _orderParametersMap();
+        BasicOrderParameters storage destination = orderParametersMap[defaultName];
         StructCopier.setBasicOrderParameters(destination, orderParameters);
         return orderParameters;
     }
@@ -210,15 +187,12 @@ library BasicOrderParametersLib {
      *
      * @return _orderParameters the saved BasicOrderParameters array
      */
-    function saveDefaultMany(
-        BasicOrderParameters[] memory orderParameters,
-        string memory defaultName
-    ) internal returns (BasicOrderParameters[] memory _orderParameters) {
-        mapping(string => BasicOrderParameters[])
-            storage orderParametersArrayMap = _orderParametersArrayMap();
-        BasicOrderParameters[] storage destination = orderParametersArrayMap[
-            defaultName
-        ];
+    function saveDefaultMany(BasicOrderParameters[] memory orderParameters, string memory defaultName)
+        internal
+        returns (BasicOrderParameters[] memory _orderParameters)
+    {
+        mapping(string => BasicOrderParameters[]) storage orderParametersArrayMap = _orderParametersArrayMap();
+        BasicOrderParameters[] storage destination = orderParametersArrayMap[defaultName];
         StructCopier.setBasicOrderParameters(destination, orderParameters);
         return orderParameters;
     }
@@ -230,31 +204,27 @@ library BasicOrderParametersLib {
      *
      * @return copy the copied BasicOrderParameters
      */
-    function copy(
-        BasicOrderParameters memory item
-    ) internal pure returns (BasicOrderParameters memory) {
-        return
-            BasicOrderParameters({
-                considerationToken: item.considerationToken,
-                considerationIdentifier: item.considerationIdentifier,
-                considerationAmount: item.considerationAmount,
-                offerer: item.offerer,
-                zone: item.zone,
-                offerToken: item.offerToken,
-                offerIdentifier: item.offerIdentifier,
-                offerAmount: item.offerAmount,
-                basicOrderType: item.basicOrderType,
-                startTime: item.startTime,
-                endTime: item.endTime,
-                zoneHash: item.zoneHash,
-                salt: item.salt,
-                offererConduitKey: item.offererConduitKey,
-                fulfillerConduitKey: item.fulfillerConduitKey,
-                totalOriginalAdditionalRecipients: item
-                    .totalOriginalAdditionalRecipients,
-                additionalRecipients: item.additionalRecipients.copy(),
-                signature: item.signature
-            });
+    function copy(BasicOrderParameters memory item) internal pure returns (BasicOrderParameters memory) {
+        return BasicOrderParameters({
+            considerationToken: item.considerationToken,
+            considerationIdentifier: item.considerationIdentifier,
+            considerationAmount: item.considerationAmount,
+            offerer: item.offerer,
+            zone: item.zone,
+            offerToken: item.offerToken,
+            offerIdentifier: item.offerIdentifier,
+            offerAmount: item.offerAmount,
+            basicOrderType: item.basicOrderType,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            zoneHash: item.zoneHash,
+            salt: item.salt,
+            offererConduitKey: item.offererConduitKey,
+            fulfillerConduitKey: item.fulfillerConduitKey,
+            totalOriginalAdditionalRecipients: item.totalOriginalAdditionalRecipients,
+            additionalRecipients: item.additionalRecipients.copy(),
+            signature: item.signature
+        });
     }
 
     /**
@@ -266,9 +236,7 @@ library BasicOrderParametersLib {
     function _orderParametersMap()
         private
         pure
-        returns (
-            mapping(string => BasicOrderParameters) storage orderParametersMap
-        )
+        returns (mapping(string => BasicOrderParameters) storage orderParametersMap)
     {
         bytes32 position = BASIC_ORDER_PARAMETERS_MAP_POSITION;
         assembly {
@@ -286,10 +254,7 @@ library BasicOrderParametersLib {
     function _orderParametersArrayMap()
         private
         pure
-        returns (
-            mapping(string => BasicOrderParameters[])
-                storage orderParametersArrayMap
-        )
+        returns (mapping(string => BasicOrderParameters[]) storage orderParametersArrayMap)
     {
         bytes32 position = BASIC_ORDER_PARAMETERS_ARRAY_MAP_POSITION;
         assembly {
@@ -312,10 +277,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withConsiderationToken(
-        BasicOrderParameters memory item,
-        address value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withConsiderationToken(BasicOrderParameters memory item, address value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.considerationToken = value;
         return item;
     }
@@ -331,10 +297,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withConsiderationIdentifier(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withConsiderationIdentifier(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.considerationIdentifier = value;
         return item;
     }
@@ -350,10 +317,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withConsiderationAmount(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withConsiderationAmount(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.considerationAmount = value;
         return item;
     }
@@ -368,10 +336,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withOfferer(
-        BasicOrderParameters memory item,
-        address value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withOfferer(BasicOrderParameters memory item, address value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.offerer = payable(value);
         return item;
     }
@@ -386,10 +355,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withZone(
-        BasicOrderParameters memory item,
-        address value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withZone(BasicOrderParameters memory item, address value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.zone = value;
         return item;
     }
@@ -404,10 +374,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withOfferToken(
-        BasicOrderParameters memory item,
-        address value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withOfferToken(BasicOrderParameters memory item, address value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.offerToken = value;
         return item;
     }
@@ -422,10 +393,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withOfferIdentifier(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withOfferIdentifier(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.offerIdentifier = value;
         return item;
     }
@@ -440,10 +412,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withOfferAmount(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withOfferAmount(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.offerAmount = value;
         return item;
     }
@@ -458,10 +431,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withBasicOrderType(
-        BasicOrderParameters memory item,
-        BasicOrderType value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withBasicOrderType(BasicOrderParameters memory item, BasicOrderType value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.basicOrderType = value;
         return item;
     }
@@ -476,10 +450,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withStartTime(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withStartTime(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.startTime = value;
         return item;
     }
@@ -494,10 +469,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withEndTime(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withEndTime(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.endTime = value;
         return item;
     }
@@ -512,10 +488,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withZoneHash(
-        BasicOrderParameters memory item,
-        bytes32 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withZoneHash(BasicOrderParameters memory item, bytes32 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.zoneHash = value;
         return item;
     }
@@ -530,10 +507,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withSalt(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withSalt(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.salt = value;
         return item;
     }
@@ -548,10 +526,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withOffererConduitKey(
-        BasicOrderParameters memory item,
-        bytes32 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withOffererConduitKey(BasicOrderParameters memory item, bytes32 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.offererConduitKey = value;
         return item;
     }
@@ -566,10 +545,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withFulfillerConduitKey(
-        BasicOrderParameters memory item,
-        bytes32 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withFulfillerConduitKey(BasicOrderParameters memory item, bytes32 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.fulfillerConduitKey = value;
         return item;
     }
@@ -585,10 +565,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withTotalOriginalAdditionalRecipients(
-        BasicOrderParameters memory item,
-        uint256 value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withTotalOriginalAdditionalRecipients(BasicOrderParameters memory item, uint256 value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.totalOriginalAdditionalRecipients = value;
         return item;
     }
@@ -604,10 +585,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withAdditionalRecipients(
-        BasicOrderParameters memory item,
-        AdditionalRecipient[] memory value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withAdditionalRecipients(BasicOrderParameters memory item, AdditionalRecipient[] memory value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.additionalRecipients = value;
         return item;
     }
@@ -622,10 +604,11 @@ library BasicOrderParametersLib {
      *
      * @custom:return item the modified BasicOrderParameters
      */
-    function withSignature(
-        BasicOrderParameters memory item,
-        bytes memory value
-    ) internal pure returns (BasicOrderParameters memory) {
+    function withSignature(BasicOrderParameters memory item, bytes memory value)
+        internal
+        pure
+        returns (BasicOrderParameters memory)
+    {
         item.signature = value;
         return item;
     }
