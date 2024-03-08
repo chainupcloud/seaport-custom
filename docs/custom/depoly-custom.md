@@ -1,4 +1,9 @@
 
+## build
+```bash
+FOUNDRY_PROFILE=optimized forge build
+```
+
 ## depoly
 
 部署 ConduitController
