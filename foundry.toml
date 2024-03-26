@@ -17,8 +17,10 @@ remappings = [
     'seaport-core/=lib/seaport-core/',
     'seaport/=contracts/'
 ]
-# verify-contract modify: 9_999_999
-optimizer_runs = 9_999_999
+
+# verify-contract: 9_999_999
+# deploy-contract: 4_294_967_295
+optimizer_runs = 4_294_967_295
 fs_permissions = [
     { access = "read", path = "./optimized-out" },
     { access = "read", path = "./reference-out" },
