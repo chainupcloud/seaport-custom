@@ -38,9 +38,8 @@ import {
 
 import { UnavailableReason } from "seaport-sol/src/SpaceEnums.sol";
 
-import {
-    ContractOffererInterface
-} from "seaport-sol/src/ContractOffererInterface.sol";
+import { ContractOffererInterface } from
+    "seaport-sol/src/ContractOffererInterface.sol";
 
 import { SeaportInterface } from "seaport-sol/src/SeaportInterface.sol";
 
@@ -146,11 +145,10 @@ library FuzzHelpers {
         }
     }
 
-    function _lcm(
-        uint256 a,
-        uint256 b,
-        uint256 gcdValue
-    ) internal returns (uint256 result) {
+    function _lcm(uint256 a, uint256 b, uint256 gcdValue)
+        internal
+        returns (uint256 result)
+    {
         bool success;
         (success, result) = _tryMul(a, b);
 
@@ -179,10 +177,11 @@ library FuzzHelpers {
         return result / gcdValue;
     }
 
-    function _tryMul(
-        uint256 a,
-        uint256 b
-    ) internal pure returns (bool, uint256) {
+    function _tryMul(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             if (a == 0) {
                 return (true, 0);
@@ -198,12 +197,12 @@ library FuzzHelpers {
         }
     }
 
-    function findSmallestDenominator(
-        uint256[] memory numbers
-    ) internal returns (uint256 denominator) {
+    function findSmallestDenominator(uint256[] memory numbers)
+        internal
+        returns (uint256 denominator)
+    {
         require(
-            numbers.length > 0,
-            "FuzzHelpers: Input array must not be empty"
+            numbers.length > 0, "FuzzHelpers: Input array must not be empty"
         );
 
         bool initialValueSet = false;
@@ -242,12 +241,14 @@ library FuzzHelpers {
         }
     }
 
-    function getTotalFractionalizableAmounts(
-        OrderParameters memory order
-    ) internal pure returns (uint256) {
+    function getTotalFractionalizableAmounts(OrderParameters memory order)
+        internal
+        pure
+        returns (uint256)
+    {
         if (
-            order.orderType == OrderType.PARTIAL_OPEN ||
-            order.orderType == OrderType.PARTIAL_RESTRICTED
+            order.orderType == OrderType.PARTIAL_OPEN
+                || order.orderType == OrderType.PARTIAL_RESTRICTED
         ) {
             return 2 * (order.offer.length + order.consideration.length);
         }
@@ -255,19 +256,18 @@ library FuzzHelpers {
         return 0;
     }
 
-    function getSmallestDenominator(
-        OrderParameters memory order
-    ) internal returns (uint256 smallestDenominator, bool canScaleUp) {
+    function getSmallestDenominator(OrderParameters memory order)
+        internal
+        returns (uint256 smallestDenominator, bool canScaleUp)
+    {
         canScaleUp = true;
 
-        uint256 totalFractionalizableAmounts = (
-            getTotalFractionalizableAmounts(order)
-        );
+        uint256 totalFractionalizableAmounts =
+            (getTotalFractionalizableAmounts(order));
 
         if (totalFractionalizableAmounts != 0) {
-            uint256[] memory numbers = new uint256[](
-                totalFractionalizableAmounts
-            );
+            uint256[] memory numbers =
+                new uint256[](totalFractionalizableAmounts);
 
             uint256 numberIndex = 0;
 
@@ -276,8 +276,8 @@ library FuzzHelpers {
                 numbers[numberIndex++] = item.startAmount;
                 numbers[numberIndex++] = item.endAmount;
                 if (
-                    item.itemType == ItemType.ERC721 ||
-                    item.itemType == ItemType.ERC721_WITH_CRITERIA
+                    item.itemType == ItemType.ERC721
+                        || item.itemType == ItemType.ERC721_WITH_CRITERIA
                 ) {
                     canScaleUp = false;
                 }
@@ -288,8 +288,8 @@ library FuzzHelpers {
                 numbers[numberIndex++] = item.startAmount;
                 numbers[numberIndex++] = item.endAmount;
                 if (
-                    item.itemType == ItemType.ERC721 ||
-                    item.itemType == ItemType.ERC721_WITH_CRITERIA
+                    item.itemType == ItemType.ERC721
+                        || item.itemType == ItemType.ERC721_WITH_CRITERIA
                 ) {
                     canScaleUp = false;
                 }
@@ -309,9 +309,11 @@ library FuzzHelpers {
      *
      * @custom:return quantity of orders to process.
      */
-    function getQuantity(
-        AdvancedOrder[] memory orders
-    ) internal pure returns (uint256) {
+    function getQuantity(AdvancedOrder[] memory orders)
+        internal
+        pure
+        returns (uint256)
+    {
         return orders.length;
     }
 
@@ -322,9 +324,11 @@ library FuzzHelpers {
      *
      * @custom:return family of method that can fulfill these orders.
      */
-    function getFamily(
-        AdvancedOrder[] memory orders
-    ) internal pure returns (Family) {
+    function getFamily(AdvancedOrder[] memory orders)
+        internal
+        pure
+        returns (Family)
+    {
         uint256 quantity = getQuantity(orders);
         if (quantity > 1) {
             return Family.COMBINED;
@@ -340,14 +344,14 @@ library FuzzHelpers {
      *
      * @custom:return state of the given order.
      */
-    function getState(
-        AdvancedOrder memory order,
-        SeaportInterface seaport
-    ) internal view returns (State) {
+    function getState(AdvancedOrder memory order, SeaportInterface seaport)
+        internal
+        view
+        returns (State)
+    {
         uint256 counter = seaport.getCounter(order.parameters.offerer);
-        bytes32 orderHash = seaport.getOrderHash(
-            order.parameters.toOrderComponents(counter)
-        );
+        bytes32 orderHash =
+            seaport.getOrderHash(order.parameters.toOrderComponents(counter));
         (
             bool isValidated,
             bool isCancelled,
@@ -355,8 +359,9 @@ library FuzzHelpers {
             uint256 totalSize
         ) = seaport.getOrderStatus(orderHash);
 
-        if (totalFilled != 0 && totalSize != 0 && totalFilled == totalSize)
+        if (totalFilled != 0 && totalSize != 0 && totalFilled == totalSize) {
             return State.FULLY_FILLED;
+        }
         if (totalFilled != 0 && totalSize != 0) return State.PARTIALLY_FILLED;
         if (isCancelled) return State.CANCELLED;
         if (isValidated) return State.VALIDATED;
@@ -374,13 +379,13 @@ library FuzzHelpers {
     function getType(AdvancedOrder memory order) internal pure returns (Type) {
         OrderType orderType = order.parameters.orderType;
         if (
-            orderType == OrderType.FULL_OPEN ||
-            orderType == OrderType.PARTIAL_OPEN
+            orderType == OrderType.FULL_OPEN
+                || orderType == OrderType.PARTIAL_OPEN
         ) {
             return Type.OPEN;
         } else if (
-            orderType == OrderType.FULL_RESTRICTED ||
-            orderType == OrderType.PARTIAL_RESTRICTED
+            orderType == OrderType.FULL_RESTRICTED
+                || orderType == OrderType.PARTIAL_RESTRICTED
         ) {
             return Type.RESTRICTED;
         } else if (orderType == OrderType.CONTRACT) {
@@ -398,10 +403,11 @@ library FuzzHelpers {
      *
      * @custom:return structure of the given order.
      */
-    function getStructure(
-        AdvancedOrder memory order,
-        address seaport
-    ) internal view returns (Structure) {
+    function getStructure(AdvancedOrder memory order, address seaport)
+        internal
+        view
+        returns (Structure)
+    {
         // If the order has extraData, it's advanced
         if (order.extraData.length > 0) return Structure.ADVANCED;
 
@@ -435,10 +441,11 @@ library FuzzHelpers {
         return Structure.STANDARD;
     }
 
-    function getStructure(
-        AdvancedOrder[] memory orders,
-        address seaport
-    ) internal view returns (Structure) {
+    function getStructure(AdvancedOrder[] memory orders, address seaport)
+        internal
+        view
+        returns (Structure)
+    {
         if (orders.length == 1) {
             return getStructure(orders[0], seaport);
         }
@@ -468,9 +475,8 @@ library FuzzHelpers {
         address seaport
     ) internal view returns (bool) {
         uint256 i;
-        ConsiderationItem[] memory consideration = order
-            .parameters
-            .consideration;
+        ConsiderationItem[] memory consideration =
+            order.parameters.consideration;
         OfferItem[] memory offer = order.parameters.offer;
 
         // Order must contain exactly one offer item and one or more
@@ -479,8 +485,8 @@ library FuzzHelpers {
             return false;
         }
         if (
-            consideration.length == 0 ||
-            order.parameters.totalOriginalConsiderationItems == 0
+            consideration.length == 0
+                || order.parameters.totalOriginalConsiderationItems == 0
         ) {
             return false;
         }
@@ -504,12 +510,11 @@ library FuzzHelpers {
         // Order cannot be partially filled.
         SeaportInterface seaportInterface = SeaportInterface(seaport);
         uint256 counter = seaportInterface.getCounter(order.parameters.offerer);
-        OrderComponents memory orderComponents = order
-            .parameters
-            .toOrderComponents(counter);
+        OrderComponents memory orderComponents =
+            order.parameters.toOrderComponents(counter);
         bytes32 orderHash = seaportInterface.getOrderHash(orderComponents);
-        (, , uint256 totalFilled, uint256 totalSize) = seaportInterface
-            .getOrderStatus(orderHash);
+        (,, uint256 totalFilled, uint256 totalSize) =
+            seaportInterface.getOrderStatus(orderHash);
 
         if (totalFilled != totalSize) {
             return false;
@@ -518,16 +523,16 @@ library FuzzHelpers {
         // Order cannot contain any criteria-based items.
         for (i = 0; i < consideration.length; ++i) {
             if (
-                consideration[i].itemType == ItemType.ERC721_WITH_CRITERIA ||
-                consideration[i].itemType == ItemType.ERC1155_WITH_CRITERIA
+                consideration[i].itemType == ItemType.ERC721_WITH_CRITERIA
+                    || consideration[i].itemType == ItemType.ERC1155_WITH_CRITERIA
             ) {
                 return false;
             }
         }
 
         if (
-            offer[0].itemType == ItemType.ERC721_WITH_CRITERIA ||
-            offer[0].itemType == ItemType.ERC1155_WITH_CRITERIA
+            offer[0].itemType == ItemType.ERC721_WITH_CRITERIA
+                || offer[0].itemType == ItemType.ERC1155_WITH_CRITERIA
         ) {
             return false;
         }
@@ -540,15 +545,15 @@ library FuzzHelpers {
         // Order must contain exactly one NFT item.
         uint256 totalNFTs;
         if (
-            offer[0].itemType == ItemType.ERC721 ||
-            offer[0].itemType == ItemType.ERC1155
+            offer[0].itemType == ItemType.ERC721
+                || offer[0].itemType == ItemType.ERC1155
         ) {
             totalNFTs += 1;
         }
         for (i = 0; i < consideration.length; ++i) {
             if (
-                consideration[i].itemType == ItemType.ERC721 ||
-                consideration[i].itemType == ItemType.ERC1155
+                consideration[i].itemType == ItemType.ERC721
+                    || consideration[i].itemType == ItemType.ERC1155
             ) {
                 totalNFTs += 1;
             }
@@ -561,10 +566,10 @@ library FuzzHelpers {
         // The one NFT must appear either as the offer item or as the first
         // consideration item.
         if (
-            offer[0].itemType != ItemType.ERC721 &&
-            offer[0].itemType != ItemType.ERC1155 &&
-            consideration[0].itemType != ItemType.ERC721 &&
-            consideration[0].itemType != ItemType.ERC1155
+            offer[0].itemType != ItemType.ERC721
+                && offer[0].itemType != ItemType.ERC1155
+                && consideration[0].itemType != ItemType.ERC721
+                && consideration[0].itemType != ItemType.ERC1155
         ) {
             return false;
         }
@@ -572,8 +577,8 @@ library FuzzHelpers {
         // All items that are not the NFT must share the same item type and
         // token (and the identifier must be zero).
         if (
-            offer[0].itemType == ItemType.ERC721 ||
-            offer[0].itemType == ItemType.ERC1155
+            offer[0].itemType == ItemType.ERC721
+                || offer[0].itemType == ItemType.ERC1155
         ) {
             ItemType expectedItemType = consideration[0].itemType;
             address expectedToken = consideration[0].token;
@@ -594,8 +599,8 @@ library FuzzHelpers {
         }
 
         if (
-            consideration[0].itemType == ItemType.ERC721 ||
-            consideration[0].itemType == ItemType.ERC1155
+            consideration[0].itemType == ItemType.ERC721
+                || consideration[0].itemType == ItemType.ERC1155
         ) {
             if (consideration.length >= 2) {
                 ItemType expectedItemType = offer[0].itemType;
@@ -625,8 +630,8 @@ library FuzzHelpers {
         // all the other consideration items cannot exceed the amount of the
         // offer item.
         if (
-            consideration[0].itemType == ItemType.ERC721 ||
-            consideration[0].itemType == ItemType.ERC1155
+            consideration[0].itemType == ItemType.ERC721
+                || consideration[0].itemType == ItemType.ERC1155
         ) {
             uint256 totalConsiderationAmount;
             for (i = 1; i < consideration.length; ++i) {
@@ -669,9 +674,11 @@ library FuzzHelpers {
      *
      * @return basicOrderType The BasicOrderType.
      */
-    function getBasicOrderType(
-        AdvancedOrder memory order
-    ) internal pure returns (BasicOrderType basicOrderType) {
+    function getBasicOrderType(AdvancedOrder memory order)
+        internal
+        pure
+        returns (BasicOrderType basicOrderType)
+    {
         // Get the route (ETH ⇒ ERC721, etc.) for the order.
         BasicOrderRouteType route = getBasicOrderRouteType(order);
 
@@ -692,9 +699,11 @@ library FuzzHelpers {
      *
      * @return route The BasicOrderRouteType.
      */
-    function getBasicOrderRouteType(
-        AdvancedOrder memory order
-    ) internal pure returns (BasicOrderRouteType route) {
+    function getBasicOrderRouteType(AdvancedOrder memory order)
+        internal
+        pure
+        returns (BasicOrderRouteType route)
+    {
         // Get the route (ETH ⇒ ERC721, etc.) for the order.
         ItemType providingItemType = order.parameters.consideration[0].itemType;
         ItemType offeredItemType = order.parameters.offer[0].itemType;
@@ -775,15 +784,13 @@ library FuzzHelpers {
         bytes32[] memory orderHashes = new bytes32[](orders.length);
         for (uint256 i = 0; i < orderHashes.length; ++i) {
             if (
-                context.executionState.orderDetails[i].unavailableReason !=
-                UnavailableReason.AVAILABLE
+                context.executionState.orderDetails[i].unavailableReason
+                    != UnavailableReason.AVAILABLE
             ) {
                 orderHashes[i] = bytes32(0);
             } else {
-                orderHashes[i] = context
-                    .executionState
-                    .orderDetails[i]
-                    .orderHash;
+                orderHashes[i] =
+                    context.executionState.orderDetails[i].orderHash;
             }
         }
 
@@ -798,15 +805,11 @@ library FuzzHelpers {
                 continue;
             }
 
-            SpentItem[] memory minimumReceived = order
-                .parameters
-                .offer
-                .toSpentItemArray();
+            SpentItem[] memory minimumReceived =
+                order.parameters.offer.toSpentItemArray();
 
-            SpentItem[] memory maximumSpent = order
-                .parameters
-                .consideration
-                .toSpentItemArray();
+            SpentItem[] memory maximumSpent =
+                order.parameters.consideration.toSpentItemArray();
 
             // Derive the expected calldata hash for the call to generateOrder
             calldataHashes[i][0] = keccak256(
@@ -816,9 +819,8 @@ library FuzzHelpers {
                 )
             );
 
-            uint256 shiftedOfferer = uint256(
-                uint160(order.parameters.offerer)
-            ) << 96;
+            uint256 shiftedOfferer =
+                uint256(uint160(order.parameters.offerer)) << 96;
 
             // Get counter of the order offerer
             uint256 counter = shiftedOfferer ^ uint256(orderHashes[i]);
@@ -880,35 +882,38 @@ library FuzzHelpers {
      * @return hasNonzeroCriteria Whether any offer or consideration item has
      *                            nonzero criteria.
      */
-    function _checkCriteria(
-        AdvancedOrder memory order
-    ) internal pure returns (bool hasCriteria, bool hasNonzeroCriteria) {
+    function _checkCriteria(AdvancedOrder memory order)
+        internal
+        pure
+        returns (bool hasCriteria, bool hasNonzeroCriteria)
+    {
         // Check if any offer item has criteria
         OfferItem[] memory offer = order.parameters.offer;
         for (uint256 i; i < offer.length; ++i) {
             OfferItem memory offerItem = offer[i];
             ItemType itemType = offerItem.itemType;
-            hasCriteria = (itemType == ItemType.ERC721_WITH_CRITERIA ||
-                itemType == ItemType.ERC1155_WITH_CRITERIA);
+            hasCriteria = (
+                itemType == ItemType.ERC721_WITH_CRITERIA
+                    || itemType == ItemType.ERC1155_WITH_CRITERIA
+            );
             if (hasCriteria) {
                 return (hasCriteria, offerItem.identifierOrCriteria != 0);
             }
         }
 
         // Check if any consideration item has criteria
-        ConsiderationItem[] memory consideration = order
-            .parameters
-            .consideration;
+        ConsiderationItem[] memory consideration =
+            order.parameters.consideration;
         for (uint256 i; i < consideration.length; ++i) {
             ConsiderationItem memory considerationItem = consideration[i];
             ItemType itemType = considerationItem.itemType;
-            hasCriteria = (itemType == ItemType.ERC721_WITH_CRITERIA ||
-                itemType == ItemType.ERC1155_WITH_CRITERIA);
+            hasCriteria = (
+                itemType == ItemType.ERC721_WITH_CRITERIA
+                    || itemType == ItemType.ERC1155_WITH_CRITERIA
+            );
             if (hasCriteria) {
-                return (
-                    hasCriteria,
-                    considerationItem.identifierOrCriteria != 0
-                );
+                return
+                    (hasCriteria, considerationItem.identifierOrCriteria != 0);
             }
         }
 
@@ -943,22 +948,23 @@ function _locateCurrentAmount(
         }
 
         // Aggregate new amounts weighted by time with rounding factor.
-        uint256 totalBeforeDivision = ((startAmount * remaining) +
-            (endAmount * elapsed));
+        uint256 totalBeforeDivision =
+            ((startAmount * remaining) + (endAmount * elapsed));
 
         // Use assembly to combine operations and skip divide-by-zero check.
         assembly {
             // Multiply by iszero(iszero(totalBeforeDivision)) to ensure
             // amount is set to zero if totalBeforeDivision is zero,
             // as intermediate overflow can occur if it is zero.
-            amount := mul(
-                iszero(iszero(totalBeforeDivision)),
-                // Subtract 1 from the numerator and add 1 to the result if
-                // roundUp is true to get the proper rounding direction.
-                // Division is performed with no zero check as duration
-                // cannot be zero as long as startTime < endTime.
-                add(div(sub(totalBeforeDivision, roundUp), duration), roundUp)
-            )
+            amount :=
+                mul(
+                    iszero(iszero(totalBeforeDivision)),
+                    // Subtract 1 from the numerator and add 1 to the result if
+                    // roundUp is true to get the proper rounding direction.
+                    // Division is performed with no zero check as duration
+                    // cannot be zero as long as startTime < endTime.
+                    add(div(sub(totalBeforeDivision, roundUp), duration), roundUp)
+                )
         }
 
         // Return the current amount.

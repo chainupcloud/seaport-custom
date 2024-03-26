@@ -33,14 +33,14 @@ contract PostFulfillmentStatefulTestZone is ERC165, ZoneInterface {
      *
      * @return validOrderMagicValue The validOrder magic value.
      */
-    function validateOrder(
-        ZoneParameters calldata zoneParameters
-    ) external returns (bytes4 validOrderMagicValue) {
+    function validateOrder(ZoneParameters calldata zoneParameters)
+        external
+        returns (bytes4 validOrderMagicValue)
+    {
         // Check that the amount in the offer is correct.
         if (zoneParameters.offer[0].amount != amountToCheck) {
             revert IncorrectAmount(
-                zoneParameters.offer[0].amount,
-                amountToCheck
+                zoneParameters.offer[0].amount, amountToCheck
             );
         }
 
@@ -55,8 +55,7 @@ contract PostFulfillmentStatefulTestZone is ERC165, ZoneInterface {
         // Check that the token ID in the consideration is correct.
         if (zoneParameters.consideration[0].identifier != 42) {
             revert IncorrectIdentifier(
-                zoneParameters.consideration[0].identifier,
-                42
+                zoneParameters.consideration[0].identifier, 42
             );
         }
 
@@ -86,11 +85,13 @@ contract PostFulfillmentStatefulTestZone is ERC165, ZoneInterface {
         return ("PostFulfillmentStatefulTestZone", schemas);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC165, ZoneInterface) returns (bool) {
-        return
-            interfaceId == type(ZoneInterface).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC165, ZoneInterface)
+        returns (bool)
+    {
+        return interfaceId == type(ZoneInterface).interfaceId
+            || super.supportsInterface(interfaceId);
     }
 }

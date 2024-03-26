@@ -35,17 +35,14 @@ contract CallNavigator is Script {
         NavigatorRequest memory request;
 
         // Set Seaport and SeaportValidator addresses.
-        request.seaport = ConsiderationInterface(
-            0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC
-        );
+        request.seaport =
+            ConsiderationInterface(0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC);
         request.validator = SeaportValidatorInterface(
             0xBa7a3AD8aDD5D37a89a73d76e9Fb4270aeD264Ad
         );
 
         // Set up orders, using navigator order structs.
-        NavigatorAdvancedOrder[] memory orders = new NavigatorAdvancedOrder[](
-            1
-        );
+        NavigatorAdvancedOrder[] memory orders = new NavigatorAdvancedOrder[](1);
         orders[0] = NavigatorAdvancedOrder({
             parameters: NavigatorOrderParameters({
                 offerer: 0xcc476d5Adc341B31405891E78694186454775926,
@@ -58,7 +55,7 @@ contract CallNavigator is Script {
                 zoneHash: bytes32(0),
                 salt: uint256(
                     0x10a16a76000000000000000000000000000000000000000000000000af0f8c13
-                ),
+                    ),
                 conduitKey: bytes32(0),
                 totalOriginalConsiderationItems: 0
             }),
@@ -68,7 +65,7 @@ contract CallNavigator is Script {
                 hex"3c792711cff5e3b9ca789b3fc08f345d069ca3f161d0a3b3e2700ad95c"
                 hex"691c6c8079a4c12149a9834797d50a4c0856cc11430bdd28bcf02b0798"
                 hex"7aefb6d21ab2"
-            ),
+                ),
             extraData: ""
         });
         request.orders = orders;

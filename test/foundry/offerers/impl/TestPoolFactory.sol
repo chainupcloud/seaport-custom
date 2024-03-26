@@ -25,12 +25,7 @@ contract TestPoolFactory {
     ) external returns (TestPoolOfferer newPool) {
         // Create a new TestPoolOfferer contract
         newPool = new TestPoolOfferer(
-            seaport,
-            erc721,
-            tokenIds,
-            erc20,
-            amount,
-            msg.sender
+            seaport, erc721, tokenIds, erc20, amount, msg.sender
         );
 
         // Transfer the specified amount of ERC20 tokens from the caller to the
@@ -41,9 +36,7 @@ contract TestPoolFactory {
         // contract.
         for (uint256 i; i < tokenIds.length; i++) {
             IERC721(erc721).transferFrom(
-                msg.sender,
-                address(newPool),
-                tokenIds[i]
+                msg.sender, address(newPool), tokenIds[i]
             );
         }
     }

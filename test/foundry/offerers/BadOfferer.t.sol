@@ -10,9 +10,8 @@ import {
     ERC721Interface
 } from "seaport-types/src/interfaces/AbridgedTokenInterfaces.sol";
 
-import {
-    ConsiderationInterface
-} from "seaport-types/src/interfaces/ConsiderationInterface.sol";
+import { ConsiderationInterface } from
+    "seaport-types/src/interfaces/ConsiderationInterface.sol";
 
 import {
     OfferItem,
@@ -23,11 +22,12 @@ import {
     FulfillmentComponent
 } from "seaport-types/src/lib/ConsiderationStructs.sol";
 
-import { ItemType, OrderType } from "seaport-types/src/lib/ConsiderationEnums.sol";
-
 import {
-    ZoneInteractionErrors
-} from "seaport-types/src/interfaces/ZoneInteractionErrors.sol";
+    ItemType, OrderType
+} from "seaport-types/src/lib/ConsiderationEnums.sol";
+
+import { ZoneInteractionErrors } from
+    "seaport-types/src/interfaces/ZoneInteractionErrors.sol";
 
 contract BadOffererTest is BaseOrderTest, ZoneInteractionErrors {
     BadOfferer badOfferer;
@@ -44,11 +44,11 @@ contract BadOffererTest is BaseOrderTest, ZoneInteractionErrors {
         token1.mint(address(this), 100000);
     }
 
-    function test(
-        function(Context memory) external fn,
-        Context memory context
-    ) internal {
-        try fn(context) {} catch (bytes memory reason) {
+    function test(function(Context memory) external fn, Context memory context)
+        internal
+    {
+        try fn(context) { }
+        catch (bytes memory reason) {
             assertPass(reason);
         }
     }
@@ -228,9 +228,10 @@ contract BadOffererTest is BaseOrderTest, ZoneInteractionErrors {
         );
     }
 
-    function configureBadOffererOrder(
-        uint256 id
-    ) internal returns (AdvancedOrder memory advancedOrder) {
+    function configureBadOffererOrder(uint256 id)
+        internal
+        returns (AdvancedOrder memory advancedOrder)
+    {
         test721_1.mint(address(this), id);
 
         OfferItem[] memory offer = new OfferItem[](1);
@@ -272,9 +273,10 @@ contract BadOffererTest is BaseOrderTest, ZoneInteractionErrors {
         });
     }
 
-    function configureNormalOrder(
-        Context memory context
-    ) internal returns (AdvancedOrder memory advancedOrder) {
+    function configureNormalOrder(Context memory context)
+        internal
+        returns (AdvancedOrder memory advancedOrder)
+    {
         (address offerer, uint256 pkey) = makeAddrAndKey("normal offerer");
         vm.prank(offerer);
         test721_1.setApprovalForAll(address(context.seaport), true);

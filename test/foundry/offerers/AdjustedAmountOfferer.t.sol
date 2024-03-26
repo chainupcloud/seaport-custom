@@ -5,15 +5,15 @@ import { BaseOrderTest } from "../utils/BaseOrderTest.sol";
 
 import { AdjustedAmountOfferer } from "./impl/AdjustedAmountOfferer.sol";
 
-import {
-    ERC20Interface
-} from "seaport-types/src/interfaces/AbridgedTokenInterfaces.sol";
+import { ERC20Interface } from
+    "seaport-types/src/interfaces/AbridgedTokenInterfaces.sol";
+
+import { ConsiderationInterface } from
+    "seaport-types/src/interfaces/ConsiderationInterface.sol";
 
 import {
-    ConsiderationInterface
-} from "seaport-types/src/interfaces/ConsiderationInterface.sol";
-
-import { OrderType, ItemType } from "seaport-types/src/lib/ConsiderationEnums.sol";
+    OrderType, ItemType
+} from "seaport-types/src/lib/ConsiderationEnums.sol";
 
 import {
     ConsiderationItem,
@@ -21,13 +21,11 @@ import {
     CriteriaResolver
 } from "seaport-types/src/lib/ConsiderationStructs.sol";
 
-import {
-    ConsiderationEventsAndErrors
-} from "seaport-types/src/interfaces/ConsiderationEventsAndErrors.sol";
+import { ConsiderationEventsAndErrors } from
+    "seaport-types/src/interfaces/ConsiderationEventsAndErrors.sol";
 
-import {
-    ZoneInteractionErrors
-} from "seaport-types/src/interfaces/ZoneInteractionErrors.sol";
+import { ZoneInteractionErrors } from
+    "seaport-types/src/interfaces/ZoneInteractionErrors.sol";
 
 contract AdjustedAmountOffererTest is
     BaseOrderTest,
@@ -47,10 +45,9 @@ contract AdjustedAmountOffererTest is
         token2.mint(address(this), 100000);
     }
 
-    function setUpOfferer(
-        int256 offerAdjust,
-        int256 considerationAdjust
-    ) internal {
+    function setUpOfferer(int256 offerAdjust, int256 considerationAdjust)
+        internal
+    {
         address[] memory seaports = new address[](2);
         seaports[0] = address(consideration);
         seaports[1] = address(referenceConsideration);
@@ -65,11 +62,11 @@ contract AdjustedAmountOffererTest is
         token2.mint(address(offerer), 100000);
     }
 
-    function test(
-        function(Context memory) external fn,
-        Context memory context
-    ) internal {
-        try fn(context) {} catch (bytes memory reason) {
+    function test(function(Context memory) external fn, Context memory context)
+        internal
+    {
+        try fn(context) { }
+        catch (bytes memory reason) {
             assertPass(reason);
         }
     }
@@ -110,9 +107,10 @@ contract AdjustedAmountOffererTest is
         setUpNormalOrder(address(offerer));
     }
 
-    function execLessMinimumReceived(
-        Context memory context
-    ) external stateless {
+    function execLessMinimumReceived(Context memory context)
+        external
+        stateless
+    {
         vm.expectRevert(
             abi.encodeWithSelector(
                 InvalidContractOrder.selector,
@@ -138,9 +136,10 @@ contract AdjustedAmountOffererTest is
         setUpNormalOrder(address(offerer));
     }
 
-    function execMoreMinimumReceived(
-        Context memory context
-    ) external stateless {
+    function execMoreMinimumReceived(Context memory context)
+        external
+        stateless
+    {
         uint256 startBalance = token2.balanceOf(address(this));
         fulfillAdvanced(context, configureAdvancedOrder());
         assertEq(token1.balanceOf(address(this)), startBalance + 1001);
@@ -226,8 +225,7 @@ contract AdjustedAmountOffererTest is
         considerationItems[0].endAmount += 1;
 
         test(
-            this.execAlterConsiderationItem,
-            Context({ seaport: consideration })
+            this.execAlterConsiderationItem, Context({ seaport: consideration })
         );
         test(
             this.execAlterConsiderationItem,
@@ -235,9 +233,10 @@ contract AdjustedAmountOffererTest is
         );
     }
 
-    function execAlterConsiderationItem(
-        Context memory context
-    ) external stateless {
+    function execAlterConsiderationItem(Context memory context)
+        external
+        stateless
+    {
         vm.expectRevert(
             abi.encodeWithSelector(
                 InvalidContractOrder.selector,
@@ -251,21 +250,17 @@ contract AdjustedAmountOffererTest is
         return configureAdvancedOrder(1, 1);
     }
 
-    function configureAdvancedOrder(
-        uint120 numer,
-        uint120 denom
-    ) internal returns (AdvancedOrder memory) {
-        return
-            AdvancedOrder({
-                parameters: getOrderParameters(
-                    address(offerer),
-                    OrderType.CONTRACT
-                ),
-                numerator: numer,
-                denominator: denom,
-                signature: "",
-                extraData: ""
-            });
+    function configureAdvancedOrder(uint120 numer, uint120 denom)
+        internal
+        returns (AdvancedOrder memory)
+    {
+        return AdvancedOrder({
+            parameters: getOrderParameters(address(offerer), OrderType.CONTRACT),
+            numerator: numer,
+            denominator: denom,
+            signature: "",
+            extraData: ""
+        });
     }
 
     function fulfillAdvanced(

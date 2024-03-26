@@ -17,19 +17,19 @@ library ExecutionsFlattener {
         context.expectations.allExpectedExecutions = ArrayHelpers
             .flattenThree
             .asExecutionsFlatten()(
-                context.expectations.expectedImplicitPreExecutions,
-                ArrayHelpers.mapWithArg.asMap()(
-                    context.expectations.expectedExplicitExecutions,
-                    fixExplicitExecution,
-                    context
-                ),
-                context.expectations.expectedImplicitPostExecutions
-            );
+            context.expectations.expectedImplicitPreExecutions,
+            ArrayHelpers.mapWithArg.asMap()(
+                context.expectations.expectedExplicitExecutions,
+                fixExplicitExecution,
+                context
+            ),
+            context.expectations.expectedImplicitPostExecutions
+        );
         require(
-            context.expectations.allExpectedExecutions.length ==
-                context.expectations.expectedImplicitPreExecutions.length +
-                    context.expectations.expectedExplicitExecutions.length +
-                    context.expectations.expectedImplicitPostExecutions.length,
+            context.expectations.allExpectedExecutions.length
+                == context.expectations.expectedImplicitPreExecutions.length
+                    + context.expectations.expectedExplicitExecutions.length
+                    + context.expectations.expectedImplicitPostExecutions.length,
             "LENGTHS OF EXECUTIONS DO NOT MATCH"
         );
         uint256 e;
@@ -38,15 +38,13 @@ library ExecutionsFlattener {
             i < context.expectations.expectedImplicitPreExecutions.length;
             i++
         ) {
-            Execution memory execution1 = context
-                .expectations
-                .expectedImplicitPreExecutions[i];
-            Execution memory execution2 = context
-                .expectations
-                .allExpectedExecutions[e++];
+            Execution memory execution1 =
+                context.expectations.expectedImplicitPreExecutions[i];
+            Execution memory execution2 =
+                context.expectations.allExpectedExecutions[e++];
             require(
-                keccak256(abi.encode(execution1)) ==
-                    keccak256(abi.encode(execution2)),
+                keccak256(abi.encode(execution1))
+                    == keccak256(abi.encode(execution2)),
                 "IMPLICIT PRE EXECUTIONS DO NOT MATCH"
             );
         }
@@ -55,27 +53,25 @@ library ExecutionsFlattener {
             i < context.expectations.expectedExplicitExecutions.length;
             i++
         ) {
-            Execution memory execution1 = context
-                .expectations
-                .expectedExplicitExecutions[i];
-            Execution memory execution2 = context
-                .expectations
-                .allExpectedExecutions[e++];
+            Execution memory execution1 =
+                context.expectations.expectedExplicitExecutions[i];
+            Execution memory execution2 =
+                context.expectations.allExpectedExecutions[e++];
             if (execution1.item.itemType == ItemType.NATIVE) {
                 require(
                     execution2.offerer == address(context.seaport),
                     "SEAPORT NOT SET ON EXECUTION"
                 );
                 require(
-                    execution1.conduitKey == execution2.conduitKey &&
-                        keccak256(abi.encode(execution1.item)) ==
-                        keccak256(abi.encode(execution2.item)),
+                    execution1.conduitKey == execution2.conduitKey
+                        && keccak256(abi.encode(execution1.item))
+                            == keccak256(abi.encode(execution2.item)),
                     "EXPLICIT EXECUTIONS DO NOT MATCH"
                 );
             } else {
                 require(
-                    keccak256(abi.encode(execution1)) ==
-                        keccak256(abi.encode(execution2)),
+                    keccak256(abi.encode(execution1))
+                        == keccak256(abi.encode(execution2)),
                     "EXPLICIT EXECUTIONS DO NOT MATCH"
                 );
             }
@@ -85,15 +81,13 @@ library ExecutionsFlattener {
             i < context.expectations.expectedImplicitPostExecutions.length;
             i++
         ) {
-            Execution memory execution1 = context
-                .expectations
-                .expectedImplicitPostExecutions[i];
-            Execution memory execution2 = context
-                .expectations
-                .allExpectedExecutions[e++];
+            Execution memory execution1 =
+                context.expectations.expectedImplicitPostExecutions[i];
+            Execution memory execution2 =
+                context.expectations.allExpectedExecutions[e++];
             require(
-                keccak256(abi.encode(execution1)) ==
-                    keccak256(abi.encode(execution2)),
+                keccak256(abi.encode(execution1))
+                    == keccak256(abi.encode(execution2)),
                 "IMPLICIT PRE EXECUTIONS DO NOT MATCH"
             );
         }
@@ -119,9 +113,9 @@ library ExecutionsFlattener {
         pure
         returns (
             function(MemoryPointer, MemoryPointer)
-                internal
-                pure
-                returns (MemoryPointer) fnOut
+            internal
+            pure
+            returns (MemoryPointer) fnOut
         )
     {
         assembly {
@@ -143,12 +137,12 @@ library ExecutionsFlattener {
         pure
         returns (
             function(
-                Execution[] memory,
-                function(Execution memory, FuzzTestContext memory)
-                    internal
-                    pure
-                    returns (Execution memory),
-                FuzzTestContext memory
+            Execution[] memory,
+            function(Execution memory, FuzzTestContext memory)
+            internal
+            pure
+            returns (Execution memory),
+            FuzzTestContext memory
             ) internal pure returns (Execution[] memory) fnOut
         )
     {
@@ -167,9 +161,9 @@ library ExecutionsFlattener {
         pure
         returns (
             function(Execution[] memory, Execution[] memory)
-                internal
-                pure
-                returns (Execution[] memory) fnOut
+            internal
+            pure
+            returns (Execution[] memory) fnOut
         )
     {
         assembly {
@@ -187,9 +181,9 @@ library ExecutionsFlattener {
         pure
         returns (
             function(Execution[] memory, Execution[] memory, Execution[] memory)
-                internal
-                pure
-                returns (Execution[] memory) fnOut
+            internal
+            pure
+            returns (Execution[] memory) fnOut
         )
     {
         assembly {

@@ -10,17 +10,15 @@ import {
     ReceivedItem
 } from "seaport-types/src/lib/ConsiderationStructs.sol";
 
-import {
-    EnumerableSet
-} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import { EnumerableSet } from
+    "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {
-    ContractOffererInterface
-} from "seaport-types/src/interfaces/ContractOffererInterface.sol";
+import { ContractOffererInterface } from
+    "seaport-types/src/interfaces/ContractOffererInterface.sol";
 
 import { ERC165 } from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
@@ -45,12 +43,7 @@ contract TestPoolFactoryImpl {
     ) external returns (address newPool) {
         newPool = address(
             new TestPoolImpl(
-                seaport,
-                erc721,
-                tokenIds,
-                erc20,
-                amount,
-                msg.sender
+                seaport, erc721, tokenIds, erc20, amount, msg.sender
             )
         );
         IERC20(erc20).transferFrom(msg.sender, newPool, amount);
@@ -70,7 +63,7 @@ contract TestPoolImpl is ERC165, TestPoolOfferer {
         address _payment,
         uint256 amount,
         address owner
-    ) TestPoolOfferer(seaport, _token, _tokenIds, _payment, amount, owner) {}
+    ) TestPoolOfferer(seaport, _token, _tokenIds, _payment, amount, owner) { }
 
     function getInternalBalance() external view returns (uint256) {
         return balance;
@@ -84,9 +77,13 @@ contract TestPoolImpl is ERC165, TestPoolOfferer {
         return tokenIds.contains(id);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view virtual override(ERC165, TestPoolOfferer) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC165, TestPoolOfferer)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }
@@ -124,10 +121,7 @@ contract TestPoolOffererImpl is Test {
 
         test = TestPoolImpl(
             factory.createPoolOfferer(
-                address(erc721),
-                tokenIds,
-                address(erc20),
-                1e18
+                address(erc721), tokenIds, address(erc20), 1e18
             )
         );
     }
@@ -150,16 +144,10 @@ contract TestPoolOffererImpl is Test {
         });
         SpentItem[] memory maximumSpent = new SpentItem[](1);
         maximumSpent[0] = SpentItem(ItemType.ERC20, address(erc20), 6e17, 1);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.previewOrder(
-                address(0),
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+        test.previewOrder(
+            address(0), address(this), minimumReceived, maximumSpent, ""
+        );
 
         assertEq(spentItems.length, 1, "wrong spentItems length");
         assertEq(
@@ -192,16 +180,10 @@ contract TestPoolOffererImpl is Test {
         });
         SpentItem[] memory maximumSpent = new SpentItem[](1);
         maximumSpent[0] = SpentItem(ItemType.ERC20, address(erc20), 6e17, 1);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.previewOrder(
-                address(0),
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+        test.previewOrder(
+            address(0), address(this), minimumReceived, maximumSpent, ""
+        );
 
         assertEq(spentItems.length, 1, "wrong spentItems length");
         assertEq(
@@ -240,16 +222,10 @@ contract TestPoolOffererImpl is Test {
         });
         SpentItem[] memory maximumSpent = new SpentItem[](1);
         maximumSpent[0] = SpentItem(ItemType.ERC20, address(erc20), 6e17, 1);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.previewOrder(
-                address(0),
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+        test.previewOrder(
+            address(0), address(this), minimumReceived, maximumSpent, ""
+        );
         assertEq(spentItems.length, 2, "wrong spentItems length");
         assertEq(
             uint8(spentItems[0].itemType),
@@ -297,16 +273,10 @@ contract TestPoolOffererImpl is Test {
             identifier: 4,
             amount: 1
         });
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.previewOrder(
-                address(0),
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+        test.previewOrder(
+            address(0), address(this), minimumReceived, maximumSpent, ""
+        );
 
         assertEq(spentItems.length, 1, "wrong spentItems length");
         assertEq(
@@ -327,9 +297,7 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[0].amount, 1, "wrong spentitem amount");
         assertEq(receivedItems[0].identifier, 3, "wrong spentitem identifier");
         assertEq(
-            receivedItems[0].token,
-            address(erc721),
-            "wrong spentitem token"
+            receivedItems[0].token, address(erc721), "wrong spentitem token"
         );
         assertEq(receivedItems[0].recipient, address(test), "wrong receiver");
 
@@ -341,9 +309,7 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[1].amount, 1, "wrong spentitem amount");
         assertEq(receivedItems[1].identifier, 4, "wrong spentitem identifier");
         assertEq(
-            receivedItems[1].token,
-            address(erc721),
-            "wrong spentitem token"
+            receivedItems[1].token, address(erc721), "wrong spentitem token"
         );
         assertEq(receivedItems[1].recipient, address(test), "wrong receiver");
     }
@@ -366,15 +332,8 @@ contract TestPoolOffererImpl is Test {
             amount: 1
         });
         vm.prank(seaport);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.generateOrder(
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+            test.generateOrder(address(this), minimumReceived, maximumSpent, "");
 
         assertEq(spentItems.length, 1, "wrong spentItems length");
         assertEq(
@@ -395,9 +354,7 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[0].amount, 1, "wrong spentitem amount");
         assertEq(receivedItems[0].identifier, 3, "wrong spentitem identifier");
         assertEq(
-            receivedItems[0].token,
-            address(erc721),
-            "wrong spentitem token"
+            receivedItems[0].token, address(erc721), "wrong spentitem token"
         );
         assertEq(receivedItems[0].recipient, address(test), "wrong receiver");
 
@@ -409,21 +366,15 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[1].amount, 1, "wrong spentitem amount");
         assertEq(receivedItems[1].identifier, 4, "wrong spentitem identifier");
         assertEq(
-            receivedItems[1].token,
-            address(erc721),
-            "wrong spentitem token"
+            receivedItems[1].token, address(erc721), "wrong spentitem token"
         );
         assertEq(receivedItems[1].recipient, address(test), "wrong receiver");
 
         assertEq(
-            test.getInternalBalance(),
-            1e18 - 4e17,
-            "wrong internal balance"
+            test.getInternalBalance(), 1e18 - 4e17, "wrong internal balance"
         );
         assertEq(
-            test.getInternalTokenBalance(),
-            5,
-            "wrong internal token balance"
+            test.getInternalTokenBalance(), 5, "wrong internal token balance"
         );
         assertTrue(test.inTokenIds(3), "id not in tokenIds");
         assertTrue(test.inTokenIds(4), "id not in tokenIds");
@@ -446,15 +397,8 @@ contract TestPoolOffererImpl is Test {
         SpentItem[] memory maximumSpent = new SpentItem[](1);
         maximumSpent[0] = SpentItem(ItemType.ERC20, address(erc20), 6e17, 1);
         vm.prank(seaport);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.generateOrder(
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+            test.generateOrder(address(this), minimumReceived, maximumSpent, "");
 
         assertEq(spentItems.length, 2, "wrong spentItems length");
         assertEq(
@@ -486,14 +430,10 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[0].recipient, address(test), "wrong receiver");
 
         assertEq(
-            test.getInternalBalance(),
-            1e18 + 2e18,
-            "wrong internal balance"
+            test.getInternalBalance(), 1e18 + 2e18, "wrong internal balance"
         );
         assertEq(
-            test.getInternalTokenBalance(),
-            1,
-            "wrong internal token balance"
+            test.getInternalTokenBalance(), 1, "wrong internal token balance"
         );
         assertFalse(test.inTokenIds(0), "id  in tokenIds");
         assertFalse(test.inTokenIds(1), "id in tokenIds");
@@ -516,15 +456,8 @@ contract TestPoolOffererImpl is Test {
         SpentItem[] memory maximumSpent = new SpentItem[](1);
         maximumSpent[0] = SpentItem(ItemType.ERC20, address(erc20), 6e17, 1);
         vm.prank(seaport);
-        (
-            SpentItem[] memory spentItems,
-            ReceivedItem[] memory receivedItems
-        ) = test.generateOrder(
-                address(this),
-                minimumReceived,
-                maximumSpent,
-                ""
-            );
+        (SpentItem[] memory spentItems, ReceivedItem[] memory receivedItems) =
+            test.generateOrder(address(this), minimumReceived, maximumSpent, "");
 
         assertEq(spentItems.length, 2, "wrong spentItems length");
         assertEq(
@@ -556,27 +489,20 @@ contract TestPoolOffererImpl is Test {
         assertEq(receivedItems[0].recipient, address(test), "wrong receiver");
 
         assertEq(
-            test.getInternalBalance(),
-            1e18 + 2e18,
-            "wrong internal balance"
+            test.getInternalBalance(), 1e18 + 2e18, "wrong internal balance"
         );
         assertEq(
-            test.getInternalTokenBalance(),
-            1,
-            "wrong internal token balance"
+            test.getInternalTokenBalance(), 1, "wrong internal token balance"
         );
         assertFalse(
-            test.inTokenIds(spentItems[0].identifier),
-            "id not in tokenIds"
+            test.inTokenIds(spentItems[0].identifier), "id not in tokenIds"
         );
         assertFalse(
-            test.inTokenIds(spentItems[1].identifier),
-            "id not in tokenIds"
+            test.inTokenIds(spentItems[1].identifier), "id not in tokenIds"
         );
 
         assertTrue(
-            spentItems[0].identifier != spentItems[1].identifier,
-            "same id"
+            spentItems[0].identifier != spentItems[1].identifier, "same id"
         );
     }
 
