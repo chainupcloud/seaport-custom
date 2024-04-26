@@ -21,66 +21,66 @@ remappings = [
 # verify-contract: 9_999_999
 # deploy-contract: 4_294_967_295
 optimizer_runs = 4_294_967_295
-#fs_permissions = [
-#    { access = "read", path = "./optimized-out" },
-#    { access = "read", path = "./reference-out" },
-#    { access = "write", path = "./call-metrics.txt" },
-#    { access = "write", path = "./mutation-metrics.txt" },
-#    { access = "write", path = "./assume-metrics.txt" },
-#    { access = "write", path = "./fuzz_debug.json" }
-#]
-#
-#[profile.validator]
-#solc = '0.8.17'
-#src = 'contracts/helpers/order-validator'
-#optimizer_runs = 1
-#
-#[fuzz]
-#runs = 1_000
-#max_test_rejects = 1_000_000
-#
-#[profile.reference]
-#solc = '0.8.13'
-#src = 'reference'
-#out = 'reference-out'
-#script = 'reference'
-## specify something so it doesn't try to compile the 0.8.17 files in test/foundry
-#test = 'reference'
-#
-#[profile.optimized]
-#via_ir = true
-#out = 'optimized-out'
-#script = 'contracts'
-#bytecode_hash = 'none'
-## no need to compile tests with via-ir since they load optimized bytecode directly by default
-#test ='contracts'
-#
-#[profile.test]
-#src = 'test/foundry'
-#
-#[profile.test.fuzz]
-#runs = 1_000
-#
-#[profile.lite]
-#out = 'optimized-out'
-#
-#[profile.debug]
-#src = 'contracts'
-#optimizer = false
-#
-#[profile.moat_debug]
-#optimizer = false
-#test = 'test/foundry/new'
-#
-#[profile.offerers]
-#src='offerers'
-#test='offerers'
-#out = 'offerers-out'
-#script = 'offerers'
-#
-#[fmt]
-#line_length = 80
-#tab_width = 4
-#bracket_spacing = true
-#
-## See more config options https://github.com/gakonst/foundry/tree/master/config
+fs_permissions = [
+    { access = "read", path = "./optimized-out" },
+    { access = "read", path = "./reference-out" },
+    { access = "write", path = "./call-metrics.txt" },
+    { access = "write", path = "./mutation-metrics.txt" },
+    { access = "write", path = "./assume-metrics.txt" },
+    { access = "write", path = "./fuzz_debug.json" }
+]
+
+[profile.validator]
+solc = '0.8.17'
+src = 'contracts/helpers/order-validator'
+optimizer_runs = 1
+
+[fuzz]
+runs = 1_000
+max_test_rejects = 1_000_000
+
+[profile.reference]
+solc = '0.8.13'
+src = 'reference'
+out = 'reference-out'
+script = 'reference'
+# specify something so it doesn't try to compile the 0.8.17 files in test/foundry
+test = 'reference'
+
+[profile.optimized]
+via_ir = true
+out = 'optimized-out'
+script = 'contracts'
+bytecode_hash = 'none'
+# no need to compile tests with via-ir since they load optimized bytecode directly by default
+test ='contracts'
+
+[profile.test]
+src = 'test/foundry'
+
+[profile.test.fuzz]
+runs = 1_000
+
+[profile.lite]
+out = 'optimized-out'
+
+[profile.debug]
+src = 'contracts'
+optimizer = false
+
+[profile.moat_debug]
+optimizer = false
+test = 'test/foundry/new'
+
+[profile.offerers]
+src='offerers'
+test='offerers'
+out = 'offerers-out'
+script = 'offerers'
+
+[fmt]
+line_length = 80
+tab_width = 4
+bracket_spacing = true
+
+# See more config options https://github.com/gakonst/foundry/tree/master/config
